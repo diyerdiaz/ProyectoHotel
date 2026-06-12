@@ -1,2 +1,9 @@
+
 /build/
-/Libraries/
+/dist/
+*.log
+
+**/nbproject/private/
+
+**/nbproject/userconfig.properties
+*.jar
