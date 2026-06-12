@@ -6,7 +6,7 @@ package vista;
 
 /**
  *
- * @author andre
+ * @author ndrea
  */
 public class MDIPrincipal extends javax.swing.JFrame {
     
