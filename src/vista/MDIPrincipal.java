@@ -50,6 +50,7 @@ if (rutaImagen != null) {
     private void initComponents() {
 
         desktopPane = new javax.swing.JDesktopPane();
+<<<<<<< Updated upstream
         jPanel1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         lblFondoIzquierdo = new javax.swing.JLabel();
@@ -65,9 +66,25 @@ if (rutaImagen != null) {
         menuBar = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         MenuAutos = new javax.swing.JMenuItem();
+=======
+        mnuBar = new javax.swing.JMenuBar();
+        mnuArchivo = new javax.swing.JMenu();
+        mnuSalir = new javax.swing.JMenuItem();
+        mnuRecepcion = new javax.swing.JMenu();
+        mnuHabitaciones = new javax.swing.JMenu();
+        mnuGestionarHabitaciones = new javax.swing.JMenuItem();
+        mnuGestionarClientes = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        mnuReservas = new javax.swing.JMenu();
+        mnuGestionarReservas = new javax.swing.JMenuItem();
+        mnuEmpleados = new javax.swing.JMenu();
+        mnuGestionarEmpleados = new javax.swing.JMenuItem();
+        mnuAyuda = new javax.swing.JMenu();
+>>>>>>> Stashed changes
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+<<<<<<< Updated upstream
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -130,23 +147,88 @@ if (rutaImagen != null) {
         menuBar.add(Menu);
 
         setJMenuBar(menuBar);
+=======
+        javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
+        desktopPane.setLayout(desktopPaneLayout);
+        desktopPaneLayout.setHorizontalGroup(
+            desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 458, Short.MAX_VALUE)
+        );
+        desktopPaneLayout.setVerticalGroup(
+            desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 353, Short.MAX_VALUE)
+        );
+
+        mnuArchivo.setText("Archivo");
+
+        mnuSalir.setText("Salir");
+        mnuSalir.addActionListener(this::mnuSalirActionPerformed);
+        mnuArchivo.add(mnuSalir);
+
+        mnuBar.add(mnuArchivo);
+
+        mnuRecepcion.setText("Recepcion");
+        mnuBar.add(mnuRecepcion);
+
+        mnuHabitaciones.setText("Habitaciones");
+
+        mnuGestionarHabitaciones.setText("Gestionar Habitaciones");
+        mnuHabitaciones.add(mnuGestionarHabitaciones);
+
+        mnuBar.add(mnuHabitaciones);
+
+        mnuGestionarClientes.setText("Clientes");
+
+        jMenuItem3.setText("Gestionar Clientes");
+        mnuGestionarClientes.add(jMenuItem3);
+
+        mnuBar.add(mnuGestionarClientes);
+
+        mnuReservas.setText("Reservas");
+
+        mnuGestionarReservas.setText("Gestionar Reservas");
+        mnuReservas.add(mnuGestionarReservas);
+
+        mnuBar.add(mnuReservas);
+
+        mnuEmpleados.setText("Empleados");
+
+        mnuGestionarEmpleados.setText("Gestionar Empleados");
+        mnuEmpleados.add(mnuGestionarEmpleados);
+
+        mnuBar.add(mnuEmpleados);
+
+        mnuAyuda.setText("Ayuda");
+        mnuBar.add(mnuAyuda);
+
+        setJMenuBar(mnuBar);
+>>>>>>> Stashed changes
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+<<<<<<< Updated upstream
             .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
+=======
+            .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+>>>>>>> Stashed changes
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+<<<<<<< Updated upstream
                 .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
+=======
+                .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+>>>>>>> Stashed changes
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+<<<<<<< Updated upstream
     private void MenuAutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAutosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_MenuAutosActionPerformed
@@ -154,6 +236,12 @@ if (rutaImagen != null) {
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+=======
+    private void mnuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSalirActionPerformed
+
+        System.exit(0);
+    }//GEN-LAST:event_mnuSalirActionPerformed
+>>>>>>> Stashed changes
 
     /**
      * @param args the command line arguments
@@ -197,6 +285,7 @@ if (rutaImagen != null) {
     private javax.swing.JMenu Menu;
     private javax.swing.JMenuItem MenuAutos;
     private javax.swing.JDesktopPane desktopPane;
+<<<<<<< Updated upstream
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
@@ -210,6 +299,21 @@ if (rutaImagen != null) {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblFondoIzquierdo;
     private javax.swing.JMenuBar menuBar;
+=======
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenu mnuArchivo;
+    private javax.swing.JMenu mnuAyuda;
+    private javax.swing.JMenuBar mnuBar;
+    private javax.swing.JMenu mnuEmpleados;
+    private javax.swing.JMenu mnuGestionarClientes;
+    private javax.swing.JMenuItem mnuGestionarEmpleados;
+    private javax.swing.JMenuItem mnuGestionarHabitaciones;
+    private javax.swing.JMenuItem mnuGestionarReservas;
+    private javax.swing.JMenu mnuHabitaciones;
+    private javax.swing.JMenu mnuRecepcion;
+    private javax.swing.JMenu mnuReservas;
+    private javax.swing.JMenuItem mnuSalir;
+>>>>>>> Stashed changes
     // End of variables declaration//GEN-END:variables
 
 }
