@@ -9,35 +9,35 @@ package vista;
  * @author alejo
  */
 public class MDIPrincipal extends javax.swing.JFrame {
-    
-     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MDIPrincipal.class.getName());
-    
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MDIPrincipal.class.getName());
+
 
     /**
      * Creates new form MDIPrueba
      */
     public MDIPrincipal() {
         initComponents();
-     // 1. Cargamos la imagen desde tu paquete (reemplaza 'imagenes' y 'tu_imagen.png' con tus nombres)
-java.net.URL rutaImagen = getClass().getResource("/imagenes/ImagenFondoLogin.png");
+        // 1. Cargamos la imagen desde tu paquete (reemplaza 'imagenes' y 'tu_imagen.png' con tus nombres)
+        java.net.URL rutaImagen = getClass().getResource("/imagenes/ImagenFondoLogin.png");
 
-if (rutaImagen != null) {
-    javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(rutaImagen);
-    
-    // 2. Obtenemos el ancho y alto del JLabel que pusiste en el diseño
-    // (Asumiendo que tu JLabel se llama lblFondoIzquierdo)
-    int anchoLabel = lblFondoIzquierdo.getWidth();
-    int altoLabel = lblFondoIzquierdo.getHeight();
-    
-    // 3. Escalamos la imagen para que use las dimensiones exactas del componente
-    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(
-            anchoLabel, altoLabel, java.awt.Image.SCALE_SMOOTH
-    );
-    
-    // 4. Creamos el nuevo icono y se lo asignamos al JLabel
-    javax.swing.ImageIcon iconoRedimensionado = new javax.swing.ImageIcon(imagenEscalada);
-    lblFondoIzquierdo.setIcon(iconoRedimensionado);
-}
+        if (rutaImagen != null) {
+            javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(rutaImagen);
+
+            // 2. Obtenemos el ancho y alto del JLabel que pusiste en el diseño
+            // (Asumiendo que tu JLabel se llama lblFondoIzquierdo)
+            int anchoLabel = lblFondoIzquierdo.getWidth();
+            int altoLabel = lblFondoIzquierdo.getHeight();
+
+            // 3. Escalamos la imagen para que use las dimensiones exactas del componente
+            java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(
+                    anchoLabel, altoLabel, java.awt.Image.SCALE_SMOOTH
+            );
+
+            // 4. Creamos el nuevo icono y se lo asignamos al JLabel
+            javax.swing.ImageIcon iconoRedimensionado = new javax.swing.ImageIcon(imagenEscalada);
+            lblFondoIzquierdo.setIcon(iconoRedimensionado);
+        }
     }
 
     /**
@@ -278,7 +278,7 @@ if (rutaImagen != null) {
         //</editor-fold>
 
         /* Create and display the form */
-            java.awt.EventQueue.invokeLater(() -> new MDIPrincipal().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new MDIPrincipal().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
