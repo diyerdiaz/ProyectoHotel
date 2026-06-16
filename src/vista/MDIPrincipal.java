@@ -50,23 +50,6 @@ public class MDIPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         desktopPane = new javax.swing.JDesktopPane();
-<<<<<<< Updated upstream
-        jPanel1 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        lblFondoIzquierdo = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
-        menuBar = new javax.swing.JMenuBar();
-        Menu = new javax.swing.JMenu();
-        MenuAutos = new javax.swing.JMenuItem();
-=======
         mnuBar = new javax.swing.JMenuBar();
         mnuArchivo = new javax.swing.JMenu();
         mnuSalir = new javax.swing.JMenuItem();
@@ -80,74 +63,9 @@ public class MDIPrincipal extends javax.swing.JFrame {
         mnuEmpleados = new javax.swing.JMenu();
         mnuGestionarEmpleados = new javax.swing.JMenuItem();
         mnuAyuda = new javax.swing.JMenu();
->>>>>>> Stashed changes
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-<<<<<<< Updated upstream
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel5.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel5.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("  HOTEL GALES");
-        jLabel5.setOpaque(true);
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 290, 60));
-
-        lblFondoIzquierdo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Login3.png"))); // NOI18N
-        lblFondoIzquierdo.setText("jLabel6");
-        jPanel1.add(lblFondoIzquierdo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-370, 0, 740, 510));
-
-        desktopPane.add(jPanel1);
-        jPanel1.setBounds(0, 0, 370, 510);
-
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setFont(new java.awt.Font("Swis721 BT", 0, 36)); // NOI18N
-        jLabel1.setText("BIENVENIDO");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 26, 232, 69));
-
-        jLabel2.setFont(new java.awt.Font("Serif", 0, 14)); // NOI18N
-        jLabel2.setText("USUARIO");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 107, 43));
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 160, 320, 40));
-
-        jLabel3.setFont(new java.awt.Font("Serif", 0, 14)); // NOI18N
-        jLabel3.setText("Por favor, ingrese sus credenciales para continuar");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, 290, 30));
-
-        jLabel4.setFont(new java.awt.Font("Serif", 0, 14)); // NOI18N
-        jLabel4.setText("CONTRASEÑA");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 100, 20));
-        jPanel2.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 320, 40));
-
-        jCheckBox1.setFont(new java.awt.Font("Serif", 0, 12)); // NOI18N
-        jCheckBox1.setText("Recordarme");
-        jCheckBox1.addActionListener(this::jCheckBox1ActionPerformed);
-        jPanel2.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 130, 30));
-
-        jButton1.setBackground(new java.awt.Color(0, 102, 204));
-        jButton1.setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Iniciar Sesion");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 373, 320, 50));
-
-        desktopPane.add(jPanel2);
-        jPanel2.setBounds(370, 0, 390, 520);
-
-        Menu.setMnemonic('f');
-        Menu.setText("Menu");
-
-        MenuAutos.setMnemonic('o');
-        MenuAutos.setText("Autos");
-        MenuAutos.addActionListener(this::MenuAutosActionPerformed);
-        Menu.add(MenuAutos);
-
-        menuBar.add(Menu);
-
-        setJMenuBar(menuBar);
-=======
         javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
         desktopPane.setLayout(desktopPaneLayout);
         desktopPaneLayout.setHorizontalGroup(
@@ -202,46 +120,27 @@ public class MDIPrincipal extends javax.swing.JFrame {
         mnuBar.add(mnuAyuda);
 
         setJMenuBar(mnuBar);
->>>>>>> Stashed changes
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-<<<<<<< Updated upstream
-            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
-=======
             .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
->>>>>>> Stashed changes
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-<<<<<<< Updated upstream
-                .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-=======
                 .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
->>>>>>> Stashed changes
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-<<<<<<< Updated upstream
-    private void MenuAutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAutosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_MenuAutosActionPerformed
-
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
-=======
     private void mnuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSalirActionPerformed
 
         System.exit(0);
     }//GEN-LAST:event_mnuSalirActionPerformed
->>>>>>> Stashed changes
 
     /**
      * @param args the command line arguments
@@ -285,21 +184,6 @@ public class MDIPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu Menu;
     private javax.swing.JMenuItem MenuAutos;
     private javax.swing.JDesktopPane desktopPane;
-<<<<<<< Updated upstream
-    private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JLabel lblFondoIzquierdo;
-    private javax.swing.JMenuBar menuBar;
-=======
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenu mnuArchivo;
     private javax.swing.JMenu mnuAyuda;
@@ -313,7 +197,6 @@ public class MDIPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu mnuRecepcion;
     private javax.swing.JMenu mnuReservas;
     private javax.swing.JMenuItem mnuSalir;
->>>>>>> Stashed changes
     // End of variables declaration//GEN-END:variables
 
 }

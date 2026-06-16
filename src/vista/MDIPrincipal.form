@@ -2,14 +2,6 @@
 
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-<<<<<<< Updated upstream
-    <Menu class="javax.swing.JMenuBar" name="menuBar">
-      <SubComponents>
-        <Menu class="javax.swing.JMenu" name="Menu">
-          <Properties>
-            <Property name="mnemonic" type="int" value="102"/>
-            <Property name="text" type="java.lang.String" value="Menu"/>
-=======
     <Menu class="javax.swing.JMenuBar" name="mnuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="mnuArchivo">
@@ -83,7 +75,6 @@
         <Menu class="javax.swing.JMenu" name="mnuAyuda">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ayuda"/>
->>>>>>> Stashed changes
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="MenuAutos">
@@ -104,11 +95,7 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
   <SyntheticProperties>
-<<<<<<< Updated upstream
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
-=======
     <SyntheticProperty name="menuBar" type="java.lang.String" value="mnuBar"/>
->>>>>>> Stashed changes
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
@@ -127,21 +114,13 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-<<<<<<< Updated upstream
-          <Component id="desktopPane" alignment="0" pref="755" max="32767" attributes="0"/>
-=======
           <Component id="desktopPane" min="-2" max="-2" attributes="0"/>
->>>>>>> Stashed changes
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-<<<<<<< Updated upstream
-              <Component id="desktopPane" min="-2" pref="507" max="-2" attributes="0"/>
-=======
               <Component id="desktopPane" min="-2" max="-2" attributes="0"/>
->>>>>>> Stashed changes
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -150,10 +129,6 @@
   <SubComponents>
     <Container class="javax.swing.JDesktopPane" name="desktopPane">
 
-<<<<<<< Updated upstream
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-        <Property name="useNullLayout" type="boolean" value="true"/>
-=======
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
@@ -165,7 +140,6 @@
               <EmptySpace min="0" pref="353" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
->>>>>>> Stashed changes
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanel1">
