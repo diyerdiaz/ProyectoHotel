@@ -17,7 +17,7 @@ import java.util.Iterator;
 public class Habitaciones {
     private  int  idHabitacion;
     private  int numeroHabitacion;
-    private  String tipoHabitacion;
+        private  String tipoHabitacion;
     private  double precioHabitacion;
     private  String estadoHbitacion; 
 
