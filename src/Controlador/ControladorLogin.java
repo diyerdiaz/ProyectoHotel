@@ -7,7 +7,6 @@ package Controlador;
 import modelo.Login;
 import modelo.ConexionBD;
 import vista.MDILogin;
-import vista.MDIPrincipal;
 import java.util.Iterator;
 
 /**
@@ -74,9 +73,7 @@ public class ControladorLogin {
                 eliminarCredencialesGuardadas();
             }
             
-            // Abrir ventana principal
-            MDIPrincipal principal = new MDIPrincipal();
-            principal.setVisible(true);
+            // Cerrar ventana de login
             vistaLogin.dispose();
         } else {
             javax.swing.JOptionPane.showMessageDialog(vistaLogin, 
