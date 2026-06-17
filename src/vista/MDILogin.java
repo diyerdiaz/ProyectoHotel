@@ -263,4 +263,17 @@ public class MDILogin extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
+    // Métodos getters para el controlador
+    public javax.swing.JButton getJButton1() {
+        return jButton1;
+    }
+
+    public javax.swing.JTextField getJTextField1() {
+        return jTextField1;
+    }
+
+    public javax.swing.JTextField getJTextField2() {
+        return jTextField2;
+    }
+
 }
