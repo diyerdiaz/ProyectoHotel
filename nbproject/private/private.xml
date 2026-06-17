@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/vista/MDIPrincipal.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/ConexionBD.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/vista/FRMHabitaciones.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/.gitignore</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/Habitaciones.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/vista/MDIPrincipal.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/Login.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/TipoHabitacion.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/Cliente.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/ConexionBD.java</file>
+            <file>file:/home/diyer/NetBeansProjects/ProyectoHotel/src/modelo/Reserva.java</file>
         </group>
     </open-files>
 </project-private>
