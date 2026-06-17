@@ -114,6 +114,11 @@ public class MDILogin extends javax.swing.JFrame {
         jButton1.setText("Iniciar Sesion");
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 290, 50));
 
+        jButton2 = new javax.swing.JButton();
+        jButton2.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jButton2.setText("Crear cuenta");
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 290, 30));
+
         desktopPane.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, 330, 500));
 
         fileMenu.setMnemonic('f');
@@ -227,7 +232,11 @@ public class MDILogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MDILogin().setVisible(true);
+                MDILogin login = new MDILogin();
+                login.setVisible(true);
+                
+                // Inicializar el controlador
+                new Controlador.ControladorLogin(login);
             }
         });
     }
@@ -244,6 +253,7 @@ public class MDILogin extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -274,6 +284,14 @@ public class MDILogin extends javax.swing.JFrame {
 
     public javax.swing.JTextField getJTextField2() {
         return jTextField2;
+    }
+
+    public javax.swing.JCheckBox getJCheckBox1() {
+        return jCheckBox1;
+    }
+
+    public javax.swing.JButton getJButton2() {
+        return jButton2;
     }
 
 }
