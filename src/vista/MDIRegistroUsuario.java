@@ -248,6 +248,10 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
         return txtContraseña;
     }
 
+    public javax.swing.JTextField getTxtContrasena() {
+        return txtContraseña;
+    }
+
     public javax.swing.JButton getBtnSiguiente() {
         return btnSiguiente;
     }

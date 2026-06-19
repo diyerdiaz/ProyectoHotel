@@ -1,22 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Date;
+import java.util.Iterator;
 
-/**
- *
- * @author diyer
- */
 public class empleado {
-    
     private int idEmpleado;
     private String nombre;
     private String apellido;
@@ -29,181 +20,76 @@ public class empleado {
     private String direccion;
     private int idUsuario;
 
-    public int getIdEmpleado() {
-        return idEmpleado;
-    }
-
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public int getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(int documento) {
-        this.documento = documento;
-    }
-
-    public String getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
-    }
-
-    public double getSalario() {
-        return salario;
-    }
-
-    public void setSalario(double salario) {
-        this.salario = salario;
-    }
-
-    public Date getFechaContratacion() {
-        return fechaContratacion;
-    }
-
-    public void setFechaContratacion(Date fechaContratacion) {
-        this.fechaContratacion = fechaContratacion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    @Override
-    public String toString() {
-        return "empleado{" + "nombre=" + nombre + ", cargo=" + cargo + '}';
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final empleado other = (empleado) obj;
-        return this.idEmpleado == other.idEmpleado;
-    }
+    public int getIdEmpleado() { return idEmpleado; }
+    public void setIdEmpleado(int idEmpleado) { this.idEmpleado = idEmpleado; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public int getDocumento() { return documento; }
+    public void setDocumento(int documento) { this.documento = documento; }
+    public String getCargo() { return cargo; }
+    public void setCargo(String cargo) { this.cargo = cargo; }
+    public double getSalario() { return salario; }
+    public void setSalario(double salario) { this.salario = salario; }
+    public Date getFechaContratacion() { return fechaContratacion; }
+    public void setFechaContratacion(Date fechaContratacion) { this.fechaContratacion = fechaContratacion; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
 
     public Iterator<empleado> Listar() {
-        ArrayList<empleado> losEmpleados = new ArrayList<>();
-
+        ArrayList<empleado> empleados = new ArrayList<>();
         try {
-            PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "SELECT * FROM Empleado");
-
-            ResultSet rs = sql.executeQuery();
-
-            empleado unEmpleado;
-
-            while (rs.next()) {
-                unEmpleado = new empleado();
-                unEmpleado.setIdEmpleado(rs.getInt("idEmpleado"));
-                unEmpleado.setNombre(rs.getString("nombre"));
-                unEmpleado.setApellido(rs.getString("apellido"));
-                unEmpleado.setDocumento(rs.getInt("documento"));
-                unEmpleado.setCargo(rs.getString("cargo"));
-                unEmpleado.setSalario(rs.getDouble("salario"));
-                unEmpleado.setFechaContratacion(rs.getDate("fechaContratacion"));
-                unEmpleado.setTelefono(rs.getString("telefono"));
-                unEmpleado.setCorreo(rs.getString("correo"));
-                unEmpleado.setDireccion(rs.getString("direccion"));
-                unEmpleado.setIdUsuario(rs.getInt("idUsuario"));
-
-                losEmpleados.add(unEmpleado);
+            PreparedStatement sql = ConexionBD.conexion.prepareStatement("SELECT * FROM empleado");
+            try (ResultSet rs = sql.executeQuery()) {
+                while (rs.next()) {
+                    empleado e = new empleado();
+                    e.setIdEmpleado(rs.getInt("idempleado"));
+                    e.setNombre(rs.getString("nombre"));
+                    e.setApellido(rs.getString("apellido"));
+                    e.setDocumento(rs.getInt("documento"));
+                    e.setCargo(rs.getString("cargo"));
+                    e.setSalario(rs.getDouble("salario"));
+                    e.setFechaContratacion(rs.getDate("fechacontratacion"));
+                    e.setTelefono(rs.getString("telefono"));
+                    e.setCorreo(rs.getString("correo"));
+                    e.setDireccion(rs.getString("direccion"));
+                    e.setIdUsuario(rs.getInt("idusuario"));
+                    empleados.add(e);
+                }
             }
-
         } catch (SQLException ex) {
             System.err.println("Error al listar: " + ex.getMessage());
         }
-
-        if (losEmpleados.isEmpty()) {
-            empleado miEmpleado = new empleado();
-            miEmpleado.setNombre("No hay nada registrado");
-            losEmpleados.add(miEmpleado);
+        if (empleados.isEmpty()) {
+            empleado e = new empleado();
+            e.setNombre("No hay nada registrado");
+            empleados.add(e);
         }
-
-        return losEmpleados.iterator();
+        return empleados.iterator();
     }
 
     public void insertar() {
         try {
             PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "INSERT INTO Empleado VALUES(NULL,?,?,?,?,?,?,?,?,?,?)");
-
-            sql.setString(1, this.getNombre());
-            sql.setString(2, this.getApellido());
-            sql.setInt(3, this.getDocumento());
-            sql.setString(4, this.getCargo());
-            sql.setDouble(5, this.getSalario());
-            sql.setDate(6, new java.sql.Date(this.getFechaContratacion().getTime()));
-            sql.setString(7, this.getTelefono());
-            sql.setString(8, this.getCorreo());
-            sql.setString(9, this.getDireccion());
-            sql.setInt(10, this.getIdUsuario());
-
+                    "INSERT INTO empleado (nombre, apellido, documento, cargo, salario, fechacontratacion, telefono, correo, direccion, idusuario) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            sql.setString(1, getNombre());
+            sql.setString(2, getApellido());
+            sql.setInt(3, getDocumento());
+            sql.setString(4, getCargo());
+            sql.setDouble(5, getSalario());
+            sql.setDate(6, new java.sql.Date(getFechaContratacion().getTime()));
+            sql.setString(7, getTelefono());
+            sql.setString(8, getCorreo());
+            sql.setString(9, getDireccion());
+            sql.setInt(10, getIdUsuario());
             sql.executeUpdate();
-
-            System.out.println("Insertado correctamente");
-
         } catch (SQLException ex) {
             System.err.println("Error al insertar: " + ex.getMessage());
         }
@@ -212,27 +98,19 @@ public class empleado {
     public void modificar() {
         try {
             PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "UPDATE Empleado "
-                    + "SET nombre=?, apellido=?, documento=?, cargo=?, salario=?, "
-                    + "fechaContratacion=?, telefono=?, correo=?, direccion=?, idUsuario=? "
-                    + "WHERE idEmpleado=?");
-
-            sql.setString(1, this.getNombre());
-            sql.setString(2, this.getApellido());
-            sql.setInt(3, this.getDocumento());
-            sql.setString(4, this.getCargo());
-            sql.setDouble(5, this.getSalario());
-            sql.setDate(6, new java.sql.Date(this.getFechaContratacion().getTime()));
-            sql.setString(7, this.getTelefono());
-            sql.setString(8, this.getCorreo());
-            sql.setString(9, this.getDireccion());
-            sql.setInt(10, this.getIdUsuario());
-            sql.setInt(11, this.getIdEmpleado());
-
+                    "UPDATE empleado SET nombre=?, apellido=?, documento=?, cargo=?, salario=?, fechacontratacion=?, telefono=?, correo=?, direccion=?, idusuario=? WHERE idempleado=?");
+            sql.setString(1, getNombre());
+            sql.setString(2, getApellido());
+            sql.setInt(3, getDocumento());
+            sql.setString(4, getCargo());
+            sql.setDouble(5, getSalario());
+            sql.setDate(6, new java.sql.Date(getFechaContratacion().getTime()));
+            sql.setString(7, getTelefono());
+            sql.setString(8, getCorreo());
+            sql.setString(9, getDireccion());
+            sql.setInt(10, getIdUsuario());
+            sql.setInt(11, getIdEmpleado());
             sql.executeUpdate();
-
-            System.out.println("Modificado correctamente");
-
         } catch (SQLException ex) {
             System.err.println("Error al modificar: " + ex.getMessage());
         }
@@ -240,116 +118,71 @@ public class empleado {
 
     public void eliminar() {
         try {
-            PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "DELETE FROM Empleado WHERE idEmpleado=?");
-
-            sql.setInt(1, this.getIdEmpleado());
-
+            PreparedStatement sql = ConexionBD.conexion.prepareStatement("DELETE FROM empleado WHERE idempleado=?");
+            sql.setInt(1, getIdEmpleado());
             sql.executeUpdate();
-
-            System.out.println("Eliminado correctamente");
-
         } catch (SQLException ex) {
             System.err.println("Error al eliminar: " + ex.getMessage());
         }
     }
 
     public Iterator<empleado> buscar(String busqueda) {
-        ArrayList<empleado> losEmpleados = new ArrayList<>();
-
+        ArrayList<empleado> empleados = new ArrayList<>();
         try {
-            System.out.println("Buscando: " + busqueda);
-
             PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "SELECT * FROM Empleado "
-                    + "WHERE idEmpleado LIKE ? "
-                    + "OR nombre LIKE ? "
-                    + "OR apellido LIKE ? "
-                    + "OR documento LIKE ? "
-                    + "OR cargo LIKE ? "
-                    + "OR salario LIKE ? "
-                    + "OR fechaContratacion LIKE ? "
-                    + "OR telefono LIKE ? "
-                    + "OR correo LIKE ? "
-                    + "OR direccion LIKE ? "
-                    + "OR idUsuario LIKE ?");
-
-            sql.setString(1, "%" + busqueda + "%");
-            sql.setString(2, "%" + busqueda + "%");
-            sql.setString(3, "%" + busqueda + "%");
-            sql.setString(4, "%" + busqueda + "%");
-            sql.setString(5, "%" + busqueda + "%");
-            sql.setString(6, "%" + busqueda + "%");
-            sql.setString(7, "%" + busqueda + "%");
-            sql.setString(8, "%" + busqueda + "%");
-            sql.setString(9, "%" + busqueda + "%");
-            sql.setString(10, "%" + busqueda + "%");
-            sql.setString(11, "%" + busqueda + "%");
-
-            ResultSet rs = sql.executeQuery();
-
-            int contador = 0;
-
-            while (rs.next()) {
-                contador++;
-
-                empleado unEmpleado = new empleado();
-                unEmpleado.setIdEmpleado(rs.getInt("idEmpleado"));
-                unEmpleado.setNombre(rs.getString("nombre"));
-                unEmpleado.setApellido(rs.getString("apellido"));
-                unEmpleado.setDocumento(rs.getInt("documento"));
-                unEmpleado.setCargo(rs.getString("cargo"));
-                unEmpleado.setSalario(rs.getDouble("salario"));
-                unEmpleado.setFechaContratacion(rs.getDate("fechaContratacion"));
-                unEmpleado.setTelefono(rs.getString("telefono"));
-                unEmpleado.setCorreo(rs.getString("correo"));
-                unEmpleado.setDireccion(rs.getString("direccion"));
-                unEmpleado.setIdUsuario(rs.getInt("idUsuario"));
-
-                losEmpleados.add(unEmpleado);
-
-                System.out.println("Encontrado: " + unEmpleado.getIdEmpleado());
+                    "SELECT * FROM empleado WHERE CAST(idempleado AS TEXT) LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR CAST(documento AS TEXT) LIKE ? OR cargo LIKE ? OR CAST(salario AS TEXT) LIKE ? OR CAST(fechacontratacion AS TEXT) LIKE ? OR telefono LIKE ? OR correo LIKE ? OR direccion LIKE ? OR CAST(idusuario AS TEXT) LIKE ?");
+            String like = "%" + busqueda + "%";
+            for (int i = 1; i <= 11; i++) {
+                sql.setString(i, like);
             }
 
-            System.out.println("Total encontrados: " + contador);
-
+            try (ResultSet rs = sql.executeQuery()) {
+                while (rs.next()) {
+                    empleado e = new empleado();
+                    e.setIdEmpleado(rs.getInt("idempleado"));
+                    e.setNombre(rs.getString("nombre"));
+                    e.setApellido(rs.getString("apellido"));
+                    e.setDocumento(rs.getInt("documento"));
+                    e.setCargo(rs.getString("cargo"));
+                    e.setSalario(rs.getDouble("salario"));
+                    e.setFechaContratacion(rs.getDate("fechacontratacion"));
+                    e.setTelefono(rs.getString("telefono"));
+                    e.setCorreo(rs.getString("correo"));
+                    e.setDireccion(rs.getString("direccion"));
+                    e.setIdUsuario(rs.getInt("idusuario"));
+                    empleados.add(e);
+                }
+            }
         } catch (SQLException ex) {
             System.err.println("Error al buscar: " + ex.getMessage());
         }
-
-        return losEmpleados.iterator();
+        return empleados.iterator();
     }
 
     public empleado buscarPorId(int elId) {
-        empleado unEmpleado = new empleado();
-        unEmpleado.setNombre("EMPLEADO no existe");
-
+        empleado e = new empleado();
+        e.setNombre("EMPLEADO no existe");
         try {
-            PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "SELECT * FROM Empleado WHERE idEmpleado=?");
-
+            PreparedStatement sql = ConexionBD.conexion.prepareStatement("SELECT * FROM empleado WHERE idempleado=?");
             sql.setInt(1, elId);
-
-            ResultSet rs = sql.executeQuery();
-
-            while (rs.next()) {
-                unEmpleado.setIdEmpleado(rs.getInt("idEmpleado"));
-                unEmpleado.setNombre(rs.getString("nombre"));
-                unEmpleado.setApellido(rs.getString("apellido"));
-                unEmpleado.setDocumento(rs.getInt("documento"));
-                unEmpleado.setCargo(rs.getString("cargo"));
-                unEmpleado.setSalario(rs.getDouble("salario"));
-                unEmpleado.setFechaContratacion(rs.getDate("fechaContratacion"));
-                unEmpleado.setTelefono(rs.getString("telefono"));
-                unEmpleado.setCorreo(rs.getString("correo"));
-                unEmpleado.setDireccion(rs.getString("direccion"));
-                unEmpleado.setIdUsuario(rs.getInt("idUsuario"));
+            try (ResultSet rs = sql.executeQuery()) {
+                while (rs.next()) {
+                    e.setIdEmpleado(rs.getInt("idempleado"));
+                    e.setNombre(rs.getString("nombre"));
+                    e.setApellido(rs.getString("apellido"));
+                    e.setDocumento(rs.getInt("documento"));
+                    e.setCargo(rs.getString("cargo"));
+                    e.setSalario(rs.getDouble("salario"));
+                    e.setFechaContratacion(rs.getDate("fechacontratacion"));
+                    e.setTelefono(rs.getString("telefono"));
+                    e.setCorreo(rs.getString("correo"));
+                    e.setDireccion(rs.getString("direccion"));
+                    e.setIdUsuario(rs.getInt("idusuario"));
+                }
             }
-
         } catch (SQLException ex) {
             System.err.println("Error al buscar por ID: " + ex.getMessage());
         }
-
-        return unEmpleado;
+        return e;
     }
 }

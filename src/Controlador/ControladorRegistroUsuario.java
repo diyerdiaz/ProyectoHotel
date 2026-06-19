@@ -1,38 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
-import modelo.Login;
+import java.util.Iterator;
+import javax.swing.JOptionPane;
 import modelo.Cliente;
 import modelo.ConexionBD;
-import vista.MDIRegistroUsuario;
+import modelo.Login;
 import vista.MDILogin;
+<<<<<<< Updated upstream
 import util.Encriptador;
 import java.util.Iterator;
+=======
+import vista.MDIRegistroUsuario;
+>>>>>>> Stashed changes
 
-/**
- *
- * @author alejo
- */
 public class ControladorRegistroUsuario {
-    
-    private MDIRegistroUsuario vistaRegistro;
-    private Login modeloLogin;
-    private Cliente modeloCliente;
-    private MDILogin vistaLogin;
-    
+
+    private final MDIRegistroUsuario vistaRegistro;
+    private final Login modeloLogin;
+    private final Cliente modeloCliente;
+    private final MDILogin vistaLogin;
+
     public ControladorRegistroUsuario(MDIRegistroUsuario vistaRegistro, MDILogin vistaLogin) {
         this.vistaRegistro = vistaRegistro;
         this.vistaLogin = vistaLogin;
         this.modeloLogin = new Login();
         this.modeloCliente = new Cliente();
-        
-        // Inicializar la conexión a la base de datos
+
         ConexionBD.getInstance();
-        
-        // Configurar listeners
         this.vistaRegistro.getBtnSiguiente().addActionListener(e -> registrarUsuario());
         this.vistaRegistro.getLblIniciarSesion().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -41,8 +35,9 @@ public class ControladorRegistroUsuario {
             }
         });
     }
-    
+
     public void registrarUsuario() {
+<<<<<<< Updated upstream
         String cedula = vistaRegistro.getTxtCedula().getText();
         String nombre = vistaRegistro.getTxtNombre().getText();
         String apellido = vistaRegistro.getTxtApellido().getText();
@@ -58,20 +53,37 @@ public class ControladorRegistroUsuario {
                 "Por favor complete todos los campos", 
                 "Campos vacíos", 
                 javax.swing.JOptionPane.WARNING_MESSAGE);
+=======
+        String cedula = vistaRegistro.getTxtCedula().getText().trim();
+        String nombre = vistaRegistro.getTxtNombre().getText().trim();
+        String apellido = vistaRegistro.getTxtApellido().getText().trim();
+        String correo = vistaRegistro.getTxtCorreo().getText().trim();
+        String telefono = vistaRegistro.getTxtTelefono().getText().trim();
+        String usuario = vistaRegistro.getTxtUsuario().getText().trim();
+        String contrasena = vistaRegistro.getTxtContrasena().getText();
+
+        if (cedula.isEmpty() || nombre.isEmpty() || apellido.isEmpty()
+                || correo.isEmpty() || telefono.isEmpty() || usuario.isEmpty() || contrasena.isEmpty()) {
+            JOptionPane.showMessageDialog(vistaRegistro,
+                    "Por favor complete todos los campos",
+                    "Campos vacios",
+                    JOptionPane.WARNING_MESSAGE);
+>>>>>>> Stashed changes
             return;
         }
-        
-        // Validar que el usuario no exista
+
         Iterator<Login> usuarios = modeloLogin.buscar(usuario);
-        boolean usuarioExiste = false;
-        
         while (usuarios.hasNext()) {
             Login u = usuarios.next();
-            if (u.getNombreUsuario().equals(usuario)) {
-                usuarioExiste = true;
-                break;
+            if (usuario.equals(u.getNombreUsuario())) {
+                JOptionPane.showMessageDialog(vistaRegistro,
+                        "El nombre de usuario ya existe",
+                        "Usuario duplicado",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
         }
+<<<<<<< Updated upstream
         
         if (usuarioExiste) {
             javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
@@ -97,57 +109,63 @@ public class ControladorRegistroUsuario {
             return;
         }
         
+=======
+
+>>>>>>> Stashed changes
         try {
-            // Insertar usuario en la tabla Usuarios
+            long cedulaNumero = Long.parseLong(cedula);
+            long telefonoNumero = Long.parseLong(telefono);
+
             Login nuevoUsuario = new Login();
             nuevoUsuario.setNombreUsuario(usuario);
+<<<<<<< Updated upstream
             nuevoUsuario.setContraseñaUsuario(Encriptador.hashSHA256(contraseña));
             nuevoUsuario.setRolUsuario("cliente"); // Rol por defecto
+=======
+            nuevoUsuario.setContrasenaUsuario(contrasena);
+            nuevoUsuario.setRolUsuario("cliente");
+>>>>>>> Stashed changes
             nuevoUsuario.insertar();
-            
-            // Obtener el ID del usuario recién insertado
+
             Iterator<Login> usuariosInsertados = modeloLogin.buscar(usuario);
             int idUsuario = 0;
             while (usuariosInsertados.hasNext()) {
                 Login u = usuariosInsertados.next();
-                if (u.getNombreUsuario().equals(usuario)) {
+                if (usuario.equals(u.getNombreUsuario())) {
                     idUsuario = u.getIdUsuario();
                     break;
                 }
             }
-            
-            // Insertar cliente en la tabla Cliente
+
             Cliente nuevoCliente = new Cliente();
             nuevoCliente.setNombre(nombre);
             nuevoCliente.setApellido(apellido);
-            nuevoCliente.setDocumento(Integer.parseInt(cedula));
+            nuevoCliente.setDocumento(cedulaNumero);
             nuevoCliente.setCorreo(correo);
-            nuevoCliente.setTelefono(Integer.parseInt(telefono));
-            nuevoCliente.setDireccion("No especificada"); // Campo opcional
+            nuevoCliente.setTelefono(telefonoNumero);
+            nuevoCliente.setDireccion("No especificada");
             nuevoCliente.setIdUsuario(idUsuario);
             nuevoCliente.insertar();
-            
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "¡Registro exitoso! Ahora puede iniciar sesión", 
-                "Registro completado", 
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            
-            // Volver al login
+
+            JOptionPane.showMessageDialog(vistaRegistro,
+                    "Registro exitoso. Ahora puede iniciar sesion",
+                    "Registro completado",
+                    JOptionPane.INFORMATION_MESSAGE);
+
             volverAlLogin();
-            
         } catch (NumberFormatException ex) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "La cédula y teléfono deben ser números", 
-                "Error de formato", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(vistaRegistro,
+                    "La cedula y el telefono deben ser numeros enteros sin signos ni espacios",
+                    "Error de formato",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "Error al registrar: " + ex.getMessage(), 
-                "Error de registro", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(vistaRegistro,
+                    "Error al registrar: " + ex.getMessage(),
+                    "Error de registro",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     public void volverAlLogin() {
         vistaRegistro.dispose();
         vistaLogin.setVisible(true);
