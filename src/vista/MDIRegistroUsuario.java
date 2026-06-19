@@ -15,6 +15,52 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
      */
     public MDIRegistroUsuario() {
         initComponents();
+
+        ((javax.swing.text.AbstractDocument) txtCedula.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                StringBuilder sb = new StringBuilder();
+                for (char c : text.toCharArray()) {
+                    if (Character.isDigit(c)) sb.append(c);
+                }
+                if (fb.getDocument().getLength() + sb.length() <= 10) {
+                    super.insertString(fb, offset, sb.toString(), attr);
+                }
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                StringBuilder sb = new StringBuilder();
+                for (char c : text.toCharArray()) {
+                    if (Character.isDigit(c)) sb.append(c);
+                }
+                if (fb.getDocument().getLength() - length + sb.length() <= 10) {
+                    super.replace(fb, offset, length, sb.toString(), attr);
+                }
+            }
+        });
+
+        ((javax.swing.text.AbstractDocument) txtTelefono.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                StringBuilder sb = new StringBuilder();
+                for (char c : text.toCharArray()) {
+                    if (Character.isDigit(c)) sb.append(c);
+                }
+                if (fb.getDocument().getLength() + sb.length() <= 10) {
+                    super.insertString(fb, offset, sb.toString(), attr);
+                }
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                StringBuilder sb = new StringBuilder();
+                for (char c : text.toCharArray()) {
+                    if (Character.isDigit(c)) sb.append(c);
+                }
+                if (fb.getDocument().getLength() - length + sb.length() <= 10) {
+                    super.replace(fb, offset, length, sb.toString(), attr);
+                }
+            }
+        });
     }
 
     /**
@@ -40,7 +86,7 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtContraseña = new javax.swing.JTextField();
+        txtContraseña = new javax.swing.JPasswordField();
         btnSiguiente = new javax.swing.JButton();
         lblIniciarSesion = new javax.swing.JLabel();
 
@@ -165,7 +211,7 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblIniciarSesion;
     private javax.swing.JTextField txtApellido;
-    private javax.swing.JTextField txtContraseña;
+    private javax.swing.JPasswordField txtContraseña;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtNombre;
@@ -198,7 +244,7 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
         return txtUsuario;
     }
 
-    public javax.swing.JTextField getTxtContraseña() {
+    public javax.swing.JPasswordField getTxtContraseña() {
         return txtContraseña;
     }
 

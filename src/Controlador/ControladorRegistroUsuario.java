@@ -9,6 +9,7 @@ import modelo.Cliente;
 import modelo.ConexionBD;
 import vista.MDIRegistroUsuario;
 import vista.MDILogin;
+import util.Encriptador;
 import java.util.Iterator;
 
 /**
@@ -48,7 +49,7 @@ public class ControladorRegistroUsuario {
         String correo = vistaRegistro.getTxtCorreo().getText();
         String telefono = vistaRegistro.getTxtTelefono().getText();
         String usuario = vistaRegistro.getTxtUsuario().getText();
-        String contraseña = vistaRegistro.getTxtContraseña().getText();
+        String contraseña = new String(vistaRegistro.getTxtContraseña().getPassword());
         
         // Validar campos
         if (cedula.isEmpty() || nombre.isEmpty() || apellido.isEmpty() || 
@@ -80,11 +81,27 @@ public class ControladorRegistroUsuario {
             return;
         }
         
+        if (cedula.length() > 10) {
+            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
+                "La cédula no puede tener más de 10 dígitos", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (telefono.length() > 10) {
+            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
+                "El teléfono no puede tener más de 10 dígitos", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         try {
             // Insertar usuario en la tabla Usuarios
             Login nuevoUsuario = new Login();
             nuevoUsuario.setNombreUsuario(usuario);
-            nuevoUsuario.setContraseñaUsuario(contraseña);
+            nuevoUsuario.setContraseñaUsuario(Encriptador.hashSHA256(contraseña));
             nuevoUsuario.setRolUsuario("cliente"); // Rol por defecto
             nuevoUsuario.insertar();
             

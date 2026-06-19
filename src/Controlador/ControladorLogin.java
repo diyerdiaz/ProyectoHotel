@@ -7,6 +7,7 @@ package Controlador;
 import modelo.Login;
 import modelo.ConexionBD;
 import vista.MDILogin;
+import util.Encriptador;
 import java.util.Iterator;
 
 /**
@@ -34,8 +35,9 @@ public class ControladorLogin {
     }
     
     public void iniciarSesion() {
-        String usuario = vistaLogin.getJTextField1().getText();
-        String contraseña = vistaLogin.getJTextField2().getText();
+        String usuario = vistaLogin.getTxtUsuario().getText();
+        String contraseña = new String(vistaLogin.getTxtContraseña().getPassword());
+        String contraseñaHash = Encriptador.hashSHA256(contraseña);
         
         if (usuario.isEmpty() || contraseña.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(vistaLogin, 
@@ -53,7 +55,7 @@ public class ControladorLogin {
         while (usuarios.hasNext()) {
             Login u = usuarios.next();
             if (u.getNombreUsuario().equals(usuario) && 
-                u.getContraseñaUsuario().equals(contraseña)) {
+                u.getContraseñaUsuario().equals(contraseñaHash)) {
                 encontrado = true;
                 usuarioValido = u;
                 break;
@@ -67,8 +69,8 @@ public class ControladorLogin {
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
             
             // Guardar credenciales si el checkbox está seleccionado
-            if (vistaLogin.getJCheckBox1().isSelected()) {
-                guardarCredenciales(usuario, contraseña);
+            if (vistaLogin.getChkRecordarme().isSelected()) {
+                guardarCredenciales(usuario);
             } else {
                 eliminarCredencialesGuardadas();
             }
@@ -82,15 +84,14 @@ public class ControladorLogin {
                 javax.swing.JOptionPane.ERROR_MESSAGE);
             
             // Limpiar campos en caso de error
-            vistaLogin.getJTextField2().setText("");
+            vistaLogin.getTxtContraseña().setText("");
         }
     }
     
-    private void guardarCredenciales(String usuario, String contraseña) {
+    private void guardarCredenciales(String usuario) {
         try {
             java.util.Properties props = new java.util.Properties();
             props.setProperty("usuario", usuario);
-            props.setProperty("contraseña", contraseña);
             
             java.io.FileOutputStream fos = new java.io.FileOutputStream("credenciales.properties");
             props.store(fos, "Credenciales guardadas");
@@ -110,12 +111,10 @@ public class ControladorLogin {
             fis.close();
             
             String usuario = props.getProperty("usuario");
-            String contraseña = props.getProperty("contraseña");
             
-            if (usuario != null && contraseña != null) {
-                vistaLogin.getJTextField1().setText(usuario);
-                vistaLogin.getJTextField2().setText(contraseña);
-                vistaLogin.getJCheckBox1().setSelected(true);
+            if (usuario != null) {
+                vistaLogin.getTxtUsuario().setText(usuario);
+                vistaLogin.getChkRecordarme().setSelected(true);
             }
         } catch (java.io.IOException ex) {
             // No hay credenciales guardadas, no hacer nada
