@@ -15,6 +15,7 @@ public class MDILogin extends javax.swing.JFrame {
      */
     public MDILogin() {
         initComponents();
+        getRootPane().setDefaultButton(jButton1);
     }
 
     /**
@@ -137,7 +138,15 @@ public class MDILogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
-        System.exit(0);
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Desea salir de la aplicación?",
+                "Confirmar salida",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
+        if (opcion == javax.swing.JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_itemExitActionPerformed
 
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed

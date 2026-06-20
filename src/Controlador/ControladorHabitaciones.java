@@ -66,7 +66,7 @@ public class ControladorHabitaciones {
         Iterator<Habitaciones> habitaciones = listarHabitaciones();
         while (habitaciones.hasNext()) {
             Habitaciones h = habitaciones.next();
-            if (!h.getTipoHabitacion().equals("No hay nada registrado")) {
+            if (h.getTipoHabitacion() != null && !h.getTipoHabitacion().equals("No hay nada registrado")) {
                 model.addRow(new Object[]{
                     h.getIdHabitacion(),
                     h.getNumeroHabitacion(),

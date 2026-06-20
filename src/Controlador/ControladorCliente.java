@@ -24,8 +24,8 @@ public class ControladorCliente {
         return modeloCliente.Listar();
     }
     
-    public void insertarCliente(String nombre, String apellido, int documento, 
-                                  String correo, int telefono, String direccion, int idUsuario) {
+    public void insertarCliente(String nombre, String apellido, long documento,
+                                  String correo, long telefono, String direccion, int idUsuario) {
         Cliente cliente = new Cliente();
         cliente.setNombre(nombre);
         cliente.setApellido(apellido);
@@ -37,8 +37,8 @@ public class ControladorCliente {
         cliente.insertar();
     }
     
-    public void modificarCliente(int idCliente, String nombre, String apellido, int documento, 
-                                  String correo, int telefono, String direccion, int idUsuario) {
+    public void modificarCliente(int idCliente, String nombre, String apellido, long documento,
+                                  String correo, long telefono, String direccion, int idUsuario) {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(idCliente);
         cliente.setNombre(nombre);
@@ -72,7 +72,7 @@ public class ControladorCliente {
         Iterator<Cliente> clientes = listarClientes();
         while (clientes.hasNext()) {
             Cliente c = clientes.next();
-            if (!c.getNombre().equals("No hay nada registrado")) {
+            if (c.getNombre() != null && !c.getNombre().equals("No hay nada registrado")) {
                 model.addRow(new Object[]{
                     c.getIdCliente(),
                     c.getNombre(),

@@ -81,7 +81,7 @@ public class ControladorEmpleado {
         Iterator<empleado> empleados = listarEmpleados();
         while (empleados.hasNext()) {
             empleado e = empleados.next();
-            if (!e.getNombre().equals("No hay nada registrado")) {
+            if (e.getNombre() != null && !e.getNombre().equals("No hay nada registrado")) {
                 model.addRow(new Object[]{
                     e.getIdEmpleado(),
                     e.getNombre(),

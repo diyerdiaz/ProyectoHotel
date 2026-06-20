@@ -31,6 +31,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
 
         setSize(980, 560);
         setLocation(20, 20);
+        setVisible(false);
 
         model = new DefaultTableModel(columns, 0) {
             @Override
@@ -90,6 +91,9 @@ public class ModuleListInternalFrame extends JInternalFrame {
         model.setRowCount(0);
         loader.accept(table);
         applyFilter();
+        if (table.getRowCount() > 0 && table.getSelectionModel().isSelectionEmpty()) {
+            table.setRowSelectionInterval(0, 0);
+        }
     }
 
     private void applyFilter() {

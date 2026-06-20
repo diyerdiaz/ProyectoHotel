@@ -5,13 +5,9 @@ import javax.swing.JOptionPane;
 import modelo.Cliente;
 import modelo.ConexionBD;
 import modelo.Login;
-import vista.MDILogin;
-<<<<<<< Updated upstream
 import util.Encriptador;
-import java.util.Iterator;
-=======
 import vista.MDIRegistroUsuario;
->>>>>>> Stashed changes
+import vista.MDILogin;
 
 public class ControladorRegistroUsuario {
 
@@ -37,23 +33,6 @@ public class ControladorRegistroUsuario {
     }
 
     public void registrarUsuario() {
-<<<<<<< Updated upstream
-        String cedula = vistaRegistro.getTxtCedula().getText();
-        String nombre = vistaRegistro.getTxtNombre().getText();
-        String apellido = vistaRegistro.getTxtApellido().getText();
-        String correo = vistaRegistro.getTxtCorreo().getText();
-        String telefono = vistaRegistro.getTxtTelefono().getText();
-        String usuario = vistaRegistro.getTxtUsuario().getText();
-        String contraseña = new String(vistaRegistro.getTxtContraseña().getPassword());
-        
-        // Validar campos
-        if (cedula.isEmpty() || nombre.isEmpty() || apellido.isEmpty() || 
-            correo.isEmpty() || telefono.isEmpty() || usuario.isEmpty() || contraseña.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "Por favor complete todos los campos", 
-                "Campos vacíos", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-=======
         String cedula = vistaRegistro.getTxtCedula().getText().trim();
         String nombre = vistaRegistro.getTxtNombre().getText().trim();
         String apellido = vistaRegistro.getTxtApellido().getText().trim();
@@ -68,7 +47,6 @@ public class ControladorRegistroUsuario {
                     "Por favor complete todos los campos",
                     "Campos vacios",
                     JOptionPane.WARNING_MESSAGE);
->>>>>>> Stashed changes
             return;
         }
 
@@ -83,48 +61,15 @@ public class ControladorRegistroUsuario {
                 return;
             }
         }
-<<<<<<< Updated upstream
-        
-        if (usuarioExiste) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "El nombre de usuario ya existe", 
-                "Usuario duplicado", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (cedula.length() > 10) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "La cédula no puede tener más de 10 dígitos", 
-                "Error", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (telefono.length() > 10) {
-            javax.swing.JOptionPane.showMessageDialog(vistaRegistro, 
-                "El teléfono no puede tener más de 10 dígitos", 
-                "Error", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-=======
 
->>>>>>> Stashed changes
         try {
             long cedulaNumero = Long.parseLong(cedula);
             long telefonoNumero = Long.parseLong(telefono);
 
             Login nuevoUsuario = new Login();
             nuevoUsuario.setNombreUsuario(usuario);
-<<<<<<< Updated upstream
-            nuevoUsuario.setContraseñaUsuario(Encriptador.hashSHA256(contraseña));
-            nuevoUsuario.setRolUsuario("cliente"); // Rol por defecto
-=======
-            nuevoUsuario.setContrasenaUsuario(contrasena);
+            nuevoUsuario.setContrasenaUsuario(Encriptador.hashSHA256(contrasena));
             nuevoUsuario.setRolUsuario("cliente");
->>>>>>> Stashed changes
             nuevoUsuario.insertar();
 
             Iterator<Login> usuariosInsertados = modeloLogin.buscar(usuario);

@@ -69,7 +69,7 @@ public class ControladorFacturas {
         Iterator<facturas> facturas = listarFacturas();
         while (facturas.hasNext()) {
             facturas f = facturas.next();
-            if (!f.getEstadoFactura().equals("No hay nada registrado")) {
+            if (f.getEstadoFactura() != null && !f.getEstadoFactura().equals("No hay nada registrado")) {
                 model.addRow(new Object[]{
                     f.getIdFactura(),
                     f.getIdReserva(),
