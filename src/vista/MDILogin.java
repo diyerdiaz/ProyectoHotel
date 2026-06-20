@@ -28,32 +28,21 @@ public class MDILogin extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        lbTexto2 = new javax.swing.JLabel();
+        lbHotelGales = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        lbBienvenido = new javax.swing.JLabel();
+        lbTexto1 = new javax.swing.JLabel();
+        lbUsuario = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
+        lbContraseña = new javax.swing.JLabel();
+        txtContraseña = new javax.swing.JPasswordField();
+        chkRecordarme = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
-        exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        contentMenuItem = new javax.swing.JMenuItem();
-        aboutMenuItem = new javax.swing.JMenuItem();
+        itemExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,18 +50,18 @@ public class MDILogin extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Su escape de lujo comienza aqui");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, 250, 30));
+        lbTexto2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        lbTexto2.setForeground(new java.awt.Color(255, 255, 255));
+        lbTexto2.setText("Su escape de lujo comienza aqui");
+        jPanel1.add(lbTexto2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, 250, 30));
 
-        jLabel6.setBackground(new java.awt.Color(51, 51, 51));
-        jLabel6.setFont(new java.awt.Font("Swis721 Blk BT", 1, 36)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("  Hotel Gales");
-        jLabel6.setFocusable(false);
-        jLabel6.setOpaque(true);
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 280, 70));
+        lbHotelGales.setBackground(new java.awt.Color(51, 51, 51));
+        lbHotelGales.setFont(new java.awt.Font("Swis721 Blk BT", 1, 36)); // NOI18N
+        lbHotelGales.setForeground(new java.awt.Color(255, 255, 255));
+        lbHotelGales.setText("  Hotel Gales");
+        lbHotelGales.setFocusable(false);
+        lbHotelGales.setOpaque(true);
+        jPanel1.add(lbHotelGales, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 280, 70));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/imagen login 4 .png"))); // NOI18N
         jLabel1.setText("jLabel1");
@@ -83,30 +72,30 @@ public class MDILogin extends javax.swing.JFrame {
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI Semibold", 1, 32)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 102, 153));
-        jLabel2.setText("    BIENVENIDO");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 247, 73));
+        lbBienvenido.setFont(new java.awt.Font("Segoe UI Semibold", 1, 32)); // NOI18N
+        lbBienvenido.setForeground(new java.awt.Color(0, 102, 153));
+        lbBienvenido.setText("    BIENVENIDO");
+        jPanel2.add(lbBienvenido, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 247, 73));
 
-        jLabel3.setFont(new java.awt.Font("Serif", 1, 13)); // NOI18N
-        jLabel3.setText("      Por favor, ingrese sus crendenciales para continuar");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 320, 20));
+        lbTexto1.setFont(new java.awt.Font("Serif", 1, 13)); // NOI18N
+        lbTexto1.setText("      Por favor, ingrese sus crendenciales para continuar");
+        jPanel2.add(lbTexto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 320, 20));
 
-        jLabel4.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
-        jLabel4.setText("USUARIO");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 100, 40));
+        lbUsuario.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
+        lbUsuario.setText("USUARIO");
+        jPanel2.add(lbUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 100, 40));
 
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 300, 50));
+        txtUsuario.addActionListener(this::txtUsuarioActionPerformed);
+        jPanel2.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 300, 50));
 
-        jLabel5.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
-        jLabel5.setText("CONTRASEÑA");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 130, 40));
-        jPanel2.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 300, 50));
+        lbContraseña.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
+        lbContraseña.setText("CONTRASEÑA");
+        jPanel2.add(lbContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 130, 40));
+        jPanel2.add(txtContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 300, 50));
 
-        jCheckBox1.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
-        jCheckBox1.setText("Recordarme");
-        jPanel2.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, -1, -1));
+        chkRecordarme.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        chkRecordarme.setText("Recordarme");
+        jPanel2.add(chkRecordarme, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, -1, -1));
 
         jButton1.setBackground(new java.awt.Color(0, 102, 153));
         jButton1.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
@@ -114,64 +103,22 @@ public class MDILogin extends javax.swing.JFrame {
         jButton1.setText("Iniciar Sesion");
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 290, 50));
 
+        jButton2 = new javax.swing.JButton();
+        jButton2.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+        jButton2.setText("Crear cuenta");
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 290, 30));
+
         desktopPane.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, 330, 500));
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
-
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
-
-        exitMenuItem.setMnemonic('x');
-        exitMenuItem.setText("Exit");
-        exitMenuItem.addActionListener(this::exitMenuItemActionPerformed);
-        fileMenu.add(exitMenuItem);
+        itemExit.setMnemonic('x');
+        itemExit.setText("Exit");
+        itemExit.addActionListener(this::itemExitActionPerformed);
+        fileMenu.add(itemExit);
 
         menuBar.add(fileMenu);
-
-        editMenu.setMnemonic('e');
-        editMenu.setText("Edit");
-
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
-
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Help");
-
-        contentMenuItem.setMnemonic('c');
-        contentMenuItem.setText("Contents");
-        helpMenu.add(contentMenuItem);
-
-        aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
@@ -189,13 +136,13 @@ public class MDILogin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+    private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_exitMenuItemActionPerformed
+    }//GEN-LAST:event_itemExitActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,40 +174,55 @@ public class MDILogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MDILogin().setVisible(true);
+                MDILogin login = new MDILogin();
+                login.setVisible(true);
+                
+                // Inicializar el controlador
+                new Controlador.ControladorLogin(login);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem contentMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenuItem itemExit;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox chkRecordarme;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lbBienvenido;
+    private javax.swing.JLabel lbTexto1;
+    private javax.swing.JLabel lbUsuario;
+    private javax.swing.JLabel lbContraseña;
+    private javax.swing.JLabel lbHotelGales;
+    private javax.swing.JLabel lbTexto2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField txtUsuario;
+    private javax.swing.JPasswordField txtContraseña;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
+
+    // Métodos getters para el controlador
+    public javax.swing.JButton getJButton1() {
+        return jButton1;
+    }
+
+    public javax.swing.JTextField getTxtUsuario() {
+        return txtUsuario;
+    }
+
+    public javax.swing.JPasswordField getTxtContraseña() {
+        return txtContraseña;
+    }
+
+    public javax.swing.JCheckBox getChkRecordarme() {
+        return chkRecordarme;
+    }
+
+    public javax.swing.JButton getJButton2() {
+        return jButton2;
+    }
 
 }
