@@ -9,7 +9,9 @@ import java.util.Iterator;
 
 public class Reserva {
     private int idReserva;
-    private String Habitacion;
+    private int idCliente;
+    private int idHabitacion;
+    private String Habitacion; // Para mantener compatibilidad con vistas si guarda el numero
     private int personas;
     private Date fechaEntrada;
     private Date fechaSalida;
@@ -17,6 +19,10 @@ public class Reserva {
 
     public int getIdReserva() { return idReserva; }
     public void setIdReserva(int idReserva) { this.idReserva = idReserva; }
+    public int getIdCliente() { return idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    public int getIdHabitacion() { return idHabitacion; }
+    public void setIdHabitacion(int idHabitacion) { this.idHabitacion = idHabitacion; }
     public String getHabitacion() { return Habitacion; }
     public void setHabitacion(String Habitacion) { this.Habitacion = Habitacion; }
     public int getPersonas() { return personas; }
@@ -36,6 +42,8 @@ public class Reserva {
                 while (rs.next()) {
                     Reserva r = new Reserva();
                     r.setIdReserva(rs.getInt("idreserva"));
+                    r.setIdCliente(rs.getInt("idcliente"));
+                    r.setIdHabitacion(rs.getInt("idhabitacion"));
                     r.setHabitacion(rs.getString("habitacion"));
                     r.setPersonas(rs.getInt("personas"));
                     r.setFechaEntrada(rs.getDate("fechaentrada"));
@@ -58,13 +66,22 @@ public class Reserva {
     public void insertar() {
         try {
             PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "INSERT INTO reserva (habitacion, personas, fechaentrada, fechasalida, mediopago) VALUES (?,?,?,?,?)");
-            sql.setString(1, getHabitacion());
-            sql.setInt(2, getPersonas());
-            sql.setDate(3, new java.sql.Date(getFechaEntrada().getTime()));
-            sql.setDate(4, new java.sql.Date(getFechaSalida().getTime()));
-            sql.setString(5, getMedioPago());
+                    "INSERT INTO reserva (idcliente, idhabitacion, habitacion, personas, fechaentrada, fechasalida, mediopago) VALUES (?,?,?,?,?,?,?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS);
+            sql.setInt(1, getIdCliente());
+            sql.setInt(2, getIdHabitacion());
+            sql.setString(3, getHabitacion());
+            sql.setInt(4, getPersonas());
+            sql.setDate(5, new java.sql.Date(getFechaEntrada().getTime()));
+            sql.setDate(6, new java.sql.Date(getFechaSalida().getTime()));
+            sql.setString(7, getMedioPago());
             sql.executeUpdate();
+            
+            try (ResultSet generatedKeys = sql.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    setIdReserva(generatedKeys.getInt(1));
+                }
+            }
         } catch (SQLException ex) {
             System.err.println("Error al insertar: " + ex.getMessage());
         }
@@ -73,13 +90,15 @@ public class Reserva {
     public void modificar() {
         try {
             PreparedStatement sql = ConexionBD.conexion.prepareStatement(
-                    "UPDATE reserva SET habitacion=?, personas=?, fechaentrada=?, fechasalida=?, mediopago=? WHERE idreserva=?");
-            sql.setString(1, getHabitacion());
-            sql.setInt(2, getPersonas());
-            sql.setDate(3, new java.sql.Date(getFechaEntrada().getTime()));
-            sql.setDate(4, new java.sql.Date(getFechaSalida().getTime()));
-            sql.setString(5, getMedioPago());
-            sql.setInt(6, getIdReserva());
+                    "UPDATE reserva SET idcliente=?, idhabitacion=?, habitacion=?, personas=?, fechaentrada=?, fechasalida=?, mediopago=? WHERE idreserva=?");
+            sql.setInt(1, getIdCliente());
+            sql.setInt(2, getIdHabitacion());
+            sql.setString(3, getHabitacion());
+            sql.setInt(4, getPersonas());
+            sql.setDate(5, new java.sql.Date(getFechaEntrada().getTime()));
+            sql.setDate(6, new java.sql.Date(getFechaSalida().getTime()));
+            sql.setString(7, getMedioPago());
+            sql.setInt(8, getIdReserva());
             sql.executeUpdate();
         } catch (SQLException ex) {
             System.err.println("Error al modificar: " + ex.getMessage());
@@ -110,6 +129,8 @@ public class Reserva {
                 while (rs.next()) {
                     Reserva r = new Reserva();
                     r.setIdReserva(rs.getInt("idreserva"));
+                    r.setIdCliente(rs.getInt("idcliente"));
+                    r.setIdHabitacion(rs.getInt("idhabitacion"));
                     r.setHabitacion(rs.getString("habitacion"));
                     r.setPersonas(rs.getInt("personas"));
                     r.setFechaEntrada(rs.getDate("fechaentrada"));
@@ -133,6 +154,8 @@ public class Reserva {
             try (ResultSet rs = sql.executeQuery()) {
                 while (rs.next()) {
                     r.setIdReserva(rs.getInt("idreserva"));
+                    r.setIdCliente(rs.getInt("idcliente"));
+                    r.setIdHabitacion(rs.getInt("idhabitacion"));
                     r.setHabitacion(rs.getString("habitacion"));
                     r.setPersonas(rs.getInt("personas"));
                     r.setFechaEntrada(rs.getDate("fechaentrada"));
@@ -144,5 +167,37 @@ public class Reserva {
             System.err.println("Error al buscar por ID: " + ex.getMessage());
         }
         return r;
+    }
+
+    public boolean esHabitacionDisponible(int idHabitacion, Date fechaEntrada, Date fechaSalida, int idReservaExcluir) {
+        boolean disponible = true;
+        try {
+            PreparedStatement sql = ConexionBD.conexion.prepareStatement(
+                    "SELECT COUNT(*) FROM reserva WHERE idhabitacion = ? AND idreserva != ? AND " +
+                    "((fechaentrada <= ? AND fechasalida >= ?) OR (fechaentrada <= ? AND fechasalida >= ?) OR " +
+                    "(fechaentrada >= ? AND fechasalida <= ?))");
+            sql.setInt(1, idHabitacion);
+            sql.setInt(2, idReservaExcluir); // Usar -1 si es nueva
+            
+            java.sql.Date sqlEntrada = new java.sql.Date(fechaEntrada.getTime());
+            java.sql.Date sqlSalida = new java.sql.Date(fechaSalida.getTime());
+            
+            sql.setDate(3, sqlEntrada);
+            sql.setDate(4, sqlEntrada);
+            sql.setDate(5, sqlSalida);
+            sql.setDate(6, sqlSalida);
+            sql.setDate(7, sqlEntrada);
+            sql.setDate(8, sqlSalida);
+            
+            try (ResultSet rs = sql.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    if (count > 0) disponible = false;
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error al verificar disponibilidad: " + ex.getMessage());
+        }
+        return disponible;
     }
 }

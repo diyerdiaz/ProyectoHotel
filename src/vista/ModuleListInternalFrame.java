@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
@@ -24,6 +25,9 @@ public class ModuleListInternalFrame extends JInternalFrame {
     private final TableRowSorter<DefaultTableModel> sorter;
     private final Consumer<JTable> loader;
     private final JTextField searchField;
+    private final JButton createBtn;
+    private final JButton editBtn;
+    private final JButton deleteBtn;
 
     public ModuleListInternalFrame(String title, Object[] columns, Consumer<JTable> loader) {
         super(title, true, true, true, true);
@@ -62,6 +66,18 @@ public class ModuleListInternalFrame extends JInternalFrame {
             applyFilter();
         });
         toolbar.add(clear);
+
+        createBtn = new JButton("Crear");
+        createBtn.setVisible(false);
+        toolbar.add(createBtn);
+
+        editBtn = new JButton("Editar");
+        editBtn.setVisible(false);
+        toolbar.add(editBtn);
+
+        deleteBtn = new JButton("Eliminar");
+        deleteBtn.setVisible(false);
+        toolbar.add(deleteBtn);
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -103,5 +119,40 @@ public class ModuleListInternalFrame extends JInternalFrame {
         } else {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text.trim())));
         }
+    }
+
+    public void setCreateAction(ActionListener l) {
+        createBtn.addActionListener(l);
+        createBtn.setVisible(true);
+    }
+
+    public void setEditAction(ActionListener l) {
+        editBtn.addActionListener(l);
+        editBtn.setVisible(true);
+    }
+
+    public void setDeleteAction(ActionListener l) {
+        deleteBtn.addActionListener(l);
+        deleteBtn.setVisible(true);
+    }
+
+    public int getSelectedId() {
+        int row = table.getSelectedRow();
+        if (row == -1) return -1;
+        int modelRow = table.convertRowIndexToModel(row);
+        Object value = model.getValueAt(modelRow, 0);
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        } else {
+            try {
+                return Integer.parseInt(value.toString());
+            } catch (NumberFormatException ex) {
+                return -1;
+            }
+        }
+    }
+
+    public void triggerReload() {
+        reloadData();
     }
 }

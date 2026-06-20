@@ -138,4 +138,15 @@ public class Habitaciones {
         }
         return h;
     }
+
+    public void cambiarEstado(int idHabitacion, String nuevoEstado) {
+        try {
+            PreparedStatement sql = ConexionBD.conexion.prepareStatement("UPDATE habitaciones SET estadohabitacion=? WHERE idhabitacion=?");
+            sql.setString(1, nuevoEstado);
+            sql.setInt(2, idHabitacion);
+            sql.executeUpdate();
+        } catch (SQLException ex) {
+            System.err.println("Error al cambiar estado de habitación: " + ex.getMessage());
+        }
+    }
 }
