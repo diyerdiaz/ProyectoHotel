@@ -15,6 +15,7 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
      */
     public MDIRegistroUsuario() {
         initComponents();
+        getRootPane().setDefaultButton(btnSiguiente);
 
         ((javax.swing.text.AbstractDocument) txtCedula.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
             @Override

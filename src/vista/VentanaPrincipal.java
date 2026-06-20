@@ -146,7 +146,7 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void showHome() {
-        desktopPane.removeAll();
+        closeActiveFrames();
 
         JPanel home = new JPanel(new BorderLayout(18, 18));
         home.setBackground(new Color(245, 242, 235));
@@ -214,12 +214,32 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void openModule(String key, JInternalFrame frame) {
-        desktopPane.removeAll();
+        JInternalFrame existing = frames.get(key);
+        if (existing != null && existing.isDisplayable()) {
+            try {
+                existing.setIcon(false);
+                existing.setSelected(true);
+                existing.toFront();
+            } catch (Exception ignored) {
+                existing.setVisible(true);
+            }
+            return;
+        }
+
+        closeActiveFrames();
         desktopPane.add(frame);
         frame.setVisible(true);
         frames.put(key, frame);
         desktopPane.revalidate();
         desktopPane.repaint();
+    }
+
+    private void closeActiveFrames() {
+        for (JInternalFrame frame : frames.values()) {
+            frame.dispose();
+        }
+        frames.clear();
+        desktopPane.removeAll();
     }
 
     private void closeSession() {

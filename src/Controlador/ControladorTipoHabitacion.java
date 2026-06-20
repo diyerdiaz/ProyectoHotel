@@ -61,7 +61,7 @@ public class ControladorTipoHabitacion {
         Iterator<TipoHabitacion> tipos = listarTiposHabitacion();
         while (tipos.hasNext()) {
             TipoHabitacion t = tipos.next();
-            if (!t.getNombreTipoHabitacion().equals("No hay nada registrado")) {
+            if (t.getNombreTipoHabitacion() != null && !t.getNombreTipoHabitacion().equals("No hay nada registrado")) {
                 model.addRow(new Object[]{
                     t.getIdtipoHabitacion(),
                     t.getNombreTipoHabitacion(),
