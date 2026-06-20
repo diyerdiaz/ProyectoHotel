@@ -5,8 +5,11 @@
 package Controlador;
 
 import modelo.facturas;
+import modelo.Reserva;
+import modelo.Habitaciones;
 import java.util.Iterator;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -107,5 +110,28 @@ public class ControladorFacturas {
             facturas.ESTADO_ANULADA,
             facturas.ESTADO_PROCESADA
         };
+    }
+    
+    public String generarFacturaDesdeReserva(int idReserva) {
+        ControladorReserva cr = new ControladorReserva();
+        Reserva r = cr.buscarReservaPorId(idReserva);
+        if (r == null || r.getHabitacion().contains("no existe")) {
+            return "Reserva no encontrada.";
+        }
+        
+        ControladorHabitaciones ch = new ControladorHabitaciones();
+        Habitaciones h = ch.buscarHabitacionPorId(r.getIdHabitacion());
+        if (h == null || h.getTipoHabitacion().contains("no existe")) {
+            return "Habitación no encontrada.";
+        }
+        
+        long diffInMillies = Math.abs(r.getFechaSalida().getTime() - r.getFechaEntrada().getTime());
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff == 0) diff = 1; // Mínimo 1 día
+        
+        double total = diff * h.getPrecioHabitacion();
+        
+        insertarFactura(idReserva, new Date(), total, facturas.ESTADO_PENDIENTE, r.getMedioPago());
+        return "Factura generada con éxito por un total de " + total;
     }
 }

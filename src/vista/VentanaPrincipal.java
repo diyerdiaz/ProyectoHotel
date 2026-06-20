@@ -6,29 +6,19 @@ import Controlador.ControladorFacturas;
 import Controlador.ControladorHabitaciones;
 import Controlador.ControladorReserva;
 import Controlador.ControladorTipoHabitacion;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import modelo.ConexionBD;
 import modelo.Login;
 
+/* ----------------------------------------------------------------------
+   VentanaPrincipal – UI premium (sidebar + dashboard)
+   ---------------------------------------------------------------------- */
 public class VentanaPrincipal extends JFrame {
+
     private final Login usuario;
     private final JDesktopPane desktopPane;
     private final JPanel sidebar;
@@ -38,15 +28,16 @@ public class VentanaPrincipal extends JFrame {
         this.usuario = usuario;
         ConexionBD.getInstance();
 
-        setTitle("Hotel Gales | Panel Principal");
+        setTitle("Hotel Gales • Panel de Gestión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1280, 760));
         setLocationRelativeTo(null);
 
+        /* ── Root pane ── */
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(new Color(245, 242, 235));
 
-        sidebar = buildSidebar();
+        sidebar      = buildSidebar();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(232, 226, 214));
 
@@ -57,26 +48,51 @@ public class VentanaPrincipal extends JFrame {
         showHome();
     }
 
+    /* --------------------------------------------------------------
+       Helper: admin ? */
+    private boolean isAdmin() {
+        return !"cliente".equalsIgnoreCase(usuario.getRolUsuario());
+    }
+
+    /* --------------------------------------------------------------
+       Sidebar – logo + botones redondeados */
     private JPanel buildSidebar() {
         JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(280, 760));
+        panel.setPreferredSize(new Dimension(260, 760));
         panel.setBackground(new Color(23, 33, 43));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(24, 18, 24, 18));
 
+        /* Logo */
+        ImageIcon logo = loadIcon("logo.png", 120, 120);
+        if (logo != null) {
+            JLabel logoLbl = new JLabel(logo);
+            logoLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(logoLbl);
+            panel.add(Box.createVerticalStrut(12));
+        }
+
+        /* Hotel name */
         JLabel brand = new JLabel("HOTEL GALES");
-        brand.setAlignmentX(LEFT_ALIGNMENT);
+        brand.setAlignmentX(Component.CENTER_ALIGNMENT);
         brand.setForeground(new Color(212, 175, 55));
         brand.setFont(new Font("SansSerif", Font.BOLD, 28));
+        panel.add(brand);
 
-        JLabel subtitle = new JLabel("Panel de gestion");
-        subtitle.setAlignmentX(LEFT_ALIGNMENT);
+        /* Subtitle (admin / cliente) */
+        JLabel subtitle = new JLabel(isAdmin()
+                ? "Panel de Administración"
+                : "Portal del Cliente");
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitle.setForeground(new Color(215, 220, 230));
         subtitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        panel.add(subtitle);
+        panel.add(Box.createVerticalStrut(24));
 
+        /* User card */
         JPanel userCard = new JPanel(new GridLayout(2, 1));
         userCard.setBackground(new Color(33, 44, 57));
-        userCard.setMaximumSize(new Dimension(9999, 90));
+        userCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
         userCard.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
 
         JLabel userName = new JLabel("Usuario: " + usuario.getNombreUsuario());
@@ -87,64 +103,57 @@ public class VentanaPrincipal extends JFrame {
         userRole.setFont(new Font("SansSerif", Font.PLAIN, 13));
         userCard.add(userName);
         userCard.add(userRole);
-
-        panel.add(brand);
-        panel.add(Box.createVerticalStrut(4));
-        panel.add(subtitle);
-        panel.add(Box.createVerticalStrut(18));
         panel.add(userCard);
-        panel.add(Box.createVerticalStrut(18));
+        panel.add(Box.createVerticalStrut(24));
 
-        panel.add(sideButton("Inicio", e -> showHome()));
-        panel.add(sideButton("Clientes", e -> openModule("clientes", new ModuleListInternalFrame(
-                "Clientes",
-                new Object[]{"ID", "Nombre", "Apellido", "Documento", "Correo", "Telefono", "Direccion", "ID Usuario"},
-                tabla -> new ControladorCliente().cargarTablaClientes(tabla)))));
-        panel.add(sideButton("Habitaciones", e -> openModule("habitaciones", new ModuleListInternalFrame(
-                "Habitaciones",
-                new Object[]{"ID", "Numero", "Tipo", "Precio", "Estado"},
-                tabla -> new ControladorHabitaciones().cargarTablaHabitaciones(tabla)))));
-        panel.add(sideButton("Reservas", e -> openModule("reservas", new ModuleListInternalFrame(
-                "Reservas",
-                new Object[]{"ID", "Habitacion", "Personas", "Entrada", "Salida", "Pago"},
-                tabla -> new ControladorReserva().cargarTablaReservas(tabla)))));
-        panel.add(sideButton("Facturas", e -> openModule("facturas", new ModuleListInternalFrame(
-                "Facturas",
-                new Object[]{"ID", "Reserva", "Fecha", "Total", "Estado", "Metodo"},
-                tabla -> new ControladorFacturas().cargarTablaFacturas(tabla)))));
+        /* Botones – todos usan RoundedButton */
+        panel.add(sideButton("Inicio", e -> showHome(), "home.png"));
+        panel.add(sideButton("Clientes", e -> openClientes(), "clientes.png"));
+        panel.add(sideButton("Habitaciones", e -> openHabitaciones(), "habitaciones.png"));
+        panel.add(sideButton("Reservas", e -> openReservas(), "reservas.png"));
+        panel.add(sideButton("Facturas", e -> openFacturas(), "facturas.png"));
 
-        boolean admin = !"cliente".equalsIgnoreCase(usuario.getRolUsuario());
-        JButton empleados = sideButton("Empleados", e -> openModule("empleados", new ModuleListInternalFrame(
-                "Empleados",
-                new Object[]{"ID", "Nombre", "Apellido", "Documento", "Cargo", "Salario", "Fecha", "Telefono", "Correo", "Direccion", "ID Usuario"},
-                tabla -> new ControladorEmpleado().cargarTablaEmpleados(tabla))));
-        JButton tipos = sideButton("Tipos de Habitacion", e -> openModule("tipos", new ModuleListInternalFrame(
-                "Tipos de Habitacion",
-                new Object[]{"ID", "Nombre", "Descripcion"},
-                tabla -> new ControladorTipoHabitacion().cargarTablaTiposHabitacion(tabla))));
-        empleados.setEnabled(admin);
-        tipos.setEnabled(admin);
-        panel.add(empleados);
-        panel.add(tipos);
-        panel.add(Box.createVerticalStrut(8));
-        panel.add(sideButton("Cerrar sesion", e -> closeSession()));
+        if (isAdmin()) {               // módulos exclusivos admin
+            panel.add(sideButton("Empleados", e -> openEmpleados(), "empleados.png"));
+            panel.add(sideButton("Tipos de Habitación", e -> openTipos(), "tipos.png"));
+        }
+
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(sideButton("Cerrar sesión", e -> closeSession(), "logout.png"));
         panel.add(Box.createVerticalGlue());
 
         return panel;
     }
 
-    private JButton sideButton(String text, ActionListener listener) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(LEFT_ALIGNMENT);
-        button.setMaximumSize(new Dimension(9999, 44));
-        button.setBackground(new Color(38, 52, 68));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
-        button.addActionListener(listener);
-        return button;
+    /* --------------------------------------------------------------
+       Botón lateral con ícono y texto */
+    private JButton sideButton(String text, ActionListener listener, String iconName) {
+        RoundedButton btn = new RoundedButton(text);
+        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        btn.setBackground(new Color(38, 52, 68));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
+        btn.addActionListener(listener);
+        ImageIcon icon = loadIcon(iconName, 21, 21);
+        if (icon != null) {
+            btn.setIcon(icon);
+        }
+        return btn;
     }
 
+    /* --------------------------------------------------------------
+       Carga de iconos desde src/Imagenes (ruta relativa al classpath) */
+    private ImageIcon loadIcon(String name, int w, int h) {
+        java.net.URL url = getClass().getResource("/Imagenes/" + name);
+        if (url == null) return null;
+        Image img = new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    /* --------------------------------------------------------------
+       Dashboard (Home) – tarjetas premium  */
     private void showHome() {
         closeActiveFrames();
 
@@ -152,21 +161,22 @@ public class VentanaPrincipal extends JFrame {
         home.setBackground(new Color(245, 242, 235));
         home.setBorder(BorderFactory.createEmptyBorder(36, 36, 36, 36));
 
+        /* Hero panel (texto de bienvenida) */
         JPanel hero = new JPanel(new BorderLayout(16, 16));
         hero.setBackground(Color.WHITE);
         hero.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(212, 175, 55), 2),
                 BorderFactory.createEmptyBorder(28, 28, 28, 28)));
 
-        JLabel title = new JLabel("Bienvenido a Hotel Gales");
+        JLabel title = new JLabel("Bienvenido, " + usuario.getNombreUsuario());
         title.setFont(new Font("Serif", Font.BOLD, 34));
         title.setForeground(new Color(23, 33, 43));
 
-        JLabel text = new JLabel("<html><body style='width: 620px'>"
-                + "Este panel concentra los modulos principales del hotel. "
-                + "Desde aqui puedes administrar clientes, reservas, habitaciones, "
-                + "facturacion y los elementos operativos del sistema."
-                + "</body></html>");
+        String heroMsg = isAdmin()
+                ? "Este panel concentra los módulos principales del hotel. Desde aquí puedes administrar clientes, reservas, habitaciones, facturación y los elementos operativos del sistema."
+                : "Bienvenido al portal de Hotel Gales. Desde aquí puedes consultar habitaciones disponibles, gestionar tus reservas y revisar tus facturas.";
+
+        JLabel text = new JLabel("<html><body style='width:620px;'>" + heroMsg + "</body></html>");
         text.setFont(new Font("SansSerif", Font.PLAIN, 18));
         text.setForeground(new Color(74, 85, 104));
 
@@ -174,16 +184,26 @@ public class VentanaPrincipal extends JFrame {
         hero.add(text, BorderLayout.CENTER);
         home.add(hero, BorderLayout.NORTH);
 
-        JPanel cards = new JPanel(new GridLayout(2, 3, 16, 16));
+        /* Tarjetas de estadística */
+        JPanel cards;
+        if (isAdmin()) {
+            cards = new JPanel(new GridLayout(2, 3, 16, 16));
+            cards.add(new CardPanel("Clientes",   count("cliente",            "") + " registrados"));
+            cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
+            cards.add(new CardPanel("Reservas",   count("reserva",            "") + " activas"));
+            cards.add(new CardPanel("Facturas",   count("facturas", "WHERE estadofactura='PENDIENTE'") + " pendientes"));
+            cards.add(new CardPanel("Empleados",  count("empleado",           "") + " activos"));
+            cards.add(new CardPanel("Tipologías", count("tipohabitacion",    "") + " configuradas"));
+        } else {
+            cards = new JPanel(new GridLayout(1, 3, 16, 16));
+            cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
+            cards.add(new CardPanel("Mis Reservas", count("reserva", "") + " activas"));
+            cards.add(new CardPanel("Mis Facturas", count("facturas", "") + " registradas"));
+        }
         cards.setOpaque(false);
-        cards.add(card("Clientes", "Gestion de perfiles y datos de huespedes"));
-        cards.add(card("Habitaciones", "Estado, tarifas y disponibilidad"));
-        cards.add(card("Reservas", "Control de entrada y salida"));
-        cards.add(card("Facturas", "Cobros y comprobantes"));
-        cards.add(card("Empleados", "Personal y roles internos"));
-        cards.add(card("Tipologias", "Clasificacion de habitaciones"));
         home.add(cards, BorderLayout.CENTER);
 
+        /* Internal frame que contiene el dashboard */
         JInternalFrame homeFrame = new JInternalFrame("Inicio", false, false, false, false);
         homeFrame.setSize(980, 560);
         homeFrame.setLocation(20, 20);
@@ -196,36 +216,98 @@ public class VentanaPrincipal extends JFrame {
         desktopPane.repaint();
     }
 
-    private JPanel card(String title, String description) {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(226, 232, 240)),
-                BorderFactory.createEmptyBorder(18, 18, 18, 18)));
-        JLabel t = new JLabel(title);
-        t.setFont(new Font("SansSerif", Font.BOLD, 18));
-        t.setForeground(new Color(23, 33, 43));
-        JLabel d = new JLabel("<html><body style='width: 180px'>" + description + "</body></html>");
-        d.setForeground(new Color(71, 85, 105));
-        d.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        panel.add(t, BorderLayout.NORTH);
-        panel.add(d, BorderLayout.CENTER);
-        return panel;
+    /* --------------------------------------------------------------
+       Módulos auxiliares (solo delegan al código ya existente) */
+    private void openClientes()        { openModule("clientes",   buildClientesModule()); }
+    private void openHabitaciones()   { openModule("habitaciones", buildHabitacionesModule()); }
+    private void openReservas()       { openModule("reservas", buildReservasModule()); }
+    private void openFacturas()       { openModule("facturas", buildFacturasModule()); }
+    private void openEmpleados()      { openModule("empleados", buildEmpleadosModule()); }
+    private void openTipos()          { openModule("tipos",      buildTiposModule()); }
+
+    private ModuleListInternalFrame buildClientesModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Clientes",
+                new Object[]{"ID","Nombre","Apellido","Documento","Correo","Telefono","Direccion","ID Usuario"},
+                tabla -> new ControladorCliente().cargarTablaClientes(tabla));
+        f.setCreateAction(e -> new DialogCliente(this, -1, f::triggerReload).setVisible(true));
+        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogCliente(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione un cliente para editar."); });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar cliente?")==JOptionPane.YES_OPTION) { new ControladorCliente().eliminarCliente(id); f.triggerReload(); } });
+        return f;
     }
 
+    private ModuleListInternalFrame buildHabitacionesModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Habitaciones",
+                new Object[]{"ID","Número","Tipo","Precio","Estado"},
+                tabla -> new ControladorHabitaciones().cargarTablaHabitaciones(tabla));
+        if (isAdmin()) {
+            f.setCreateAction(e -> new DialogHabitacion(this, -1, f::triggerReload).setVisible(true));
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogHabitacion(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una habitación para editar."); });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar habitación?")==JOptionPane.YES_OPTION) { new ControladorHabitaciones().eliminarHabitacion(id); f.triggerReload(); } });
+        }
+        return f;
+    }
+
+    private ModuleListInternalFrame buildReservasModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Reservas",
+                new Object[]{"ID","Habitación","Personas","Entrada","Salida","Pago","ID Cliente"},
+                tabla -> new ControladorReserva().cargarTablaReservas(tabla));
+        f.setCreateAction(e -> new DialogReserva(this, -1, f::triggerReload).setVisible(true));
+        if (isAdmin()) {
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogReserva(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una reserva para editar."); });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar reserva?")==JOptionPane.YES_OPTION) { new ControladorReserva().eliminarReserva(id); f.triggerReload(); } });
+        }
+        return f;
+    }
+
+    private ModuleListInternalFrame buildFacturasModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Facturas",
+                new Object[]{"ID","Reserva","Fecha","Total","Estado","Método"},
+                tabla -> new ControladorFacturas().cargarTablaFacturas(tabla));
+        if (isAdmin()) {
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edición*/} else JOptionPane.showMessageDialog(this,"Seleccione una factura."); });
+        }
+        return f;
+    }
+
+    private ModuleListInternalFrame buildEmpleadosModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Empleados",
+                new Object[]{"ID","Nombre","Apellido","Documento","Cargo","Salario","Fecha","Teléfono","Correo","Dirección","ID Usuario"},
+                tabla -> new ControladorEmpleado().cargarTablaEmpleados(tabla));
+        if (isAdmin()) {
+            f.setCreateAction(e -> {/*TODO: crear*/});
+            f.setEditAction(e   -> {/*TODO: editar*/});
+            f.setDeleteAction(e -> {/*TODO: eliminar*/});
+        }
+        return f;
+    }
+
+    private ModuleListInternalFrame buildTiposModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Tipos de Habitación",
+                new Object[]{"ID","Nombre","Descripción"},
+                tabla -> new ControladorTipoHabitacion().cargarTablaTiposHabitacion(tabla));
+        if (isAdmin()) {
+            f.setCreateAction(e -> {/*TODO: crear*/});
+            f.setEditAction(e   -> {/*TODO: editar*/});
+            f.setDeleteAction(e -> {/*TODO: eliminar*/});
+        }
+        return f;
+    }
+
+    /* --------------------------------------------------------------
+       Helper genérico para abrir (o activar) un módulo interno */
     private void openModule(String key, JInternalFrame frame) {
         JInternalFrame existing = frames.get(key);
         if (existing != null && existing.isDisplayable()) {
-            try {
-                existing.setIcon(false);
-                existing.setSelected(true);
-                existing.toFront();
-            } catch (Exception ignored) {
-                existing.setVisible(true);
-            }
+            try { existing.setIcon(false); existing.setSelected(true); existing.toFront(); }
+            catch (Exception ignored) { existing.setVisible(true); }
             return;
         }
-
         closeActiveFrames();
         desktopPane.add(frame);
         frame.setVisible(true);
@@ -234,14 +316,16 @@ public class VentanaPrincipal extends JFrame {
         desktopPane.repaint();
     }
 
+    /* --------------------------------------------------------------
+       Cerrar todas las ventanas internas */
     private void closeActiveFrames() {
-        for (JInternalFrame frame : frames.values()) {
-            frame.dispose();
-        }
+        for (JInternalFrame f : frames.values()) { f.dispose(); }
         frames.clear();
         desktopPane.removeAll();
     }
 
+    /* --------------------------------------------------------------
+       Cerrar sesión (mantiene la lógica actual) */
     private void closeSession() {
         ConexionBD.desconectar();
         dispose();
@@ -250,5 +334,19 @@ public class VentanaPrincipal extends JFrame {
             login.setVisible(true);
             new Controlador.ControladorLogin(login);
         });
+    }
+
+    /* --------------------------------------------------------------
+       Contador genérico (utilizado en tarjetas) */
+    private int count(String table, String where) {
+        try {
+            String sql = "SELECT COUNT(*) FROM " + table + (where.isEmpty() ? "" : " " + where);
+            java.sql.PreparedStatement st = modelo.ConexionBD.conexion.prepareStatement(sql);
+            java.sql.ResultSet rs = st.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            System.err.println("Error contando " + table + ": " + e.getMessage());
+        }
+        return 0;
     }
 }

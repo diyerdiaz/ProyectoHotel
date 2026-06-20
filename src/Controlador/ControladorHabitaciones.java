@@ -77,4 +77,8 @@ public class ControladorHabitaciones {
             }
         }
     }
+
+    public void cambiarEstadoHabitacion(int idHabitacion, String nuevoEstado) {
+        modeloHabitaciones.cambiarEstado(idHabitacion, nuevoEstado);
+    }
 }
