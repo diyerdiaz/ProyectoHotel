@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Gales · Acceso de Personal</title>
+  <meta name="description" content="Portal de acceso exclusivo para el personal del Hotel Gales. Gestione asistencia, habitaciones y reportes desde un solo lugar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       PANTALLA DE LOGIN
+  ════════════════════════════════════════════ -->
+  <div id="login-screen" class="screen active">
+    <div class="login-wrapper">
+
+      <!-- Panel izquierdo – imagen decorativa -->
+      <div class="login-hero" aria-hidden="true">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hotel-badge">★ 5 ESTRELLAS ★</div>
+          <h1 class="hero-title">Hotel<br/>Gales</h1>
+          <p class="hero-tagline">Excelencia en cada detalle.<br/>Desde 1984.</p>
+        </div>
+      </div>
+
+      <!-- Panel derecho – formulario -->
+      <div class="login-form-panel">
+        <div class="login-form-inner">
+
+          <div class="login-header">
+            <div class="login-logo">
+              <span class="logo-icon">🏨</span>
+            </div>
+            <h2 class="login-title">Acceso de Personal</h2>
+            <p class="login-subtitle">Ingrese sus credenciales para continuar</p>
+          </div>
+
+          <form id="login-form" class="form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="login-user">Usuario</label>
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input
+                  id="login-user"
+                  type="text"
+                  class="form-input"
+                  placeholder="nombre.apellido"
+                  autocomplete="username"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-pass">Contraseña</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input
+                  id="login-pass"
+                  type="password"
+                  class="form-input"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                />
+                <button type="button" class="toggle-pass" id="toggle-pass" aria-label="Mostrar contraseña">👁</button>
+              </div>
+            </div>
+
+            <div class="form-row-between">
+              <label class="checkbox-label">
+                <input type="checkbox" id="remember-me" />
+                <span class="checkmark"></span>
+                Recordarme
+              </label>
+              <a href="#" class="link-subtle">¿Olvidó su contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" id="btn-login">
+              Iniciar Sesión
+            </button>
+
+            <p class="form-footer">
+              ¿Primer acceso? 
+              <a href="#" class="link-accent" id="show-register">Solicitar acceso</a>
+            </p>
+          </form>
+
+        </div>
+        <p class="legal-note">© 2025 Hotel Gales · Todos los derechos reservados</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PANTALLA DE REGISTRO
+  ════════════════════════════════════════════ -->
+  <div id="register-screen" class="screen">
+    <div class="login-wrapper">
+
+      <div class="login-hero register-hero" aria-hidden="true">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hotel-badge">★ BIENVENIDO ★</div>
+          <h1 class="hero-title">Únete<br/>al Equipo</h1>
+          <p class="hero-tagline">Completa tu registro para acceder al portal de gestión.</p>
+        </div>
+      </div>
+
+      <div class="login-form-panel">
+        <div class="login-form-inner">
+
+          <div class="login-header">
+            <h2 class="login-title">Crear Cuenta</h2>
+            <p class="login-subtitle">Complete todos los campos requeridos</p>
+          </div>
+
+          <form id="register-form" class="form" novalidate>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="reg-nombre">Nombre</label>
+                <input id="reg-nombre" type="text" class="form-input" placeholder="Andrés" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reg-apellido">Apellido</label>
+                <input id="reg-apellido" type="text" class="form-input" placeholder="García" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-cedula">Cédula / ID</label>
+              <input id="reg-cedula" type="text" class="form-input" placeholder="1234567890" maxlength="10" required />
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="reg-correo">Correo</label>
+                <input id="reg-correo" type="email" class="form-input" placeholder="correo@hotel.com" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reg-telefono">Teléfono</label>
+                <input id="reg-telefono" type="tel" class="form-input" placeholder="3001234567" maxlength="10" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-usuario">Nombre de Usuario</label>
+              <input id="reg-usuario" type="text" class="form-input" placeholder="andres.garcia" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-contrasena">Contraseña</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input id="reg-contrasena" type="password" class="form-input" placeholder="Mínimo 8 caracteres" required />
+              </div>
+              <div class="password-strength" id="pass-strength"></div>
+            </div>
+
+            <div class="form-row-buttons">
+              <button type="button" class="btn btn-ghost" id="back-to-login">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="btn-register">Registrarse</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PANTALLA DE DASHBOARD / PORTAL PRINCIPAL
+  ════════════════════════════════════════════ -->
+  <div id="dashboard-screen" class="screen">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">🏨</div>
+        <div>
+          <div class="sidebar-hotel-name">Hotel Gales</div>
+          <div class="sidebar-tagline">Panel de Personal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-user-card" id="sidebar-user-card">
+        <div class="user-avatar" id="user-avatar">AG</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Andrés García</div>
+          <div class="user-role" id="user-display-role">Administrador</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="inicio" id="nav-inicio">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-text">Inicio</span>
+        </a>
+        <div class="nav-section-label">Operaciones</div>
+        <a href="#" class="nav-item" data-section="asistencia" id="nav-asistencia">
+          <span class="nav-icon">⏱️</span>
+          <span class="nav-text">Control de Asistencia</span>
+        </a>
+        <a href="#" class="nav-item" data-section="habitaciones" id="nav-habitaciones">
+          <span class="nav-icon">🛏️</span>
+          <span class="nav-text">Estado Habitaciones</span>
+        </a>
+        <a href="#" class="nav-item" data-section="mantenimiento" id="nav-mantenimiento">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-text">Mantenimiento</span>
+        </a>
+        <div class="nav-section-label">Gestión</div>
+        <a href="#" class="nav-item" data-section="clientes" id="nav-clientes">
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Clientes</span>
+        </a>
+        <a href="#" class="nav-item" data-section="reservas" id="nav-reservas">
+          <span class="nav-icon">📅</span>
+          <span class="nav-text">Reservas</span>
+        </a>
+        <a href="#" class="nav-item" data-section="facturas" id="nav-facturas">
+          <span class="nav-icon">🧾</span>
+          <span class="nav-text">Facturas</span>
+        </a>
+        <div class="nav-section-label admin-only">Solo Admin</div>
+        <a href="#" class="nav-item admin-only" data-section="empleados" id="nav-empleados">
+          <span class="nav-icon">👔</span>
+          <span class="nav-text">Empleados</span>
+        </a>
+        <a href="#" class="nav-item admin-only" data-section="tipos" id="nav-tipos">
+          <span class="nav-icon">🏷️</span>
+          <span class="nav-text">Tipos de Habitación</span>
+        </a>
+      </nav>
+
+      <button class="sidebar-logout" id="btn-logout">
+        <span>🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger" aria-label="Menú">
+            <span></span><span></span><span></span>
+          </button>
+          <h2 class="section-title" id="section-title">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date" id="topbar-date"></div>
+          <div class="topbar-avatar" id="topbar-avatar">AG</div>
+        </div>
+      </header>
+
+      <!-- CONTENT AREA -->
+      <main class="content">
+
+        <!-- ── SECCIÓN: INICIO / DASHBOARD ── -->
+        <section class="section active" id="section-inicio">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Resumen del día</h3>
+              <p class="section-desc" id="welcome-msg">Bienvenido de nuevo</p>
+            </div>
+          </div>
+
+          <!-- KPI CARDS -->
+          <div class="kpi-grid" id="kpi-grid">
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-icon">🛏️</div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-disponibles">–</div>
+                <div class="kpi-label">Habitaciones Disponibles</div>
+              </div>
+            </div>
+            <div class="kpi-card kpi-gold">
+              <div class="kpi-icon">📅</div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-reservas">–</div>
+                <div class="kpi-label">Reservas Activas</div>
+              </div>
+            </div>
+            <div class="kpi-card kpi-green">
+              <div class="kpi-icon">👥</div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-clientes">–</div>
+                <div class="kpi-label">Clientes Registrados</div>
+              </div>
+            </div>
+            <div class="kpi-card kpi-red" id="kpi-mantenimiento-card">
+              <div class="kpi-icon">🔧</div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-mantenimiento">–</div>
+                <div class="kpi-label">Reportes Pendientes</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK ACTIONS -->
+          <div class="quick-actions">
+            <h4 class="quick-title">Acciones Rápidas</h4>
+            <div class="actions-grid">
+              <button class="action-card" onclick="goSection('asistencia')">
+                <span class="action-icon">⏱️</span>
+                <span class="action-label">Registrar Asistencia</span>
+              </button>
+              <button class="action-card" onclick="goSection('habitaciones')">
+                <span class="action-icon">🛏️</span>
+                <span class="action-label">Ver Habitaciones</span>
+              </button>
+              <button class="action-card" onclick="goSection('mantenimiento')">
+                <span class="action-icon">🔧</span>
+                <span class="action-label">Nuevo Reporte</span>
+              </button>
+              <button class="action-card" onclick="goSection('reservas')">
+                <span class="action-icon">📅</span>
+                <span class="action-label">Nueva Reserva</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ACTIVIDAD RECIENTE -->
+          <div class="recent-activity">
+            <h4 class="quick-title">Actividad Reciente</h4>
+            <div class="activity-list" id="activity-list">
+              <div class="activity-item">
+                <div class="activity-dot dot-green"></div>
+                <div class="activity-content">
+                  <span class="activity-text">Check-in completado – Hab. 205 (María López)</span>
+                  <span class="activity-time">hace 12 min</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot dot-blue"></div>
+                <div class="activity-content">
+                  <span class="activity-text">Nueva reserva creada – 3 noches (Suite Premium)</span>
+                  <span class="activity-time">hace 38 min</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot dot-red"></div>
+                <div class="activity-content">
+                  <span class="activity-text">Reporte de mantenimiento – Hab. 310 (Aire acondicionado)</span>
+                  <span class="activity-time">hace 1 hora</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot dot-gold"></div>
+                <div class="activity-content">
+                  <span class="activity-text">Check-out procesado – Hab. 118 (Factura #F-0892)</span>
+                  <span class="activity-time">hace 2 horas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: CONTROL DE ASISTENCIA ── -->
+        <section class="section" id="section-asistencia">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Control de Asistencia</h3>
+              <p class="section-desc">Registro de entrada y salida del personal</p>
+            </div>
+          </div>
+
+          <!-- RELOJ EN VIVO -->
+          <div class="clock-card">
+            <div class="clock-time" id="live-clock">00:00:00</div>
+            <div class="clock-date" id="live-date">Lunes, 20 de junio de 2025</div>
+            <div class="clock-actions">
+              <button class="btn btn-primary btn-lg" id="btn-entrada" onclick="registrarEntrada()">
+                ✅ Registrar Entrada
+              </button>
+              <button class="btn btn-outline btn-lg" id="btn-salida" onclick="registrarSalida()">
+                🚪 Registrar Salida
+              </button>
+            </div>
+            <div class="clock-status" id="clock-status"></div>
+          </div>
+
+          <!-- TABLA DE ASISTENCIA HOY -->
+          <div class="table-card">
+            <div class="table-header">
+              <h4 class="table-title">Registros de Hoy</h4>
+              <button class="btn btn-ghost btn-sm" onclick="exportarAsistencia()">📥 Exportar</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="table-asistencia">
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Cargo</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="td-user"><div class="td-avatar">CG</div>Carlos García</div></td>
+                    <td>Recepcionista</td>
+                    <td>07:00</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td><span class="badge badge-green">En turno</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="td-user"><div class="td-avatar">ML</div>María López</div></td>
+                    <td>Housekeeping</td>
+                    <td>06:30</td>
+                    <td>14:30</td>
+                    <td>8h 00m</td>
+                    <td><span class="badge badge-blue">Completado</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="td-user"><div class="td-avatar">JP</div>Juan Pérez</div></td>
+                    <td>Mantenimiento</td>
+                    <td>08:00</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td><span class="badge badge-green">En turno</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="td-user"><div class="td-avatar">AR</div>Ana Rodríguez</div></td>
+                    <td>Cocina</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td><span class="badge badge-red">Ausente</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: ESTADO DE HABITACIONES ── -->
+        <section class="section" id="section-habitaciones">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Estado de Habitaciones</h3>
+              <p class="section-desc">Vista en tiempo real de todas las habitaciones</p>
+            </div>
+            <div class="header-actions">
+              <select class="form-select" id="filter-estado" onchange="filtrarHabitaciones()">
+                <option value="all">Todos los estados</option>
+                <option value="disponible">Disponible</option>
+                <option value="ocupada">Ocupada</option>
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="limpieza">Limpieza</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LEYENDA -->
+          <div class="legend-bar">
+            <div class="legend-item"><span class="legend-dot dot-green"></span>Disponible</div>
+            <div class="legend-item"><span class="legend-dot dot-red"></span>Ocupada</div>
+            <div class="legend-item"><span class="legend-dot dot-gold"></span>Limpieza</div>
+            <div class="legend-item"><span class="legend-dot dot-gray"></span>Mantenimiento</div>
+          </div>
+
+          <!-- GRID DE HABITACIONES -->
+          <div class="room-grid" id="room-grid">
+            <!-- Generadas por JS -->
+          </div>
+
+          <!-- MODAL HABITACION -->
+          <div class="modal-overlay" id="modal-room" style="display:none;">
+            <div class="modal">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-room-title">Habitación 101</h4>
+                <button class="modal-close" onclick="closeModal('modal-room')">✕</button>
+              </div>
+              <div class="modal-body" id="modal-room-body"></div>
+              <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('modal-room')">Cerrar</button>
+                <button class="btn btn-primary" id="modal-room-action">Cambiar Estado</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: MANTENIMIENTO ── -->
+        <section class="section" id="section-mantenimiento">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Reportes de Mantenimiento</h3>
+              <p class="section-desc">Cree y gestione los reportes de mantenimiento del hotel</p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modal-nuevo-reporte')">
+              + Nuevo Reporte
+            </button>
+          </div>
+
+          <!-- STATS RAPIDAS -->
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <span class="mini-val mini-val-red" id="stat-pendientes">3</span>
+              <span class="mini-label">Pendientes</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-val mini-val-gold" id="stat-enproceso">2</span>
+              <span class="mini-label">En Proceso</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-val mini-val-green" id="stat-resueltos">14</span>
+              <span class="mini-label">Resueltos este mes</span>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-header">
+              <h4 class="table-title">Reportes Activos</h4>
+              <input type="search" class="form-input search-input" placeholder="Buscar reporte..." id="search-mant" oninput="buscarReporte(this.value)" />
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="table-mantenimiento">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Habitación</th>
+                    <th>Problema</th>
+                    <th>Prioridad</th>
+                    <th>Reportado</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-mantenimiento">
+                  <tr>
+                    <td>#M-031</td>
+                    <td>310</td>
+                    <td>Aire acondicionado no enfría</td>
+                    <td><span class="badge badge-red">Alta</span></td>
+                    <td>Hoy 08:45</td>
+                    <td><span class="badge badge-gold">En proceso</span></td>
+                    <td><div class="td-actions"><button class="icon-btn" title="Ver">👁</button><button class="icon-btn" title="Resolver">✅</button></div></td>
+                  </tr>
+                  <tr>
+                    <td>#M-030</td>
+                    <td>218</td>
+                    <td>Ducha con baja presión</td>
+                    <td><span class="badge badge-gold">Media</span></td>
+                    <td>Ayer 17:20</td>
+                    <td><span class="badge badge-red">Pendiente</span></td>
+                    <td><div class="td-actions"><button class="icon-btn" title="Ver">👁</button><button class="icon-btn" title="Resolver">✅</button></div></td>
+                  </tr>
+                  <tr>
+                    <td>#M-029</td>
+                    <td>105</td>
+                    <td>Bombillo fundido en baño</td>
+                    <td><span class="badge badge-gray">Baja</span></td>
+                    <td>20/06 14:00</td>
+                    <td><span class="badge badge-green">Resuelto</span></td>
+                    <td><div class="td-actions"><button class="icon-btn" title="Ver">👁</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Modal nuevo reporte -->
+          <div class="modal-overlay" id="modal-nuevo-reporte" style="display:none;">
+            <div class="modal">
+              <div class="modal-header">
+                <h4 class="modal-title">Nuevo Reporte de Mantenimiento</h4>
+                <button class="modal-close" onclick="closeModal('modal-nuevo-reporte')">✕</button>
+              </div>
+              <div class="modal-body">
+                <form class="form" id="form-reporte">
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label class="form-label">Habitación</label>
+                      <input type="text" class="form-input" placeholder="Ej: 310" id="rep-hab" required />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Prioridad</label>
+                      <select class="form-select" id="rep-prioridad">
+                        <option value="alta">Alta</option>
+                        <option value="media" selected>Media</option>
+                        <option value="baja">Baja</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Descripción del Problema</label>
+                    <textarea class="form-textarea" id="rep-desc" rows="4" placeholder="Describa el problema con detalle..." required></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('modal-nuevo-reporte')">Cancelar</button>
+                <button class="btn btn-primary" onclick="crearReporte()">Enviar Reporte</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: CLIENTES ── -->
+        <section class="section" id="section-clientes">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Gestión de Clientes</h3>
+              <p class="section-desc">Administre el directorio de clientes del hotel</p>
+            </div>
+            <button class="btn btn-primary admin-only" onclick="openModal('modal-cliente')">+ Nuevo Cliente</button>
+          </div>
+          <div class="table-card">
+            <div class="table-header">
+              <h4 class="table-title">Clientes Registrados</h4>
+              <input type="search" class="form-input search-input" placeholder="Buscar cliente..." />
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Documento</th><th>Correo</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr><td>001</td><td>María López</td><td>12345678</td><td>m.lopez@email.com</td><td>3001234567</td><td><div class="td-actions"><button class="icon-btn">👁</button><button class="icon-btn admin-only">✏️</button><button class="icon-btn admin-only">🗑️</button></div></td></tr>
+                  <tr><td>002</td><td>Carlos Martínez</td><td>87654321</td><td>c.martinez@email.com</td><td>3109876543</td><td><div class="td-actions"><button class="icon-btn">👁</button><button class="icon-btn admin-only">✏️</button><button class="icon-btn admin-only">🗑️</button></div></td></tr>
+                  <tr><td>003</td><td>Sofía Torres</td><td>45678901</td><td>s.torres@email.com</td><td>3157890123</td><td><div class="td-actions"><button class="icon-btn">👁</button><button class="icon-btn admin-only">✏️</button><button class="icon-btn admin-only">🗑️</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: RESERVAS ── -->
+        <section class="section" id="section-reservas">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Gestión de Reservas</h3>
+              <p class="section-desc">Control de todas las reservas del hotel</p>
+            </div>
+            <button class="btn btn-primary" onclick="">+ Nueva Reserva</button>
+          </div>
+          <div class="table-card">
+            <div class="table-header">
+              <h4 class="table-title">Reservas Activas</h4>
+              <input type="search" class="form-input search-input" placeholder="Buscar reserva..." />
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Habitación</th><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Pago</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr><td>#R-201</td><td>Suite 501</td><td>María López</td><td>20/06/2025</td><td>24/06/2025</td><td><span class="badge badge-green">Pagado</span></td><td><div class="td-actions"><button class="icon-btn">👁</button><button class="icon-btn admin-only">✏️</button><button class="icon-btn admin-only">🗑️</button></div></td></tr>
+                  <tr><td>#R-200</td><td>Hab. 310</td><td>Carlos Martínez</td><td>19/06/2025</td><td>22/06/2025</td><td><span class="badge badge-gold">Pendiente</span></td><td><div class="td-actions"><button class="icon-btn">👁</button><button class="icon-btn admin-only">✏️</button><button class="icon-btn admin-only">🗑️</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: FACTURAS ── -->
+        <section class="section" id="section-facturas">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Gestión de Facturas</h3>
+              <p class="section-desc">Facturación y control de pagos</p>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">
+              <h4 class="table-title">Facturas Recientes</h4>
+              <input type="search" class="form-input search-input" placeholder="Buscar factura..." />
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>Factura</th><th>Reserva</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Método</th></tr></thead>
+                <tbody>
+                  <tr><td>#F-0892</td><td>#R-198</td><td>20/06/2025</td><td>$1.250.000</td><td><span class="badge badge-green">Pagado</span></td><td>Tarjeta</td></tr>
+                  <tr><td>#F-0891</td><td>#R-199</td><td>19/06/2025</td><td>$850.000</td><td><span class="badge badge-gold">Pendiente</span></td><td>Efectivo</td></tr>
+                  <tr><td>#F-0890</td><td>#R-197</td><td>18/06/2025</td><td>$2.100.000</td><td><span class="badge badge-green">Pagado</span></td><td>Transferencia</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: EMPLEADOS (ADMIN) ── -->
+        <section class="section admin-only-section" id="section-empleados">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Gestión de Empleados</h3>
+              <p class="section-desc">Directorio del personal del hotel</p>
+            </div>
+            <button class="btn btn-primary">+ Nuevo Empleado</button>
+          </div>
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Cargo</th><th>Salario</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr><td>E-01</td><td><div class="td-user"><div class="td-avatar">CG</div>Carlos García</div></td><td>Recepcionista</td><td>$2.500.000</td><td>3001111111</td><td><span class="badge badge-green">Activo</span></td><td><div class="td-actions"><button class="icon-btn">✏️</button><button class="icon-btn">🗑️</button></div></td></tr>
+                  <tr><td>E-02</td><td><div class="td-user"><div class="td-avatar">ML</div>María López</div></td><td>Housekeeping</td><td>$1.800.000</td><td>3002222222</td><td><span class="badge badge-green">Activo</span></td><td><div class="td-actions"><button class="icon-btn">✏️</button><button class="icon-btn">🗑️</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SECCIÓN: TIPOS DE HABITACIÓN (ADMIN) ── -->
+        <section class="section admin-only-section" id="section-tipos">
+          <div class="section-header">
+            <div>
+              <h3 class="section-heading">Tipos de Habitación</h3>
+              <p class="section-desc">Categorías y configuración de habitaciones</p>
+            </div>
+            <button class="btn btn-primary">+ Nuevo Tipo</button>
+          </div>
+          <div class="cards-list">
+            <div class="tipo-card">
+              <div class="tipo-icon">🛏️</div>
+              <div class="tipo-info">
+                <div class="tipo-name">Estándar</div>
+                <div class="tipo-desc">Habitación doble con baño privado, TV y WiFi</div>
+              </div>
+              <div class="tipo-actions"><button class="icon-btn">✏️</button><button class="icon-btn">🗑️</button></div>
+            </div>
+            <div class="tipo-card">
+              <div class="tipo-icon">✨</div>
+              <div class="tipo-info">
+                <div class="tipo-name">Suite Junior</div>
+                <div class="tipo-desc">Sala de estar, minibar, vista al jardín</div>
+              </div>
+              <div class="tipo-actions"><button class="icon-btn">✏️</button><button class="icon-btn">🗑️</button></div>
+            </div>
+            <div class="tipo-card">
+              <div class="tipo-icon">👑</div>
+              <div class="tipo-info">
+                <div class="tipo-name">Suite Presidential</div>
+                <div class="tipo-desc">Lujo máximo, jacuzzi, vista panorámica, butler privado</div>
+              </div>
+              <div class="tipo-actions"><button class="icon-btn">✏️</button><button class="icon-btn">🗑️</button></div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
