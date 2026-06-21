@@ -287,7 +287,10 @@ img { max-width: 100%; display: block; }
 .form-row-buttons {
   display: flex;
   gap: 12px;
-  justify-content: flex-end;
+  width: 100%;
+}
+.form-row-buttons .btn {
+  flex: 1;
 }
 
 /* Custom checkbox */
@@ -917,6 +920,11 @@ img { max-width: 100%; display: block; }
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
+}
+.clock-actions .btn {
+  flex: 1;
+  min-width: 180px;
 }
 
 .clock-status {
@@ -1221,10 +1229,13 @@ img { max-width: 100%; display: block; }
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
   padding: 16px 24px;
   border-top: 1px solid var(--border);
+  width: 100%;
+}
+.modal-footer .btn {
+  flex: 1;
 }
 
 /* ── TOAST ── */
