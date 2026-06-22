@@ -11,143 +11,305 @@ import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.Box;
 import modelo.ConexionBD;
 import modelo.Login;
 
-/* ----------------------------------------------------------------------
-   VentanaPrincipal – UI premium (sidebar + dashboard)
-   ---------------------------------------------------------------------- */
 public class VentanaPrincipal extends JFrame {
+
+    private static final Color GOLD = new Color(212, 175, 55);
+    private static final Color GOLD_LIGHT = new Color(241, 196, 15);
+    private static final Color DARK_SIDEBAR = new Color(17, 24, 39);
+    private static final Color SIDEBAR_HOVER = new Color(31, 45, 78);
+    private static final Color CONTENT_BG = new Color(245, 242, 235);
+    private static final Color CARD_BORDER = new Color(226, 232, 240);
+    private static final Color TEXT_MAIN = new Color(17, 24, 39);
+    private static final Color TEXT_MUTED = new Color(107, 114, 128);
 
     private final Login usuario;
     private final JDesktopPane desktopPane;
     private final JPanel sidebar;
     private final Map<String, JInternalFrame> frames = new LinkedHashMap<>();
+    private boolean sidebarCollapsed = false;
+    private static final int SIDEBAR_EXPANDED = 240;
+    private static final int SIDEBAR_COLLAPSED = 0;
 
     public VentanaPrincipal(Login usuario) {
         this.usuario = usuario;
         ConexionBD.getInstance();
 
-        setTitle("Hotel Gales • Panel de Gestión");
+        setTitle("Hotel Gales \u2022 Panel de Gesti\u00f3n");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(1280, 760));
+        setMinimumSize(new Dimension(1100, 720));
+        setSize(1400, 850);
         setLocationRelativeTo(null);
 
-        /* ── Root pane ── */
         JPanel root = new JPanel(new BorderLayout());
-        root.setBackground(new Color(245, 242, 235));
+        root.setBackground(CONTENT_BG);
 
-        sidebar      = buildSidebar();
+        sidebar = buildSidebar();
+        JPanel topbar = buildTopbar();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(232, 226, 214));
 
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(topbar, BorderLayout.NORTH);
+        centerPanel.add(desktopPane, BorderLayout.CENTER);
+
         root.add(sidebar, BorderLayout.WEST);
-        root.add(desktopPane, BorderLayout.CENTER);
+        root.add(centerPanel, BorderLayout.CENTER);
         setContentPane(root);
+        root.revalidate();
 
-        showHome();
+        SwingUtilities.invokeLater(this::showHome);
     }
 
-    /* --------------------------------------------------------------
-       Helper: admin ? */
+    // ======================== ROLE HELPERS ========================
+
     private boolean isAdmin() {
-        return !"cliente".equalsIgnoreCase(usuario.getRolUsuario());
+        return "administrador".equalsIgnoreCase(usuario.getRolUsuario());
     }
 
-    /* --------------------------------------------------------------
-       Sidebar – logo + botones redondeados */
-    private JPanel buildSidebar() {
-        JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(260, 760));
-        panel.setBackground(new Color(23, 33, 43));
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(24, 18, 24, 18));
+    private boolean isRecepcionista() {
+        return "recepcionista".equalsIgnoreCase(usuario.getRolUsuario());
+    }
 
-        /* Logo */
-        ImageIcon logo = loadIcon("logo.png", 120, 120);
-        if (logo != null) {
-            JLabel logoLbl = new JLabel(logo);
-            logoLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(logoLbl);
-            panel.add(Box.createVerticalStrut(12));
+    private boolean isCliente() {
+        return "cliente".equalsIgnoreCase(usuario.getRolUsuario());
+    }
+
+    private boolean isStaff() {
+        return !isCliente();
+    }
+
+    private String getRoleLabel() {
+        switch (usuario.getRolUsuario().toLowerCase()) {
+            case "administrador":   return "Administrador";
+            case "recepcionista":   return "Recepcionista";
+            case "cliente":         return "Cliente";
+            case "servicio_limpieza": return "Limpieza";
+            default:                return usuario.getRolUsuario();
         }
+    }
 
-        /* Hotel name */
+    // ======================== TOPBAR ========================
+
+    private JPanel buildTopbar() {
+        JPanel bar = new JPanel(new BorderLayout());
+        bar.setPreferredSize(new Dimension(0, 54));
+        bar.setBackground(Color.WHITE);
+        bar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, CARD_BORDER),
+                new EmptyBorder(0, 16, 0, 16)));
+
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        left.setOpaque(false);
+
+        JLabel menuIcon = new JLabel("\u2630");
+        menuIcon.setFont(new Font("SansSerif", Font.BOLD, 20));
+        menuIcon.setForeground(TEXT_MAIN);
+        menuIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        menuIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                toggleSidebar();
+            }
+        });
+        left.add(menuIcon);
+
+        JLabel pageTitle = new JLabel("  Hotel Gales");
+        pageTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
+        pageTitle.setForeground(TEXT_MAIN);
+        left.add(pageTitle);
+
+        bar.add(left, BorderLayout.WEST);
+
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        right.setOpaque(false);
+
+        JPanel badge = new JPanel(new GridLayout(2, 1, 0, 0));
+        badge.setOpaque(false);
+        badge.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+
+        JLabel userName = new JLabel(usuario.getNombreUsuario());
+        userName.setFont(new Font("SansSerif", Font.BOLD, 13));
+        userName.setForeground(TEXT_MAIN);
+
+        JLabel userRole = new JLabel(getRoleLabel());
+        userRole.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        userRole.setForeground(GOLD);
+        userRole.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        badge.add(userName);
+        badge.add(userRole);
+        right.add(badge);
+
+        JButton logoutBtn = new JButton("Salir");
+        logoutBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        logoutBtn.setForeground(new Color(220, 38, 38));
+        logoutBtn.setBackground(Color.WHITE);
+        logoutBtn.setBorder(BorderFactory.createLineBorder(new Color(220, 38, 38)));
+        logoutBtn.setFocusPainted(false);
+        logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logoutBtn.addActionListener(e -> closeSession());
+        right.add(logoutBtn);
+
+        bar.add(right, BorderLayout.EAST);
+        return bar;
+    }
+
+    private void toggleSidebar() {
+        sidebarCollapsed = !sidebarCollapsed;
+        int w = sidebarCollapsed ? 0 : SIDEBAR_EXPANDED;
+        sidebar.setPreferredSize(new Dimension(w, 0));
+        sidebar.revalidate();
+        sidebar.repaint();
+    }
+
+    // ======================== SIDEBAR ========================
+
+    private JPanel buildSidebar() {
+        JPanel outer = new JPanel(new BorderLayout());
+        outer.setPreferredSize(new Dimension(SIDEBAR_EXPANDED, 0));
+        outer.setBackground(DARK_SIDEBAR);
+
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBackground(DARK_SIDEBAR);
+        content.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        content.add(Box.createVerticalStrut(24));
+
         JLabel brand = new JLabel("HOTEL GALES");
         brand.setAlignmentX(Component.CENTER_ALIGNMENT);
-        brand.setForeground(new Color(212, 175, 55));
-        brand.setFont(new Font("SansSerif", Font.BOLD, 28));
-        panel.add(brand);
+        brand.setForeground(GOLD);
+        brand.setFont(new Font("SansSerif", Font.BOLD, 22));
+        brand.setBorder(new EmptyBorder(0, 16, 0, 16));
+        content.add(brand);
 
-        /* Subtitle (admin / cliente) */
-        JLabel subtitle = new JLabel(isAdmin()
-                ? "Panel de Administración"
-                : "Portal del Cliente");
-        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        subtitle.setForeground(new Color(215, 220, 230));
-        subtitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        panel.add(subtitle);
-        panel.add(Box.createVerticalStrut(24));
+        JLabel roleLabel = new JLabel(getRoleLabel().toUpperCase());
+        roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        roleLabel.setForeground(new Color(215, 220, 230));
+        roleLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        content.add(roleLabel);
+        content.add(Box.createVerticalStrut(20));
 
-        /* User card */
-        JPanel userCard = new JPanel(new GridLayout(2, 1));
-        userCard.setBackground(new Color(33, 44, 57));
-        userCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
-        userCard.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
-        userCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        content.add(sideSection("INICIO"));
+        content.add(sideButton("\uD83C\uDFE0  Inicio", e -> showHome(), false));
 
-        JLabel userName = new JLabel("Usuario: " + usuario.getNombreUsuario());
-        userName.setForeground(Color.WHITE);
-        userName.setFont(new Font("SansSerif", Font.BOLD, 15));
-        JLabel userRole = new JLabel("Rol: " + usuario.getRolUsuario());
-        userRole.setForeground(new Color(212, 175, 55));
-        userRole.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        userCard.add(userName);
-        userCard.add(userRole);
-        panel.add(userCard);
-        panel.add(Box.createVerticalStrut(24));
-
-        /* Botones – todos usan RoundedButton */
-        panel.add(sideButton("Inicio", e -> showHome(), "home.png"));
-        panel.add(sideButton("Clientes", e -> openClientes(), "clientes.png"));
-        panel.add(sideButton("Habitaciones", e -> openHabitaciones(), "habitaciones.png"));
-        panel.add(sideButton("Reservas", e -> openReservas(), "reservas.png"));
-        panel.add(sideButton("Facturas", e -> openFacturas(), "facturas.png"));
-
-        if (isAdmin()) {               // módulos exclusivos admin
-            panel.add(sideButton("Empleados", e -> openEmpleados(), "empleados.png"));
-            panel.add(sideButton("Tipos de Habitación", e -> openTipos(), "tipos.png"));
+        if (isAdmin()) {
+            content.add(Box.createVerticalStrut(8));
+            content.add(sideSection("ADMINISTRACI\u00d3N"));
+            content.add(sideButton("\uD83D\uDC65  Usuarios", e -> JOptionPane.showMessageDialog(this,
+                "M\u00f3dulo de usuarios: pr\u00f3ximamente.", "Usuarios", JOptionPane.INFORMATION_MESSAGE), false));
+            content.add(sideButton("\uD83D\uDC64  Clientes", e -> openClientes(), false));
+            content.add(sideButton("\uD83D\uDC68\u200D\uD83D\uDCBB  Empleados", e -> openEmpleados(), false));
+            content.add(sideButton("\uD83C\uDFF7  Tipos Hab.", e -> openTipos(), false));
         }
 
-        panel.add(Box.createVerticalStrut(12));
-        panel.add(sideButton("Cerrar sesión", e -> closeSession(), "logout.png"));
-        panel.add(Box.createVerticalGlue());
+        if (isStaff()) {
+            content.add(Box.createVerticalStrut(8));
+            content.add(sideSection("INSTALACIONES"));
+            content.add(sideButton("\uD83D\uDEAA  Habitaciones", e -> openHabitaciones(), false));
 
-        return panel;
+            content.add(Box.createVerticalStrut(8));
+            content.add(sideSection("GESTI\u00d3N"));
+            if (!isAdmin()) {
+                content.add(sideButton("\uD83D\uDC64  Clientes", e -> openClientes(), false));
+            }
+            content.add(sideButton("\uD83D\uDCC5  Reservas", e -> openReservas(), false));
+
+            content.add(Box.createVerticalStrut(8));
+            content.add(sideSection("FINANZAS"));
+            content.add(sideButton("\uD83E\uDDFE  Facturaci\u00f3n", e -> openFacturas(), false));
+        }
+
+        if (isCliente()) {
+            content.add(Box.createVerticalStrut(8));
+            content.add(sideSection("MI ESTANCIA"));
+            content.add(sideButton("\uD83D\uDCC5  Mis Reservas", e -> openReservas(), false));
+            content.add(sideButton("\uD83E\uDDFE  Mis Facturas", e -> openFacturas(), false));
+        }
+
+        content.add(Box.createVerticalGlue());
+
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.setBackground(DARK_SIDEBAR);
+        footer.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(255, 255, 255, 20)),
+                new EmptyBorder(8, 12, 8, 12)));
+
+        JLabel userIcon = new JLabel("\uD83D\uDC64  " + usuario.getNombreUsuario());
+        userIcon.setForeground(new Color(215, 220, 230));
+        userIcon.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        footer.add(userIcon, BorderLayout.CENTER);
+
+        JLabel exitIcon = new JLabel("\u23F9");
+        exitIcon.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        exitIcon.setForeground(new Color(220, 38, 38));
+        exitIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        exitIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                closeSession();
+            }
+        });
+        footer.add(exitIcon, BorderLayout.EAST);
+
+        content.add(footer);
+
+        JScrollPane scroll = new JScrollPane(content);
+        scroll.setBorder(null);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        outer.add(scroll, BorderLayout.CENTER);
+
+        return outer;
     }
 
-    /* --------------------------------------------------------------
-       Botón lateral con ícono y texto */
-    private JButton sideButton(String text, ActionListener listener, String iconName) {
-        RoundedButton btn = new RoundedButton(text);
-        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+    private JLabel sideSection(String title) {
+        JLabel label = new JLabel("  " + title);
+        label.setForeground(new Color(255, 255, 255, 100));
+        label.setFont(new Font("SansSerif", Font.BOLD, 10));
+        label.setBorder(new EmptyBorder(6, 8, 4, 8));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+        return label;
+    }
+
+    private JButton sideButton(String text, ActionListener listener, boolean active) {
+        JButton btn = new JButton(text);
+        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setIconTextGap(10);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        btn.setBackground(new Color(38, 52, 68));
-        btn.setForeground(Color.WHITE);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        btn.setPreferredSize(new Dimension(0, 38));
+        btn.setMinimumSize(new Dimension(0, 38));
+        btn.setBackground(active ? new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 30) : DARK_SIDEBAR);
+        btn.setForeground(active ? GOLD : Color.WHITE);
+        btn.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 12));
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(true);
+        btn.setBorder(BorderFactory.createEmptyBorder(6, 18, 6, 12));
         btn.addActionListener(listener);
-        ImageIcon icon = loadIcon(iconName, 21, 21);
-        if (icon != null) {
-            btn.setIcon(icon);
-        }
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                if (!active) btn.setBackground(SIDEBAR_HOVER);
+                btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                if (!active) btn.setBackground(DARK_SIDEBAR);
+            }
+        });
         return btn;
     }
 
-    /* --------------------------------------------------------------
-       Carga de iconos desde src/Imagenes (ruta relativa al classpath) */
+    // ======================== ICON LOADER ========================
+
     private ImageIcon loadIcon(String name, int w, int h) {
         java.net.URL url = getClass().getResource("/Imagenes/" + name);
         if (url == null) return null;
@@ -155,72 +317,80 @@ public class VentanaPrincipal extends JFrame {
         return new ImageIcon(img);
     }
 
-    /* --------------------------------------------------------------
-       Dashboard (Home) – tarjetas premium  */
+    // ======================== DASHBOARD / HOME ========================
+
     private void showHome() {
         closeActiveFrames();
 
-        JPanel home = new JPanel(new BorderLayout(18, 18));
-        home.setBackground(new Color(245, 242, 235));
-        home.setBorder(BorderFactory.createEmptyBorder(36, 36, 36, 36));
+        JPanel home = new JPanel(new BorderLayout(0, 20));
+        home.setBackground(CONTENT_BG);
+        home.setBorder(new EmptyBorder(24, 24, 24, 24));
 
-        /* Hero panel (texto de bienvenida) */
-        JPanel hero = new JPanel(new BorderLayout(16, 16));
+        JPanel hero = new JPanel(new BorderLayout(12, 8));
         hero.setBackground(Color.WHITE);
         hero.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(212, 175, 55), 2),
-                BorderFactory.createEmptyBorder(28, 28, 28, 28)));
+                BorderFactory.createLineBorder(CARD_BORDER, 1),
+                new EmptyBorder(28, 28, 28, 28)));
 
         JLabel title = new JLabel("Bienvenido, " + usuario.getNombreUsuario());
-        title.setFont(new Font("Serif", Font.BOLD, 34));
-        title.setForeground(new Color(23, 33, 43));
-
-        String heroMsg = isAdmin()
-                ? "Este panel concentra los módulos principales del hotel. Desde aquí puedes administrar clientes, reservas, habitaciones, facturación y los elementos operativos del sistema."
-                : "Bienvenido al portal de Hotel Gales. Desde aquí puedes consultar habitaciones disponibles, gestionar tus reservas y revisar tus facturas.";
-
-        JLabel text = new JLabel("<html><body style='width:620px;'>" + heroMsg + "</body></html>");
-        text.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        text.setForeground(new Color(74, 85, 104));
-
+        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        title.setForeground(TEXT_MAIN);
         hero.add(title, BorderLayout.NORTH);
+
+        String heroMsg = isStaff()
+                ? "Panel de gesti\u00f3n del Hotel Gales. Administra clientes, reservas, habitaciones y facturaci\u00f3n desde un solo lugar."
+                : "Bienvenido a Hotel Gales. Aqu\u00ed puedes consultar tus reservas y facturas.";
+        JLabel text = new JLabel("<html><body style='width:500px;'>" + heroMsg + "</body></html>");
+        text.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        text.setForeground(TEXT_MUTED);
         hero.add(text, BorderLayout.CENTER);
+
+        JLabel roleBadge = new JLabel(getRoleLabel().toUpperCase());
+        roleBadge.setFont(new Font("SansSerif", Font.BOLD, 11));
+        roleBadge.setForeground(GOLD);
+        roleBadge.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(GOLD, 1),
+                new EmptyBorder(4, 12, 4, 12)));
+        hero.add(roleBadge, BorderLayout.EAST);
+
         home.add(hero, BorderLayout.NORTH);
 
-        /* Tarjetas de estadística */
         JPanel cards;
-        if (isAdmin()) {
+        if (isStaff()) {
             cards = new JPanel(new GridLayout(2, 3, 16, 16));
-            cards.add(new CardPanel("Clientes",   count("cliente",            "") + " registrados"));
+            cards.setOpaque(false);
+            cards.add(new CardPanel("Clientes",    count("cliente", "") + " registrados"));
             cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
-            cards.add(new CardPanel("Reservas",   count("reserva",            "") + " activas"));
-            cards.add(new CardPanel("Facturas",   count("facturas", "WHERE estadofactura='PENDIENTE'") + " pendientes"));
-            cards.add(new CardPanel("Empleados",  count("empleado",           "") + " activos"));
-            cards.add(new CardPanel("Tipologías", count("tipohabitacion",    "") + " configuradas"));
+            cards.add(new CardPanel("Reservas",    count("reserva", "") + " activas"));
+            cards.add(new CardPanel("Facturas",    count("facturas", "WHERE estadofactura='PENDIENTE'") + " pendientes"));
+            cards.add(new CardPanel("Empleados",   count("empleado", "") + " activos"));
+            cards.add(new CardPanel("Tipolog\u00edas", count("tipohabitacion", "") + " configuradas"));
         } else {
             cards = new JPanel(new GridLayout(1, 3, 16, 16));
+            cards.setOpaque(false);
             cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
             cards.add(new CardPanel("Mis Reservas", count("reserva", "") + " activas"));
             cards.add(new CardPanel("Mis Facturas", count("facturas", "") + " registradas"));
         }
-        cards.setOpaque(false);
         home.add(cards, BorderLayout.CENTER);
 
-        /* Internal frame que contiene el dashboard */
         JInternalFrame homeFrame = new JInternalFrame("Inicio", false, false, false, false);
-        homeFrame.setSize(980, 560);
-        homeFrame.setLocation(20, 20);
         homeFrame.setLayout(new BorderLayout());
         homeFrame.add(home, BorderLayout.CENTER);
         homeFrame.setVisible(true);
 
         desktopPane.add(homeFrame);
+        SwingUtilities.invokeLater(() -> {
+            homeFrame.setSize(desktopPane.getWidth() - 40, desktopPane.getHeight() - 40);
+            homeFrame.setLocation(20, 20);
+            homeFrame.revalidate();
+        });
         desktopPane.revalidate();
         desktopPane.repaint();
     }
 
-    /* --------------------------------------------------------------
-       Módulos auxiliares (solo delegan al código ya existente) */
+    // ======================== MODULE OPENERS ========================
+
     private void openClientes()        { openModule("clientes",   buildClientesModule()); }
     private void openHabitaciones()   { openModule("habitaciones", buildHabitacionesModule()); }
     private void openReservas()       { openModule("reservas", buildReservasModule()); }
@@ -235,32 +405,30 @@ public class VentanaPrincipal extends JFrame {
                 tabla -> new ControladorCliente().cargarTablaClientes(tabla));
         f.setCreateAction(e -> new DialogCliente(this, -1, f::triggerReload).setVisible(true));
         f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogCliente(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione un cliente para editar."); });
-        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar cliente?")==JOptionPane.YES_OPTION) { new ControladorCliente().eliminarCliente(id); f.triggerReload(); } });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar cliente?")==JOptionPane.YES_OPTION) { new ControladorCliente().eliminarCliente(id); f.triggerReload(); } });
         return f;
     }
 
     private ModuleListInternalFrame buildHabitacionesModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Habitaciones",
-                new Object[]{"ID","Número","Tipo","Precio","Estado"},
+                new Object[]{"ID","N\u00famero","Tipo","Precio","Estado"},
                 tabla -> new ControladorHabitaciones().cargarTablaHabitaciones(tabla));
-        if (isAdmin()) {
-            f.setCreateAction(e -> new DialogHabitacion(this, -1, f::triggerReload).setVisible(true));
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogHabitacion(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una habitación para editar."); });
-            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar habitación?")==JOptionPane.YES_OPTION) { new ControladorHabitaciones().eliminarHabitacion(id); f.triggerReload(); } });
-        }
+        f.setCreateAction(e -> new DialogHabitacion(this, -1, f::triggerReload).setVisible(true));
+        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogHabitacion(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una habitaci\u00f3n para editar."); });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar habitaci\u00f3n?")==JOptionPane.YES_OPTION) { new ControladorHabitaciones().eliminarHabitacion(id); f.triggerReload(); } });
         return f;
     }
 
     private ModuleListInternalFrame buildReservasModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Reservas",
-                new Object[]{"ID","Habitación","Personas","Entrada","Salida","Pago","ID Cliente"},
+                new Object[]{"ID","Habitaci\u00f3n","Personas","Entrada","Salida","Pago","ID Cliente"},
                 tabla -> new ControladorReserva().cargarTablaReservas(tabla));
         f.setCreateAction(e -> new DialogReserva(this, -1, f::triggerReload).setVisible(true));
         if (isAdmin()) {
             f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogReserva(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una reserva para editar."); });
-            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"¿Eliminar reserva?")==JOptionPane.YES_OPTION) { new ControladorReserva().eliminarReserva(id); f.triggerReload(); } });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar reserva?")==JOptionPane.YES_OPTION) { new ControladorReserva().eliminarReserva(id); f.triggerReload(); } });
         }
         return f;
     }
@@ -268,10 +436,10 @@ public class VentanaPrincipal extends JFrame {
     private ModuleListInternalFrame buildFacturasModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Facturas",
-                new Object[]{"ID","Reserva","Fecha","Total","Estado","Método"},
+                new Object[]{"ID","Reserva","Fecha","Total","Estado","M\u00e9todo"},
                 tabla -> new ControladorFacturas().cargarTablaFacturas(tabla));
         if (isAdmin()) {
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edición*/} else JOptionPane.showMessageDialog(this,"Seleccione una factura."); });
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edici\u00f3n*/} else JOptionPane.showMessageDialog(this,"Seleccione una factura."); });
         }
         return f;
     }
@@ -279,7 +447,7 @@ public class VentanaPrincipal extends JFrame {
     private ModuleListInternalFrame buildEmpleadosModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Empleados",
-                new Object[]{"ID","Nombre","Apellido","Documento","Cargo","Salario","Fecha","Teléfono","Correo","Dirección","ID Usuario"},
+                new Object[]{"ID","Nombre","Apellido","Documento","Cargo","Salario","Fecha","Tel\u00e9fono","Correo","Direcci\u00f3n","ID Usuario"},
                 tabla -> new ControladorEmpleado().cargarTablaEmpleados(tabla));
         if (isAdmin()) {
             f.setCreateAction(e -> {/*TODO: crear*/});
@@ -291,8 +459,8 @@ public class VentanaPrincipal extends JFrame {
 
     private ModuleListInternalFrame buildTiposModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
-                "Tipos de Habitación",
-                new Object[]{"ID","Nombre","Descripción"},
+                "Tipos de Habitaci\u00f3n",
+                new Object[]{"ID","Nombre","Descripci\u00f3n"},
                 tabla -> new ControladorTipoHabitacion().cargarTablaTiposHabitacion(tabla));
         if (isAdmin()) {
             f.setCreateAction(e -> {/*TODO: crear*/});
@@ -302,8 +470,8 @@ public class VentanaPrincipal extends JFrame {
         return f;
     }
 
-    /* --------------------------------------------------------------
-       Helper genérico para abrir (o activar) un módulo interno */
+    // ======================== MODULE MANAGEMENT ========================
+
     private void openModule(String key, JInternalFrame frame) {
         JInternalFrame existing = frames.get(key);
         if (existing != null && existing.isDisplayable()) {
@@ -315,20 +483,23 @@ public class VentanaPrincipal extends JFrame {
         desktopPane.add(frame);
         frame.setVisible(true);
         frames.put(key, frame);
+        SwingUtilities.invokeLater(() -> {
+            frame.setSize(desktopPane.getWidth() - 40, desktopPane.getHeight() - 40);
+            frame.setLocation(20, 20);
+            frame.revalidate();
+        });
         desktopPane.revalidate();
         desktopPane.repaint();
     }
 
-    /* --------------------------------------------------------------
-       Cerrar todas las ventanas internas */
     private void closeActiveFrames() {
         for (JInternalFrame f : frames.values()) { f.dispose(); }
         frames.clear();
         desktopPane.removeAll();
     }
 
-    /* --------------------------------------------------------------
-       Cerrar sesión (mantiene la lógica actual) */
+    // ======================== SESSION ========================
+
     private void closeSession() {
         ConexionBD.desconectar();
         dispose();
@@ -339,8 +510,8 @@ public class VentanaPrincipal extends JFrame {
         });
     }
 
-    /* --------------------------------------------------------------
-       Contador genérico (utilizado en tarjetas) */
+    // ======================== DB HELPERS ========================
+
     private int count(String table, String where) {
         try {
             String sql = "SELECT COUNT(*) FROM " + table + (where.isEmpty() ? "" : " " + where);

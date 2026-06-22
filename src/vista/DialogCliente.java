@@ -3,9 +3,14 @@ package vista;
 import Controlador.ControladorCliente;
 import modelo.Cliente;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class DialogCliente extends JDialog {
+    private static final Color GOLD = new Color(212, 175, 55);
+    private static final Color DARK_BG = new Color(17, 24, 39);
+    private static final Color FIELD_BG = new Color(249, 250, 251);
+
     private JTextField txtNombre, txtApellido, txtDocumento, txtCorreo, txtTelefono, txtDireccion, txtIdUsuario;
     private int idClienteToEdit = -1;
     private Runnable onSaved;
@@ -15,57 +20,102 @@ public class DialogCliente extends JDialog {
         this.idClienteToEdit = idClienteToEdit;
         this.onSaved = onSaved;
 
-        setSize(400, 350);
+        setSize(540, 480);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
+        setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(7, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel header = new JPanel();
+        header.setBackground(DARK_BG);
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, GOLD));
+        header.setLayout(new BorderLayout());
+        header.setPreferredSize(new Dimension(0, 54));
 
-        panel.add(new JLabel("Nombre:"));
-        txtNombre = new JTextField();
-        panel.add(txtNombre);
+        JLabel headerTitle = new JLabel("  " + (idClienteToEdit == -1 ? "NUEVO CLIENTE" : "EDITAR CLIENTE"));
+        headerTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
+        headerTitle.setForeground(GOLD);
+        header.add(headerTitle, BorderLayout.CENTER);
 
-        panel.add(new JLabel("Apellido:"));
-        txtApellido = new JTextField();
-        panel.add(txtApellido);
+        add(header, BorderLayout.NORTH);
 
-        panel.add(new JLabel("Documento:"));
-        txtDocumento = new JTextField();
-        panel.add(txtDocumento);
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 24, 12, 24));
+        panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
-        panel.add(new JLabel("Correo:"));
-        txtCorreo = new JTextField();
-        panel.add(txtCorreo);
+        txtNombre = createField(); txtApellido = createField(); txtDocumento = createField();
+        txtCorreo = createField(); txtTelefono = createField(); txtDireccion = createField(); txtIdUsuario = createField();
 
-        panel.add(new JLabel("Telefono:"));
-        txtTelefono = new JTextField();
-        panel.add(txtTelefono);
-
-        panel.add(new JLabel("Direccion:"));
-        txtDireccion = new JTextField();
-        panel.add(txtDireccion);
-
-        panel.add(new JLabel("ID Usuario (Opcional):"));
-        txtIdUsuario = new JTextField("0");
-        panel.add(txtIdUsuario);
+        addRow(panel, gbc, 0, "Nombre:", txtNombre);
+        addRow(panel, gbc, 1, "Apellido:", txtApellido);
+        addRow(panel, gbc, 2, "Documento:", txtDocumento);
+        addRow(panel, gbc, 3, "Correo:", txtCorreo);
+        addRow(panel, gbc, 4, "Tel\u00e9fono:", txtTelefono);
+        addRow(panel, gbc, 5, "Direcci\u00f3n:", txtDireccion);
+        addRow(panel, gbc, 6, "ID Usuario:", txtIdUsuario);
 
         add(panel, BorderLayout.CENTER);
 
-        JPanel btnPanel = new JPanel();
-        JButton btnGuardar = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Cancelar");
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        btnPanel.setBackground(Color.WHITE);
+        btnPanel.setBorder(new EmptyBorder(0, 0, 16, 24));
 
-        btnGuardar.addActionListener(e -> guardar());
+        JButton btnCancelar = createButton("Cancelar", false);
         btnCancelar.addActionListener(e -> dispose());
 
-        btnPanel.add(btnGuardar);
+        JButton btnGuardar = createButton("Guardar", true);
+        btnGuardar.addActionListener(e -> guardar());
+
         btnPanel.add(btnCancelar);
+        btnPanel.add(btnGuardar);
         add(btnPanel, BorderLayout.SOUTH);
 
         if (idClienteToEdit != -1) {
             cargarDatos();
         }
+    }
+
+    private JTextField createField() {
+        JTextField f = new JTextField(18);
+        f.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        f.setBackground(FIELD_BG);
+        f.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                new EmptyBorder(6, 10, 6, 10)));
+        return f;
+    }
+
+    private JButton createButton(String text, boolean primary) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        if (primary) {
+            btn.setBackground(GOLD);
+            btn.setForeground(DARK_BG);
+            btn.setBorder(BorderFactory.createEmptyBorder(8, 24, 8, 24));
+        } else {
+            btn.setBackground(Color.WHITE);
+            btn.setForeground(new Color(107, 114, 128));
+            btn.setBorder(BorderFactory.createLineBorder(new Color(209, 213, 219)));
+        }
+        return btn;
+    }
+
+    private void addRow(JPanel panel, GridBagConstraints gbc, int row, String label, JTextField field) {
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setForeground(DARK_BG);
+        panel.add(lbl, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        panel.add(field, gbc);
     }
 
     private void cargarDatos() {

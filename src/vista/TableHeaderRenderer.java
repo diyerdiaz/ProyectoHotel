@@ -5,12 +5,12 @@ import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
-/** Renderiza los encabezados de JTable con fondo azul‑oscuro y texto blanco. */
 public class TableHeaderRenderer implements TableCellRenderer {
 
-    private final Font headerFont = new Font("SansSerif", Font.BOLD, 13);
-    private final Color background = new Color(23, 33, 43);
-    private final Color foreground = Color.WHITE;
+    private static final Color GOLD = new Color(212, 175, 55);
+    private static final Color HEADER_BG = new Color(17, 24, 39);
+
+    private final Font headerFont = new Font("SansSerif", Font.BOLD, 12);
 
     @Override
     public Component getTableCellRendererComponent(JTable table,
@@ -19,19 +19,21 @@ public class TableHeaderRenderer implements TableCellRenderer {
 
         JLabel lbl = new JLabel(value != null ? value.toString() : "");
         lbl.setOpaque(true);
-        lbl.setBackground(background);
-        lbl.setForeground(foreground);
+        lbl.setBackground(HEADER_BG);
+        lbl.setForeground(Color.WHITE);
         lbl.setFont(headerFont);
-        lbl.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        lbl.setHorizontalAlignment(SwingConstants.LEADING);
+        lbl.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, GOLD),
+                BorderFactory.createEmptyBorder(10, 12, 10, 12)));
         return lbl;
     }
 
-    /** Conveniencia: aplicar a una tabla existente */
     public static void apply(JTable table) {
         TableHeaderRenderer renderer = new TableHeaderRenderer();
         JTableHeader th = table.getTableHeader();
         th.setDefaultRenderer(renderer);
-        th.setPreferredSize(new Dimension(th.getWidth(), 30));
+        th.setPreferredSize(new Dimension(th.getWidth(), 38));
+        th.setBackground(HEADER_BG);
     }
 }

@@ -17,6 +17,28 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
         initComponents();
         getRootPane().setDefaultButton(btnSiguiente);
 
+        // Premium styling
+        java.awt.Color gold = new java.awt.Color(212, 175, 55);
+        java.awt.Color darkBg = new java.awt.Color(17, 24, 39);
+
+        btnSiguiente.setBackground(gold);
+        btnSiguiente.setForeground(darkBg);
+        btnSiguiente.setFont(btnSiguiente.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        btnSiguiente.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnSiguiente.setBackground(new java.awt.Color(241, 196, 15));
+                btnSiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnSiguiente.setBackground(gold);
+            }
+        });
+
+        lblIniciarSesion.setForeground(gold);
+        lblIniciarSesion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
         ((javax.swing.text.AbstractDocument) txtCedula.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
@@ -180,8 +202,6 @@ public class MDIRegistroUsuario extends javax.swing.JFrame {
             javax.swing.UIManager.put( "TextComponent.arc", 15 );
             javax.swing.UIManager.put( "ScrollBar.thumbArc", 999 );
             javax.swing.UIManager.put( "ScrollBar.thumbInsets", new java.awt.Insets( 2, 2, 2, 2 ) );
-            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
-            javax.swing.JDialog.setDefaultLookAndFeelDecorated(true);
             javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarkLaf());
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(MDIRegistroUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);

@@ -3,12 +3,17 @@ package vista;
 import Controlador.ControladorReserva;
 import modelo.Reserva;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DialogReserva extends JDialog {
+    private static final Color GOLD = new Color(212, 175, 55);
+    private static final Color DARK_BG = new Color(17, 24, 39);
+    private static final Color FIELD_BG = new Color(249, 250, 251);
+
     private JTextField txtIdCliente, txtIdHabitacion, txtHabitacionDesc, txtPersonas, txtFechaEntrada, txtFechaSalida;
     private JComboBox<String> cbMedioPago;
     private int idReservaToEdit = -1;
@@ -20,57 +25,120 @@ public class DialogReserva extends JDialog {
         this.idReservaToEdit = idReservaToEdit;
         this.onSaved = onSaved;
 
-        setSize(400, 350);
+        setSize(540, 480);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
+        setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(7, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel header = new JPanel();
+        header.setBackground(DARK_BG);
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, GOLD));
+        header.setLayout(new BorderLayout());
+        header.setPreferredSize(new Dimension(0, 54));
 
-        panel.add(new JLabel("ID Cliente:"));
-        txtIdCliente = new JTextField();
-        panel.add(txtIdCliente);
+        JLabel headerTitle = new JLabel("  " + (idReservaToEdit == -1 ? "NUEVA RESERVA" : "EDITAR RESERVA"));
+        headerTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
+        headerTitle.setForeground(GOLD);
+        header.add(headerTitle, BorderLayout.CENTER);
 
-        panel.add(new JLabel("ID Habitación:"));
-        txtIdHabitacion = new JTextField();
-        panel.add(txtIdHabitacion);
+        add(header, BorderLayout.NORTH);
 
-        panel.add(new JLabel("Nombre/Ref Habitación:"));
-        txtHabitacionDesc = new JTextField();
-        panel.add(txtHabitacionDesc);
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 24, 12, 24));
+        panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
-        panel.add(new JLabel("N° Personas:"));
-        txtPersonas = new JTextField();
-        panel.add(txtPersonas);
+        txtIdCliente = createField(); txtIdHabitacion = createField(); txtHabitacionDesc = createField();
+        txtPersonas = createField(); txtFechaEntrada = createField(); txtFechaSalida = createField();
 
-        panel.add(new JLabel("Fecha Entrada (YYYY-MM-DD):"));
-        txtFechaEntrada = new JTextField();
-        panel.add(txtFechaEntrada);
-
-        panel.add(new JLabel("Fecha Salida (YYYY-MM-DD):"));
-        txtFechaSalida = new JTextField();
-        panel.add(txtFechaSalida);
-
-        panel.add(new JLabel("Medio de Pago:"));
         cbMedioPago = new JComboBox<>(new String[]{"EFECTIVO", "TARJETA", "TRANSFERENCIA"});
-        panel.add(cbMedioPago);
+        cbMedioPago.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        cbMedioPago.setBackground(FIELD_BG);
+
+        addRow(panel, gbc, 0, "ID Cliente:", txtIdCliente);
+        addRow(panel, gbc, 1, "ID Habitaci\u00f3n:", txtIdHabitacion);
+        addRow(panel, gbc, 2, "Ref. Habitaci\u00f3n:", txtHabitacionDesc);
+        addRow(panel, gbc, 3, "N\u00b0 Personas:", txtPersonas);
+        addRow(panel, gbc, 4, "Entrada (YYYY-MM-DD):", txtFechaEntrada);
+        addRow(panel, gbc, 5, "Salida (YYYY-MM-DD):", txtFechaSalida);
+        addRowCombo(panel, gbc, 6, "Medio de Pago:", cbMedioPago);
 
         add(panel, BorderLayout.CENTER);
 
-        JPanel btnPanel = new JPanel();
-        JButton btnGuardar = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Cancelar");
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        btnPanel.setBackground(Color.WHITE);
+        btnPanel.setBorder(new EmptyBorder(0, 0, 16, 24));
 
-        btnGuardar.addActionListener(e -> guardar());
+        JButton btnCancelar = createButton("Cancelar", false);
         btnCancelar.addActionListener(e -> dispose());
 
-        btnPanel.add(btnGuardar);
+        JButton btnGuardar = createButton("Guardar", true);
+        btnGuardar.addActionListener(e -> guardar());
+
         btnPanel.add(btnCancelar);
+        btnPanel.add(btnGuardar);
         add(btnPanel, BorderLayout.SOUTH);
 
         if (idReservaToEdit != -1) {
             cargarDatos();
         }
+    }
+
+    private JTextField createField() {
+        JTextField f = new JTextField(18);
+        f.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        f.setBackground(FIELD_BG);
+        f.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                new EmptyBorder(6, 10, 6, 10)));
+        return f;
+    }
+
+    private JButton createButton(String text, boolean primary) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        if (primary) {
+            btn.setBackground(GOLD);
+            btn.setForeground(DARK_BG);
+            btn.setBorder(BorderFactory.createEmptyBorder(8, 24, 8, 24));
+        } else {
+            btn.setBackground(Color.WHITE);
+            btn.setForeground(new Color(107, 114, 128));
+            btn.setBorder(BorderFactory.createLineBorder(new Color(209, 213, 219)));
+        }
+        return btn;
+    }
+
+    private void addRow(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent comp) {
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setForeground(DARK_BG);
+        panel.add(lbl, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        panel.add(comp, gbc);
+    }
+
+    private void addRowCombo(JPanel panel, GridBagConstraints gbc, int row, String label, JComboBox<String> cb) {
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setForeground(DARK_BG);
+        panel.add(lbl, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        panel.add(cb, gbc);
     }
 
     private void cargarDatos() {

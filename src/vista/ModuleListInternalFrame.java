@@ -1,6 +1,8 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -14,12 +16,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
+import javax.swing.Box;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class ModuleListInternalFrame extends JInternalFrame {
+    private static final Color GOLD = new Color(212, 175, 55);
+    private static final Color DARK_BG = new Color(17, 24, 39);
+    private static final Color TOOLBAR_BG = new Color(249, 250, 251);
+    private static final Color HOVER_BG = new Color(241, 196, 15);
+
     private final JTable table;
     private final DefaultTableModel model;
     private final TableRowSorter<DefaultTableModel> sorter;
@@ -33,7 +43,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
         super(title, true, true, true, true);
         this.loader = Objects.requireNonNull(loader, "loader");
 
-        setSize(980, 560);
+        setSize(1000, 600);
         setLocation(20, 20);
         setVisible(false);
 
@@ -44,56 +54,88 @@ public class ModuleListInternalFrame extends JInternalFrame {
             }
         };
 
-        table = new JTable(model);
-        table.setRowHeight(24);
+        table = new JTable(model) {
+            @Override
+            public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(249, 250, 251));
+                }
+                if (isRowSelected(row)) {
+                    c.setBackground(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 30));
+                }
+                return c;
+            }
+        };
+        table.setRowHeight(32);
+        table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        table.setShowGrid(false);
+        table.setSelectionBackground(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 40));
+        table.setSelectionForeground(DARK_BG);
+        table.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12));
+
         sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
+        TableHeaderRenderer.apply(table);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        for (int i = 0; i < columns.length; i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        toolbar.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        toolbar.add(new JLabel("Buscar"));
+        toolbar.setBackground(TOOLBAR_BG);
+        toolbar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(226, 232, 240)),
+                BorderFactory.createEmptyBorder(10, 12, 10, 12)));
 
-        searchField = new JTextField(24);
+        JLabel searchLabel = new JLabel("Buscar");
+        searchLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12));
+        searchLabel.setForeground(DARK_BG);
+        toolbar.add(searchLabel);
+
+        searchField = new JTextField(28);
+        searchField.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)));
         toolbar.add(searchField);
 
-        JButton refresh = new JButton("Actualizar");
+        toolbar.add(Box.createHorizontalStrut(8));
+
+        createBtn = createActionButton("+ Crear");
+        editBtn = createActionButton("Editar");
+        deleteBtn = createActionButton("Eliminar");
+
+        createBtn.setVisible(false);
+        editBtn.setVisible(false);
+        deleteBtn.setVisible(false);
+
+        toolbar.add(createBtn);
+        toolbar.add(editBtn);
+        toolbar.add(deleteBtn);
+
+        toolbar.add(Box.createHorizontalGlue());
+
+        JButton refresh = createSecondaryButton("Actualizar");
         refresh.addActionListener(e -> reloadData());
         toolbar.add(refresh);
 
-        JButton clear = new JButton("Limpiar");
+        JButton clear = createSecondaryButton("Limpiar");
         clear.addActionListener(e -> {
             searchField.setText("");
             applyFilter();
         });
         toolbar.add(clear);
 
-        createBtn = new JButton("Crear");
-        createBtn.setVisible(false);
-        toolbar.add(createBtn);
-
-        editBtn = new JButton("Editar");
-        editBtn.setVisible(false);
-        toolbar.add(editBtn);
-
-        deleteBtn = new JButton("Eliminar");
-        deleteBtn.setVisible(false);
-        toolbar.add(deleteBtn);
-
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                applyFilter();
-            }
-
+            public void insertUpdate(DocumentEvent e) { applyFilter(); }
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                applyFilter();
-            }
-
+            public void removeUpdate(DocumentEvent e) { applyFilter(); }
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                applyFilter();
-            }
+            public void changedUpdate(DocumentEvent e) { applyFilter(); }
         });
 
         setLayout(new BorderLayout());
@@ -101,6 +143,34 @@ public class ModuleListInternalFrame extends JInternalFrame {
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         reloadData();
+    }
+
+    private JButton createActionButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 11));
+        btn.setBackground(GOLD);
+        btn.setForeground(DARK_BG);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(HOVER_BG); }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(GOLD); }
+        });
+        return btn;
+    }
+
+    private JButton createSecondaryButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
+        btn.setBackground(Color.WHITE);
+        btn.setForeground(new Color(107, 114, 128));
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createLineBorder(new Color(209, 213, 219)));
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        return btn;
     }
 
     private void reloadData() {
