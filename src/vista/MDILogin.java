@@ -16,6 +16,81 @@ public class MDILogin extends javax.swing.JFrame {
     public MDILogin() {
         initComponents();
         getRootPane().setDefaultButton(jButton1);
+        
+        // --- Premium styling ---
+        java.awt.Color gold = new java.awt.Color(212, 175, 55);
+        java.awt.Color darkBg = new java.awt.Color(17, 24, 39);
+        java.awt.Font boldFont = jButton1.getFont().deriveFont(java.awt.Font.BOLD, 14f);
+        
+        // Hotel title in gold
+        lbHotelGales.setForeground(gold);
+        
+        // "BIENVENIDO" in gold
+        lbBienvenido.setForeground(gold);
+        lbBienvenido.setText("BIENVENIDO");
+        lbBienvenido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        
+        // "Iniciar Sesion" button — gold style
+        jButton1.setBackground(gold);
+        jButton1.setForeground(darkBg);
+        jButton1.setFont(boldFont);
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                jButton1.setBackground(new java.awt.Color(241, 196, 15));
+                jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                jButton1.setBackground(gold);
+            }
+        });
+        
+        // "Crear cuenta" button — outline gold
+        jButton2.setBackground(darkBg);
+        jButton2.setForeground(gold);
+        jButton2.setFont(boldFont);
+        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(gold, 1));
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                jButton2.setBackground(gold);
+                jButton2.setForeground(darkBg);
+                jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                jButton2.setBackground(darkBg);
+                jButton2.setForeground(gold);
+                jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(gold, 1));
+            }
+        });
+        
+        // "Recordarme" checkbox — brighter for dark bg
+        chkRecordarme.setForeground(java.awt.Color.WHITE);
+        
+        // Hide auto-generated text on background image label
+        jLabel1.setText("");
+        // --- end premium styling ---
+        
+        // Add component listener to center content when window is resized
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                centerContent();
+            }
+        });
+        
+        // Add window state listener to handle maximization
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            @Override
+            public void windowStateChanged(java.awt.event.WindowEvent e) {
+                java.awt.EventQueue.invokeLater(() -> centerContent());
+            }
+        });
+        
+        // Center content initially after window is shown
+        java.awt.EventQueue.invokeLater(() -> centerContent());
     }
 
     /**
@@ -127,14 +202,23 @@ public class MDILogin extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane)
+            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
+        
+        // Make window resizable and set larger initial size
+        setResizable(true);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setSize(new java.awt.Dimension(1000, 700));
+        setLocationRelativeTo(null);
+        
+        // Ensure desktopPane fills the entire window
+        desktopPane.setSize(getContentPane().getSize());
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemExitActionPerformed
@@ -164,8 +248,6 @@ public class MDILogin extends javax.swing.JFrame {
             javax.swing.UIManager.put( "TextComponent.arc", 15 );
             javax.swing.UIManager.put( "ScrollBar.thumbArc", 999 );
             javax.swing.UIManager.put( "ScrollBar.thumbInsets", new java.awt.Insets( 2, 2, 2, 2 ) );
-            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
-            javax.swing.JDialog.setDefaultLookAndFeelDecorated(true);
             javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarkLaf());
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(MDILogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -223,6 +305,78 @@ public class MDILogin extends javax.swing.JFrame {
 
     public javax.swing.JButton getJButton2() {
         return jButton2;
+    }
+
+    private void centerContent() {
+        java.awt.Container content = getContentPane();
+        int contentWidth = content.getWidth();
+        int contentHeight = content.getHeight();
+        
+        if (contentWidth <= 0 || contentHeight <= 0) return;
+        
+        int panelWidth = contentWidth / 2;
+        int panelHeight = contentHeight;
+        
+        // Update outer panels to fill the window
+        org.netbeans.lib.awtextra.AbsoluteLayout desktopLayout =
+            (org.netbeans.lib.awtextra.AbsoluteLayout) desktopPane.getLayout();
+        desktopLayout.addLayoutComponent(jPanel1,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, panelWidth, panelHeight));
+        desktopLayout.addLayoutComponent(jPanel2,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(panelWidth, 0, contentWidth - panelWidth, panelHeight));
+        
+        // --- Reposition components inside jPanel1 (left: branding) ---
+        org.netbeans.lib.awtextra.AbsoluteLayout layout1 =
+            (org.netbeans.lib.awtextra.AbsoluteLayout) jPanel1.getLayout();
+        
+        // Background image fills the panel
+        layout1.addLayoutComponent(jLabel1,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, panelWidth, panelHeight));
+        
+        // Hotel name centered
+        int hotelW = 280;
+        int hotelH = 70;
+        int hotelX = Math.max(20, (panelWidth - hotelW) / 2);
+        int hotelY = Math.max(180, panelHeight / 3 - hotelH);
+        layout1.addLayoutComponent(lbHotelGales,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(hotelX, hotelY, hotelW, hotelH));
+        
+        // Tagline centered below hotel name
+        int tagW = 250;
+        int tagH = 30;
+        int tagX = Math.max(40, (panelWidth - tagW) / 2);
+        layout1.addLayoutComponent(lbTexto2,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(tagX, hotelY + hotelH + 10, tagW, tagH));
+        
+        // --- Reposition components inside jPanel2 (right: login form) ---
+        org.netbeans.lib.awtextra.AbsoluteLayout layout2 =
+            (org.netbeans.lib.awtextra.AbsoluteLayout) jPanel2.getLayout();
+        
+        // Form group height is ~500px; vertically center it if panel is taller
+        int formH = 500;
+        int offsetY = Math.max(0, (panelHeight - formH) / 2);
+        
+        layout2.addLayoutComponent(lbBienvenido,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(40, offsetY + 10, 247, 73));
+        layout2.addLayoutComponent(lbTexto1,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(10, offsetY + 80, 320, 20));
+        layout2.addLayoutComponent(lbUsuario,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 120, 100, 40));
+        layout2.addLayoutComponent(txtUsuario,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 160, 300, 50));
+        layout2.addLayoutComponent(lbContraseña,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 240, 130, 40));
+        layout2.addLayoutComponent(txtContraseña,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 280, 300, 50));
+        layout2.addLayoutComponent(chkRecordarme,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 350, -1, -1));
+        layout2.addLayoutComponent(jButton1,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 400, 290, 50));
+        layout2.addLayoutComponent(jButton2,
+            new org.netbeans.lib.awtextra.AbsoluteConstraints(20, offsetY + 460, 290, 30));
+        
+        desktopPane.revalidate();
+        desktopPane.repaint();
     }
 
 }
