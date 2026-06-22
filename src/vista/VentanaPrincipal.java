@@ -94,6 +94,7 @@ public class VentanaPrincipal extends JFrame {
         userCard.setBackground(new Color(33, 44, 57));
         userCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
         userCard.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
+        userCard.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel userName = new JLabel("Usuario: " + usuario.getNombreUsuario());
         userName.setForeground(Color.WHITE);
@@ -129,7 +130,9 @@ public class VentanaPrincipal extends JFrame {
        Botón lateral con ícono y texto */
     private JButton sideButton(String text, ActionListener listener, String iconName) {
         RoundedButton btn = new RoundedButton(text);
-        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setIconTextGap(10);
         btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
         btn.setBackground(new Color(38, 52, 68));
         btn.setForeground(Color.WHITE);
