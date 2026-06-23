@@ -3,7 +3,9 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.awt.event.ActionListener;
@@ -16,8 +18,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
-import javax.swing.Box;
-import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -84,25 +84,37 @@ public class ModuleListInternalFrame extends JInternalFrame {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel toolbar = new JPanel(new GridBagLayout());
         toolbar.setBackground(TOOLBAR_BG);
         toolbar.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(226, 232, 240)),
-                BorderFactory.createEmptyBorder(10, 12, 10, 12)));
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel searchLabel = new JLabel("Buscar");
         searchLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12));
         searchLabel.setForeground(DARK_BG);
-        toolbar.add(searchLabel);
+        gbc.gridx = 0;
+        gbc.insets = new Insets(0, 0, 0, 6);
+        gbc.weightx = 0;
+        toolbar.add(searchLabel, gbc);
 
-        searchField = new JTextField(28);
+        searchField = new JTextField(16);
         searchField.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)));
-        toolbar.add(searchField);
+        gbc.gridx = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        toolbar.add(searchField, gbc);
 
-        toolbar.add(Box.createHorizontalStrut(8));
+        gbc.gridx = 2;
+        gbc.weightx = 0.5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        toolbar.add(new JPanel() {{ setBackground(TOOLBAR_BG); }}, gbc);
 
         createBtn = createActionButton("+ Crear");
         editBtn = createActionButton("Editar");
@@ -112,22 +124,40 @@ public class ModuleListInternalFrame extends JInternalFrame {
         editBtn.setVisible(false);
         deleteBtn.setVisible(false);
 
-        toolbar.add(createBtn);
-        toolbar.add(editBtn);
-        toolbar.add(deleteBtn);
+        gbc.gridx = 3;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.insets = new Insets(0, 0, 0, 4);
+        toolbar.add(createBtn, gbc);
+        gbc.gridx = 4;
+        gbc.insets = new Insets(0, 0, 0, 4);
+        toolbar.add(editBtn, gbc);
+        gbc.gridx = 5;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        toolbar.add(deleteBtn, gbc);
 
-        toolbar.add(Box.createHorizontalGlue());
+        gbc.gridx = 6;
+        gbc.weightx = 0.5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        toolbar.add(new JPanel() {{ setBackground(TOOLBAR_BG); }}, gbc);
 
         JButton refresh = createSecondaryButton("Actualizar");
         refresh.addActionListener(e -> reloadData());
-        toolbar.add(refresh);
+        gbc.gridx = 7;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.insets = new Insets(0, 0, 0, 6);
+        toolbar.add(refresh, gbc);
 
         JButton clear = createSecondaryButton("Limpiar");
         clear.addActionListener(e -> {
             searchField.setText("");
             applyFilter();
         });
-        toolbar.add(clear);
+        gbc.gridx = 8;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        toolbar.add(clear, gbc);
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -147,29 +177,61 @@ public class ModuleListInternalFrame extends JInternalFrame {
 
     private JButton createActionButton(String text) {
         JButton btn = new JButton(text);
-        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 11));
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12));
         btn.setBackground(GOLD);
         btn.setForeground(DARK_BG);
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 165, 45)),
+                BorderFactory.createEmptyBorder(8, 20, 8, 20)));
         btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn.setOpaque(true);
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(HOVER_BG); }
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(HOVER_BG);
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(220, 185, 40)),
+                        BorderFactory.createEmptyBorder(8, 20, 8, 20)));
+            }
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(GOLD); }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(GOLD);
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(200, 165, 45)),
+                        BorderFactory.createEmptyBorder(8, 20, 8, 20)));
+            }
         });
         return btn;
     }
 
     private JButton createSecondaryButton(String text) {
         JButton btn = new JButton(text);
-        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12));
         btn.setBackground(Color.WHITE);
-        btn.setForeground(new Color(107, 114, 128));
+        btn.setForeground(new Color(75, 85, 99));
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createLineBorder(new Color(209, 213, 219)));
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                BorderFactory.createEmptyBorder(8, 18, 8, 18)));
         btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn.setOpaque(true);
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(new Color(243, 244, 246));
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(180, 185, 195)),
+                        BorderFactory.createEmptyBorder(8, 18, 8, 18)));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(Color.WHITE);
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                        BorderFactory.createEmptyBorder(8, 18, 8, 18)));
+            }
+        });
         return btn;
     }
 

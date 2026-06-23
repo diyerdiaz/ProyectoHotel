@@ -2,6 +2,7 @@ package vista;
 
 import Controlador.ControladorReserva;
 import modelo.Reserva;
+import util.ToastNotifier;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -173,16 +174,21 @@ public class DialogReserva extends JDialog {
                 mensaje = ctrl.modificarReserva(idReservaToEdit, idCliente, idHabitacion, habitacion, personas, fEntrada, fSalida, medioPago);
             }
             
-            if (mensaje.contains("éxito")) {
+            if (mensaje.contains("éxito") || mensaje.contains("exito")) {
                 if (onSaved != null) onSaved.run();
+                Window owner = getOwner();
                 dispose();
+                if (owner != null) {
+                    String msg = idReservaToEdit == -1 ? "Reserva creada exitosamente." : "Reserva actualizada exitosamente.";
+                    ToastNotifier.showSuccess(owner, msg);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
+                ToastNotifier.showWarning(this, mensaje);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "IDs y Personas deben ser valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+            ToastNotifier.showError(this, "IDs y Personas deben ser valores num\u00e9ricos.");
         } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(this, "El formato de fecha debe ser YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);
+            ToastNotifier.showError(this, "El formato de fecha debe ser YYYY-MM-DD.");
         }
     }
 }

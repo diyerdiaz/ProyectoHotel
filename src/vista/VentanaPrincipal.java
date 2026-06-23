@@ -6,6 +6,8 @@ import Controlador.ControladorFacturas;
 import Controlador.ControladorHabitaciones;
 import Controlador.ControladorReserva;
 import Controlador.ControladorTipoHabitacion;
+import Controlador.ControladorUsuario;
+import util.ToastNotifier;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -103,22 +105,33 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createMatteBorder(0, 0, 1, 0, CARD_BORDER),
                 new EmptyBorder(0, 16, 0, 16)));
 
-        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
         left.setOpaque(false);
 
-        JLabel menuIcon = new JLabel("\u2630");
-        menuIcon.setFont(new Font("SansSerif", Font.BOLD, 20));
-        menuIcon.setForeground(TEXT_MAIN);
-        menuIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        menuIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+        JButton menuBtn = new JButton("\u2630");
+        menuBtn.setFont(new Font("SansSerif", Font.BOLD, 18));
+        menuBtn.setForeground(TEXT_MAIN);
+        menuBtn.setBackground(Color.WHITE);
+        menuBtn.setFocusPainted(false);
+        menuBtn.setBorderPainted(false);
+        menuBtn.setContentAreaFilled(false);
+        menuBtn.setOpaque(false);
+        menuBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        menuBtn.setToolTipText("Men\u00fa lateral");
+        menuBtn.addActionListener(e -> toggleSidebar());
+        menuBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                toggleSidebar();
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                menuBtn.setForeground(GOLD);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                menuBtn.setForeground(TEXT_MAIN);
             }
         });
-        left.add(menuIcon);
+        left.add(menuBtn);
 
-        JLabel pageTitle = new JLabel("  Hotel Gales");
+        JLabel pageTitle = new JLabel("Hotel Gales");
         pageTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
         pageTitle.setForeground(TEXT_MAIN);
         left.add(pageTitle);
@@ -146,13 +159,32 @@ public class VentanaPrincipal extends JFrame {
         right.add(badge);
 
         JButton logoutBtn = new JButton("Salir");
-        logoutBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        logoutBtn.setForeground(new Color(220, 38, 38));
+        logoutBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        logoutBtn.setForeground(GOLD);
         logoutBtn.setBackground(Color.WHITE);
-        logoutBtn.setBorder(BorderFactory.createLineBorder(new Color(220, 38, 38)));
         logoutBtn.setFocusPainted(false);
+        logoutBtn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(GOLD, 1),
+                BorderFactory.createEmptyBorder(6, 14, 6, 14)));
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logoutBtn.setToolTipText("Cerrar sesi\u00f3n");
         logoutBtn.addActionListener(e -> closeSession());
+        logoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                logoutBtn.setBackground(new Color(253, 242, 208));
+                logoutBtn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(200, 165, 45), 2),
+                        BorderFactory.createEmptyBorder(5, 13, 5, 13)));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                logoutBtn.setBackground(Color.WHITE);
+                logoutBtn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(GOLD, 1),
+                        BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+            }
+        });
         right.add(logoutBtn);
 
         bar.add(right, BorderLayout.EAST);
@@ -201,8 +233,7 @@ public class VentanaPrincipal extends JFrame {
         if (isAdmin()) {
             content.add(Box.createVerticalStrut(8));
             content.add(sideSection("ADMINISTRACI\u00d3N"));
-            content.add(sideButton("\uD83D\uDC65  Usuarios", e -> JOptionPane.showMessageDialog(this,
-                "M\u00f3dulo de usuarios: pr\u00f3ximamente.", "Usuarios", JOptionPane.INFORMATION_MESSAGE), false));
+            content.add(sideButton("\uD83D\uDC65  Usuarios", e -> openUsuarios(), false));
             content.add(sideButton("\uD83D\uDC64  Clientes", e -> openClientes(), false));
             content.add(sideButton("\uD83D\uDC68\u200D\uD83D\uDCBB  Empleados", e -> openEmpleados(), false));
             content.add(sideButton("\uD83C\uDFF7  Tipos Hab.", e -> openTipos(), false));
@@ -234,28 +265,53 @@ public class VentanaPrincipal extends JFrame {
 
         content.add(Box.createVerticalGlue());
 
-        JPanel footer = new JPanel(new BorderLayout());
+        JPanel footer = new JPanel();
+        footer.setLayout(new BoxLayout(footer, BoxLayout.Y_AXIS));
         footer.setBackground(DARK_SIDEBAR);
         footer.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(255, 255, 255, 20)),
-                new EmptyBorder(8, 12, 8, 12)));
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(255, 255, 255, 25)),
+                new EmptyBorder(10, 12, 10, 12)));
+        footer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel userIcon = new JLabel("\uD83D\uDC64  " + usuario.getNombreUsuario());
         userIcon.setForeground(new Color(215, 220, 230));
         userIcon.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        footer.add(userIcon, BorderLayout.CENTER);
+        userIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        footer.add(userIcon);
 
-        JLabel exitIcon = new JLabel("\u23F9");
-        exitIcon.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        exitIcon.setForeground(new Color(220, 38, 38));
-        exitIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        exitIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+        footer.add(Box.createVerticalStrut(4));
+
+        JButton footerLogout = new JButton("Cerrar sesi\u00f3n");
+        footerLogout.setFont(new Font("SansSerif", Font.BOLD, 11));
+        footerLogout.setForeground(GOLD);
+        footerLogout.setBackground(new Color(17, 24, 39));
+        footerLogout.setFocusPainted(false);
+        footerLogout.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 120), 1),
+                BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+        footerLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        footerLogout.setAlignmentX(Component.CENTER_ALIGNMENT);
+        footerLogout.setOpaque(true);
+        footerLogout.addActionListener(e -> closeSession());
+        footerLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                closeSession();
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                footerLogout.setBackground(new Color(31, 45, 78));
+                footerLogout.setForeground(new Color(248, 113, 113));
+                footerLogout.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(248, 113, 113), 1),
+                        BorderFactory.createEmptyBorder(5, 13, 5, 13)));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                footerLogout.setBackground(DARK_SIDEBAR);
+                footerLogout.setForeground(GOLD);
+                footerLogout.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 120), 1),
+                        BorderFactory.createEmptyBorder(6, 14, 6, 14)));
             }
         });
-        footer.add(exitIcon, BorderLayout.EAST);
+        footer.add(footerLogout);
 
         content.add(footer);
 
@@ -269,22 +325,23 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private JLabel sideSection(String title) {
-        JLabel label = new JLabel("  " + title);
+        JLabel label = new JLabel(title);
         label.setForeground(new Color(255, 255, 255, 100));
         label.setFont(new Font("SansSerif", Font.BOLD, 10));
-        label.setBorder(new EmptyBorder(6, 8, 4, 8));
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setBorder(new EmptyBorder(8, 0, 4, 0));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
         return label;
     }
 
     private JButton sideButton(String text, ActionListener listener, boolean active) {
         JButton btn = new JButton(text);
-        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        btn.setPreferredSize(new Dimension(0, 38));
-        btn.setMinimumSize(new Dimension(0, 38));
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        btn.setPreferredSize(new Dimension(0, 42));
+        btn.setMinimumSize(new Dimension(0, 42));
         btn.setBackground(active ? new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 30) : DARK_SIDEBAR);
         btn.setForeground(active ? GOLD : Color.WHITE);
         btn.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 12));
@@ -292,7 +349,7 @@ public class VentanaPrincipal extends JFrame {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setOpaque(true);
-        btn.setBorder(BorderFactory.createEmptyBorder(6, 18, 6, 12));
+        btn.setBorder(BorderFactory.createEmptyBorder(6, 0, 6, 0));
         btn.addActionListener(listener);
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -397,15 +454,16 @@ public class VentanaPrincipal extends JFrame {
     private void openFacturas()       { openModule("facturas", buildFacturasModule()); }
     private void openEmpleados()      { openModule("empleados", buildEmpleadosModule()); }
     private void openTipos()          { openModule("tipos",      buildTiposModule()); }
+    private void openUsuarios()       { openModule("usuarios",  buildUsuariosModule()); }
 
     private ModuleListInternalFrame buildClientesModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Clientes",
-                new Object[]{"ID","Nombre","Apellido","Documento","Correo","Telefono","Direccion","ID Usuario"},
+                new Object[]{"ID","Nombre","Apellido","Documento","Correo","Telefono","Direccion","Usuario"},
                 tabla -> new ControladorCliente().cargarTablaClientes(tabla));
         f.setCreateAction(e -> new DialogCliente(this, -1, f::triggerReload).setVisible(true));
-        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogCliente(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione un cliente para editar."); });
-        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar cliente?")==JOptionPane.YES_OPTION) { new ControladorCliente().eliminarCliente(id); f.triggerReload(); } });
+        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogCliente(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un cliente."); });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar cliente?")) { new ControladorCliente().eliminarCliente(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Cliente eliminado."); } });
         return f;
     }
 
@@ -415,8 +473,8 @@ public class VentanaPrincipal extends JFrame {
                 new Object[]{"ID","N\u00famero","Tipo","Precio","Estado"},
                 tabla -> new ControladorHabitaciones().cargarTablaHabitaciones(tabla));
         f.setCreateAction(e -> new DialogHabitacion(this, -1, f::triggerReload).setVisible(true));
-        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogHabitacion(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una habitaci\u00f3n para editar."); });
-        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar habitaci\u00f3n?")==JOptionPane.YES_OPTION) { new ControladorHabitaciones().eliminarHabitacion(id); f.triggerReload(); } });
+        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogHabitacion(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione una habitaci\u00f3n."); });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar habitaci\u00f3n?")) { new ControladorHabitaciones().eliminarHabitacion(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Habitaci\u00f3n eliminada."); } });
         return f;
     }
 
@@ -427,8 +485,8 @@ public class VentanaPrincipal extends JFrame {
                 tabla -> new ControladorReserva().cargarTablaReservas(tabla));
         f.setCreateAction(e -> new DialogReserva(this, -1, f::triggerReload).setVisible(true));
         if (isAdmin()) {
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogReserva(this, id, f::triggerReload).setVisible(true); else JOptionPane.showMessageDialog(this,"Seleccione una reserva para editar."); });
-            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && JOptionPane.showConfirmDialog(this,"\u00bfEliminar reserva?")==JOptionPane.YES_OPTION) { new ControladorReserva().eliminarReserva(id); f.triggerReload(); } });
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogReserva(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione una reserva."); });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar reserva?")) { new ControladorReserva().eliminarReserva(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Reserva eliminada."); } });
         }
         return f;
     }
@@ -439,7 +497,7 @@ public class VentanaPrincipal extends JFrame {
                 new Object[]{"ID","Reserva","Fecha","Total","Estado","M\u00e9todo"},
                 tabla -> new ControladorFacturas().cargarTablaFacturas(tabla));
         if (isAdmin()) {
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edici\u00f3n*/} else JOptionPane.showMessageDialog(this,"Seleccione una factura."); });
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edici\u00f3n*/} else ToastNotifier.showError(this,"Seleccione una factura."); });
         }
         return f;
     }
@@ -447,12 +505,12 @@ public class VentanaPrincipal extends JFrame {
     private ModuleListInternalFrame buildEmpleadosModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Empleados",
-                new Object[]{"ID","Nombre","Apellido","Documento","Cargo","Salario","Fecha","Tel\u00e9fono","Correo","Direcci\u00f3n","ID Usuario"},
+                new Object[]{"ID","Nombre","Apellido","Documento","Cargo","Salario","Fecha","Tel\u00e9fono","Correo","Direcci\u00f3n","Usuario"},
                 tabla -> new ControladorEmpleado().cargarTablaEmpleados(tabla));
         if (isAdmin()) {
-            f.setCreateAction(e -> {/*TODO: crear*/});
-            f.setEditAction(e   -> {/*TODO: editar*/});
-            f.setDeleteAction(e -> {/*TODO: eliminar*/});
+            f.setCreateAction(e -> new DialogEmpleado(this, -1, f::triggerReload).setVisible(true));
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogEmpleado(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un empleado."); });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar empleado?")) { new ControladorEmpleado().eliminarEmpleado(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Empleado eliminado."); } });
         }
         return f;
     }
@@ -463,10 +521,21 @@ public class VentanaPrincipal extends JFrame {
                 new Object[]{"ID","Nombre","Descripci\u00f3n"},
                 tabla -> new ControladorTipoHabitacion().cargarTablaTiposHabitacion(tabla));
         if (isAdmin()) {
-            f.setCreateAction(e -> {/*TODO: crear*/});
-            f.setEditAction(e   -> {/*TODO: editar*/});
-            f.setDeleteAction(e -> {/*TODO: eliminar*/});
+            f.setCreateAction(e -> new DialogTipoHabitacion(this, -1, f::triggerReload).setVisible(true));
+            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogTipoHabitacion(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un tipo."); });
+            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar tipo?")) { new ControladorTipoHabitacion().eliminarTipoHabitacion(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Tipo eliminado."); } });
         }
+        return f;
+    }
+
+    private ModuleListInternalFrame buildUsuariosModule() {
+        ModuleListInternalFrame f = new ModuleListInternalFrame(
+                "Usuarios",
+                new Object[]{"ID","Usuario","Rol"},
+                tabla -> new ControladorUsuario().cargarTablaUsuarios(tabla));
+        f.setCreateAction(e -> new DialogUsuario(this, -1, f::triggerReload).setVisible(true));
+        f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogUsuario(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un usuario."); });
+        f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar usuario?")) { new ControladorUsuario().eliminarUsuario(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Usuario eliminado."); } });
         return f;
     }
 

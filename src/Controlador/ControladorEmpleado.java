@@ -5,6 +5,9 @@
 package Controlador;
 
 import modelo.empleado;
+import modelo.ConexionBD;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
@@ -77,25 +80,30 @@ public class ControladorEmpleado {
     public void cargarTablaEmpleados(javax.swing.JTable tabla) {
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         model.setRowCount(0);
-        
-        Iterator<empleado> empleados = listarEmpleados();
-        while (empleados.hasNext()) {
-            empleado e = empleados.next();
-            if (e.getNombre() != null && !e.getNombre().equals("No hay nada registrado")) {
+
+        try {
+            Statement st = ConexionBD.conexion.createStatement();
+            ResultSet rs = st.executeQuery(
+                "SELECT e.*, u.nombreusuario FROM empleado e LEFT JOIN usuarios u ON e.idusuario = u.idusuario");
+            while (rs.next()) {
                 model.addRow(new Object[]{
-                    e.getIdEmpleado(),
-                    e.getNombre(),
-                    e.getApellido(),
-                    e.getDocumento(),
-                    e.getCargo(),
-                    e.getSalario(),
-                    e.getFechaContratacion(),
-                    e.getTelefono(),
-                    e.getCorreo(),
-                    e.getDireccion(),
-                    e.getIdUsuario()
+                    rs.getInt("idempleado"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getInt("documento"),
+                    rs.getString("cargo"),
+                    rs.getDouble("salario"),
+                    rs.getDate("fechacontratacion"),
+                    rs.getString("telefono"),
+                    rs.getString("correo"),
+                    rs.getString("direccion"),
+                    rs.getString("nombreusuario") != null ? rs.getString("nombreusuario") : "-"
                 });
             }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            System.err.println("Error cargando empleados: " + e.getMessage());
         }
     }
 }
