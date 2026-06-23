@@ -63,6 +63,7 @@ public class DialogEmpleado extends JDialog {
         txtPassword = new JPasswordField(18);
         txtPassword.setFont(new Font("SansSerif", Font.PLAIN, 13));
         txtPassword.setBackground(FIELD_BG);
+        txtPassword.setForeground(DARK_BG);
         txtPassword.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));
@@ -70,6 +71,7 @@ public class DialogEmpleado extends JDialog {
         cmbRol = new JComboBox<>(new String[]{"administrador", "recepcionista", "servicio_limpieza"});
         cmbRol.setFont(new Font("SansSerif", Font.PLAIN, 13));
         cmbRol.setBackground(FIELD_BG);
+        cmbRol.setForeground(DARK_BG);
 
         addRow(panel, gbc, 0, "Nombre:", txtNombre);
         addRow(panel, gbc, 1, "Apellido:", txtApellido);
@@ -109,6 +111,7 @@ public class DialogEmpleado extends JDialog {
         JTextField f = new JTextField(18);
         f.setFont(new Font("SansSerif", Font.PLAIN, 13));
         f.setBackground(FIELD_BG);
+        f.setForeground(DARK_BG);
         f.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));

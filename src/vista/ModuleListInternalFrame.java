@@ -29,6 +29,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
     private static final Color DARK_BG = new Color(17, 24, 39);
     private static final Color TOOLBAR_BG = new Color(249, 250, 251);
     private static final Color HOVER_BG = new Color(241, 196, 15);
+    private static final Color SELECTED_BG = new Color(253, 230, 138);
 
     private final JTable table;
     private final DefaultTableModel model;
@@ -60,9 +61,11 @@ public class ModuleListInternalFrame extends JInternalFrame {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (!isRowSelected(row)) {
                     c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(249, 250, 251));
+                    c.setForeground(DARK_BG);
                 }
                 if (isRowSelected(row)) {
-                    c.setBackground(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 30));
+                    c.setBackground(SELECTED_BG);
+                    c.setForeground(DARK_BG);
                 }
                 return c;
             }
@@ -70,8 +73,9 @@ public class ModuleListInternalFrame extends JInternalFrame {
         table.setRowHeight(32);
         table.setIntercellSpacing(new java.awt.Dimension(0, 0));
         table.setShowGrid(false);
-        table.setSelectionBackground(new Color(GOLD.getRed(), GOLD.getGreen(), GOLD.getBlue(), 40));
+        table.setSelectionBackground(SELECTED_BG);
         table.setSelectionForeground(DARK_BG);
+        table.setForeground(DARK_BG);
         table.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12));
 
         sorter = new TableRowSorter<>(model);
@@ -80,6 +84,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        centerRenderer.setForeground(DARK_BG);
         for (int i = 0; i < columns.length; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
@@ -103,6 +108,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
 
         searchField = new JTextField(16);
         searchField.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
+        searchField.setForeground(DARK_BG);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)));
