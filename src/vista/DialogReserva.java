@@ -57,6 +57,7 @@ public class DialogReserva extends JDialog {
         cbMedioPago = new JComboBox<>(new String[]{"EFECTIVO", "TARJETA", "TRANSFERENCIA"});
         cbMedioPago.setFont(new Font("SansSerif", Font.PLAIN, 13));
         cbMedioPago.setBackground(FIELD_BG);
+        cbMedioPago.setForeground(DARK_BG);
 
         addRow(panel, gbc, 0, "ID Cliente:", txtIdCliente);
         addRow(panel, gbc, 1, "ID Habitaci\u00f3n:", txtIdHabitacion);
@@ -91,6 +92,7 @@ public class DialogReserva extends JDialog {
         JTextField f = new JTextField(18);
         f.setFont(new Font("SansSerif", Font.PLAIN, 13));
         f.setBackground(FIELD_BG);
+        f.setForeground(DARK_BG);
         f.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));

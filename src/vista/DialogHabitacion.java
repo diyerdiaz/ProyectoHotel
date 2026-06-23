@@ -84,6 +84,7 @@ public class DialogHabitacion extends JDialog {
         JTextField f = new JTextField(18);
         f.setFont(new Font("SansSerif", Font.PLAIN, 13));
         f.setBackground(FIELD_BG);
+        f.setForeground(DARK_BG);
         f.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));
@@ -93,6 +94,7 @@ public class DialogHabitacion extends JDialog {
     private void styleCombo(JComboBox<String> cb) {
         cb.setFont(new Font("SansSerif", Font.PLAIN, 13));
         cb.setBackground(FIELD_BG);
+        cb.setForeground(DARK_BG);
     }
 
     private JButton createButton(String text, boolean primary) {

@@ -108,6 +108,7 @@ public class ModuleListInternalFrame extends JInternalFrame {
 
         searchField = new JTextField(16);
         searchField.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
+        searchField.setForeground(DARK_BG);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)));

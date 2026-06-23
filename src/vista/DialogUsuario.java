@@ -51,6 +51,7 @@ public class DialogUsuario extends JDialog {
         txtNombre = new JTextField(18);
         txtNombre.setFont(new Font("SansSerif", Font.PLAIN, 13));
         txtNombre.setBackground(FIELD_BG);
+        txtNombre.setForeground(DARK_BG);
         txtNombre.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));
@@ -58,6 +59,7 @@ public class DialogUsuario extends JDialog {
         txtContrasena = new JPasswordField(18);
         txtContrasena.setFont(new Font("SansSerif", Font.PLAIN, 13));
         txtContrasena.setBackground(FIELD_BG);
+        txtContrasena.setForeground(DARK_BG);
         txtContrasena.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));
@@ -65,6 +67,7 @@ public class DialogUsuario extends JDialog {
         cmbRol = new JComboBox<>(new String[]{"administrador", "recepcionista", "cliente"});
         cmbRol.setFont(new Font("SansSerif", Font.PLAIN, 13));
         cmbRol.setBackground(FIELD_BG);
+        cmbRol.setForeground(DARK_BG);
 
         addRow(panel, gbc, 0, "Usuario:", txtNombre);
         addRow(panel, gbc, 1, "Contrase\u00f1a:", txtContrasena);
