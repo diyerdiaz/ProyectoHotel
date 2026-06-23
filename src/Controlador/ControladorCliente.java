@@ -5,6 +5,9 @@
 package Controlador;
 
 import modelo.Cliente;
+import modelo.ConexionBD;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Iterator;
 import javax.swing.table.DefaultTableModel;
 
@@ -68,22 +71,27 @@ public class ControladorCliente {
     public void cargarTablaClientes(javax.swing.JTable tabla) {
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         model.setRowCount(0);
-        
-        Iterator<Cliente> clientes = listarClientes();
-        while (clientes.hasNext()) {
-            Cliente c = clientes.next();
-            if (c.getNombre() != null && !c.getNombre().equals("No hay nada registrado")) {
+
+        try {
+            Statement st = ConexionBD.conexion.createStatement();
+            ResultSet rs = st.executeQuery(
+                "SELECT c.*, u.nombreusuario FROM cliente c LEFT JOIN usuarios u ON c.idusuario = u.idusuario");
+            while (rs.next()) {
                 model.addRow(new Object[]{
-                    c.getIdCliente(),
-                    c.getNombre(),
-                    c.getApellido(),
-                    c.getDocumento(),
-                    c.getCorreo(),
-                    c.getTelefono(),
-                    c.getDireccion(),
-                    c.getIdUsuario()
+                    rs.getInt("idcliente"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getLong("documento"),
+                    rs.getString("correo"),
+                    rs.getLong("telefono"),
+                    rs.getString("direccion"),
+                    rs.getString("nombreusuario") != null ? rs.getString("nombreusuario") : "-"
                 });
             }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            System.err.println("Error cargando clientes: " + e.getMessage());
         }
     }
 }

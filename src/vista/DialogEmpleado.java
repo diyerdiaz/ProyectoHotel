@@ -1,32 +1,36 @@
 package vista;
 
-import Controlador.ControladorCliente;
+import Controlador.ControladorEmpleado;
 import Controlador.ControladorUsuario;
-import modelo.Cliente;
 import modelo.Login;
+import modelo.empleado;
 import util.Encriptador;
 import util.ToastNotifier;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
-public class DialogCliente extends JDialog {
+public class DialogEmpleado extends JDialog {
     private static final Color GOLD = new Color(212, 175, 55);
     private static final Color DARK_BG = new Color(17, 24, 39);
     private static final Color FIELD_BG = new Color(249, 250, 251);
 
-    private JTextField txtNombre, txtApellido, txtDocumento, txtCorreo, txtTelefono, txtDireccion, txtUsername;
+    private JTextField txtNombre, txtApellido, txtDocumento, txtCargo, txtSalario, txtFecha, txtTelefono, txtCorreo, txtDireccion, txtUsername;
     private JPasswordField txtPassword;
-    private int idClienteToEdit = -1;
+    private JComboBox<String> cmbRol;
+    private int idToEdit = -1;
     private Runnable onSaved;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DialogCliente(Window owner, int idClienteToEdit, Runnable onSaved) {
-        super(owner, idClienteToEdit == -1 ? "Crear Cliente" : "Editar Cliente", ModalityType.APPLICATION_MODAL);
-        this.idClienteToEdit = idClienteToEdit;
+    public DialogEmpleado(Window owner, int idToEdit, Runnable onSaved) {
+        super(owner, idToEdit == -1 ? "Crear Empleado" : "Editar Empleado", ModalityType.APPLICATION_MODAL);
+        this.idToEdit = idToEdit;
         this.onSaved = onSaved;
 
-        setSize(540, 560);
+        setSize(540, 600);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -37,7 +41,7 @@ public class DialogCliente extends JDialog {
         header.setLayout(new BorderLayout());
         header.setPreferredSize(new Dimension(0, 54));
 
-        JLabel headerTitle = new JLabel("  " + (idClienteToEdit == -1 ? "NUEVO CLIENTE" : "EDITAR CLIENTE"));
+        JLabel headerTitle = new JLabel("  " + (idToEdit == -1 ? "NUEVO EMPLEADO" : "EDITAR EMPLEADO"));
         headerTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
         headerTitle.setForeground(GOLD);
         header.add(headerTitle, BorderLayout.CENTER);
@@ -49,10 +53,11 @@ public class DialogCliente extends JDialog {
         panel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 8, 5, 8);
+        gbc.insets = new Insets(4, 8, 4, 8);
 
         txtNombre = createField(); txtApellido = createField(); txtDocumento = createField();
-        txtCorreo = createField(); txtTelefono = createField(); txtDireccion = createField();
+        txtCargo = createField(); txtSalario = createField(); txtFecha = createField();
+        txtTelefono = createField(); txtCorreo = createField(); txtDireccion = createField();
         txtUsername = createField();
 
         txtPassword = new JPasswordField(18);
@@ -62,14 +67,22 @@ public class DialogCliente extends JDialog {
                 BorderFactory.createLineBorder(new Color(209, 213, 219)),
                 new EmptyBorder(6, 10, 6, 10)));
 
+        cmbRol = new JComboBox<>(new String[]{"administrador", "recepcionista", "servicio_limpieza"});
+        cmbRol.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        cmbRol.setBackground(FIELD_BG);
+
         addRow(panel, gbc, 0, "Nombre:", txtNombre);
         addRow(panel, gbc, 1, "Apellido:", txtApellido);
         addRow(panel, gbc, 2, "Documento:", txtDocumento);
-        addRow(panel, gbc, 3, "Correo:", txtCorreo);
-        addRow(panel, gbc, 4, "Tel\u00e9fono:", txtTelefono);
-        addRow(panel, gbc, 5, "Direcci\u00f3n:", txtDireccion);
-        addRow(panel, gbc, 6, "Usuario:", txtUsername);
-        addRow(panel, gbc, 7, "Contrase\u00f1a:", txtPassword);
+        addRow(panel, gbc, 3, "Cargo:", txtCargo);
+        addRow(panel, gbc, 4, "Salario:", txtSalario);
+        addRow(panel, gbc, 5, "Fecha (YYYY-MM-DD):", txtFecha);
+        addRow(panel, gbc, 6, "Tel\u00e9fono:", txtTelefono);
+        addRow(panel, gbc, 7, "Correo:", txtCorreo);
+        addRow(panel, gbc, 8, "Direcci\u00f3n:", txtDireccion);
+        addRow(panel, gbc, 9, "Usuario:", txtUsername);
+        addRow(panel, gbc, 10, "Contrase\u00f1a:", txtPassword);
+        addRowCombo(panel, gbc, 11, "Rol Usuario:", cmbRol);
 
         add(panel, BorderLayout.CENTER);
 
@@ -87,7 +100,7 @@ public class DialogCliente extends JDialog {
         btnPanel.add(btnGuardar);
         add(btnPanel, BorderLayout.SOUTH);
 
-        if (idClienteToEdit != -1) {
+        if (idToEdit != -1) {
             cargarDatos();
         }
     }
@@ -133,50 +146,70 @@ public class DialogCliente extends JDialog {
         panel.add(field, gbc);
     }
 
-    private void cargarDatos() {
-        ControladorCliente ctrl = new ControladorCliente();
-        Cliente c = ctrl.buscarClientePorId(idClienteToEdit);
-        if (c != null && !c.getNombre().contains("no existe")) {
-            txtNombre.setText(c.getNombre());
-            txtApellido.setText(c.getApellido());
-            txtDocumento.setText(String.valueOf(c.getDocumento()));
-            txtCorreo.setText(c.getCorreo());
-            txtTelefono.setText(String.valueOf(c.getTelefono()));
-            txtDireccion.setText(c.getDireccion());
+    private void addRowCombo(JPanel panel, GridBagConstraints gbc, int row, String label, JComboBox<?> combo) {
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setForeground(DARK_BG);
+        panel.add(lbl, gbc);
 
-            int userId = c.getIdUsuario();
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        panel.add(combo, gbc);
+    }
+
+    private void cargarDatos() {
+        ControladorEmpleado ctrl = new ControladorEmpleado();
+        empleado e = ctrl.buscarEmpleadoPorId(idToEdit);
+        if (e != null && !e.getNombre().contains("no existe")) {
+            txtNombre.setText(e.getNombre());
+            txtApellido.setText(e.getApellido());
+            txtDocumento.setText(String.valueOf(e.getDocumento()));
+            txtCargo.setText(e.getCargo());
+            txtSalario.setText(String.valueOf(e.getSalario()));
+            if (e.getFechaContratacion() != null) txtFecha.setText(sdf.format(e.getFechaContratacion()));
+            txtTelefono.setText(e.getTelefono());
+            txtCorreo.setText(e.getCorreo());
+            txtDireccion.setText(e.getDireccion());
+
+            int userId = e.getIdUsuario();
             if (userId > 0) {
                 ControladorUsuario userCtrl = new ControladorUsuario();
                 Login user = userCtrl.buscarUsuarioPorId(userId);
                 if (user != null && !user.getNombreUsuario().contains("no existe")) {
                     txtUsername.setText(user.getNombreUsuario());
                     txtUsername.setEnabled(false);
+                    cmbRol.setSelectedItem(user.getRolUsuario());
                 }
             }
         }
     }
 
     private void guardar() {
-        ControladorCliente ctrlCli = new ControladorCliente();
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String documentoStr = txtDocumento.getText().trim();
+        String cargo = txtCargo.getText().trim();
+        String salarioStr = txtSalario.getText().trim();
+        String fechaStr = txtFecha.getText().trim();
+        String telefono = txtTelefono.getText().trim();
         String correo = txtCorreo.getText().trim();
-        String telefonoStr = txtTelefono.getText().trim();
         String direccion = txtDireccion.getText().trim();
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
 
-        if (nombre.isEmpty() || apellido.isEmpty() || documentoStr.isEmpty() || correo.isEmpty() || telefonoStr.isEmpty() || username.isEmpty()) {
-            ToastNotifier.showError(this, "Complete todos los campos obligatorios.");
+        if (nombre.isEmpty() || apellido.isEmpty() || documentoStr.isEmpty() || cargo.isEmpty() || salarioStr.isEmpty() || username.isEmpty()) {
+            ToastNotifier.showError(this, "Complete los campos obligatorios.");
             return;
         }
 
         try {
-            long documento = Long.parseLong(documentoStr);
-            long telefono = Long.parseLong(telefonoStr);
+            int documento = Integer.parseInt(documentoStr);
+            double salario = Double.parseDouble(salarioStr);
 
-            if (idClienteToEdit == -1) {
+            if (idToEdit == -1) {
                 if (password.isEmpty()) {
                     ToastNotifier.showError(this, "Ingrese una contrase\u00f1a.");
                     return;
@@ -194,7 +227,7 @@ public class DialogCliente extends JDialog {
                 Login nuevoUser = new Login();
                 nuevoUser.setNombreUsuario(username);
                 nuevoUser.setContrasenaUsuario(Encriptador.hashSHA256(password));
-                nuevoUser.setRolUsuario("cliente");
+                nuevoUser.setRolUsuario((String) cmbRol.getSelectedItem());
                 nuevoUser.insertar();
 
                 Iterator<Login> usuariosInsertados = new Login().buscar(username);
@@ -207,31 +240,36 @@ public class DialogCliente extends JDialog {
                     }
                 }
 
-                ctrlCli.insertarCliente(nombre, apellido, documento, correo, telefono, direccion, idUsuario);
+                ControladorEmpleado ctrl = new ControladorEmpleado();
+                Date fecha = fechaStr.isEmpty() ? new Date() : sdf.parse(fechaStr);
+                ctrl.insertarEmpleado(nombre, apellido, documento, cargo, salario, fecha, telefono, correo, direccion, idUsuario);
             } else {
-                ControladorUsuario userCtrl = new ControladorUsuario();
-                Cliente c = ctrlCli.buscarClientePorId(idClienteToEdit);
-                int userId = c.getIdUsuario();
+                ControladorEmpleado ctrl = new ControladorEmpleado();
+                empleado emp = ctrl.buscarEmpleadoPorId(idToEdit);
+                int userId = emp.getIdUsuario();
 
                 if (!password.isEmpty()) {
-                    Login existingUser = userCtrl.buscarUsuarioPorId(userId);
+                    Login existingUser = new ControladorUsuario().buscarUsuarioPorId(userId);
                     if (existingUser != null && !existingUser.getNombreUsuario().contains("no existe")) {
-                        userCtrl.modificarUsuario(userId, existingUser.getNombreUsuario(), Encriptador.hashSHA256(password), existingUser.getRolUsuario());
+                        new ControladorUsuario().modificarUsuario(userId, existingUser.getNombreUsuario(), Encriptador.hashSHA256(password), (String) cmbRol.getSelectedItem());
                     }
                 }
 
-                ctrlCli.modificarCliente(idClienteToEdit, nombre, apellido, documento, correo, telefono, direccion, userId);
+                Date fecha = fechaStr.isEmpty() ? new Date() : sdf.parse(fechaStr);
+                ctrl.modificarEmpleado(idToEdit, nombre, apellido, documento, cargo, salario, fecha, telefono, correo, direccion, userId);
             }
 
             if (onSaved != null) onSaved.run();
             Window owner = getOwner();
             dispose();
             if (owner != null) {
-                String msg = idClienteToEdit == -1 ? "Cliente creado exitosamente." : "Cliente actualizado exitosamente.";
+                String msg = idToEdit == -1 ? "Empleado creado exitosamente." : "Empleado actualizado exitosamente.";
                 ToastNotifier.showSuccess(owner, msg);
             }
         } catch (NumberFormatException ex) {
-            ToastNotifier.showError(this, "Documento y Tel\u00e9fono deben ser num\u00e9ricos.");
+            ToastNotifier.showError(this, "Documento y Salario deben ser num\u00e9ricos.");
+        } catch (Exception ex) {
+            ToastNotifier.showError(this, "Error: " + ex.getMessage());
         }
     }
 }

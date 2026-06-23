@@ -2,6 +2,7 @@ package vista;
 
 import Controlador.ControladorHabitaciones;
 import modelo.Habitaciones;
+import util.ToastNotifier;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -164,9 +165,14 @@ public class DialogHabitacion extends JDialog {
                 ctrl.modificarHabitacion(idHabitacionToEdit, numero, tipo, precio, estado);
             }
             if (onSaved != null) onSaved.run();
+            Window owner = getOwner();
             dispose();
+            if (owner != null) {
+                String msg = idHabitacionToEdit == -1 ? "Habitaci\u00f3n creada exitosamente." : "Habitaci\u00f3n actualizada exitosamente.";
+                ToastNotifier.showSuccess(owner, msg);
+            }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Número y Precio deben ser valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+            ToastNotifier.showError(this, "N\u00famero y Precio deben ser valores num\u00e9ricos.");
         }
     }
 }
