@@ -156,15 +156,6 @@ public class ModuleListInternalFrame extends JInternalFrame {
         gbc.insets = new Insets(0, 0, 0, 6);
         toolbar.add(refresh, gbc);
 
-        JButton clear = createSecondaryButton("Limpiar");
-        clear.addActionListener(e -> {
-            searchField.setText("");
-            applyFilter();
-        });
-        gbc.gridx = 8;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        toolbar.add(clear, gbc);
-
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { applyFilter(); }
