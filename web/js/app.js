@@ -15,33 +15,33 @@ const App = {
 
   /* Datos mock (en prod se reemplazaría por fetch a la API) */
   reportes: [
-    { id:'#M-031', hab:'310', desc:'Aire acondicionado no enfría',    prioridad:'alta',  fecha:'Hoy 08:45',     estado:'enproceso' },
-    { id:'#M-030', hab:'218', desc:'Ducha con baja presión',          prioridad:'media', fecha:'Ayer 17:20',    estado:'pendiente' },
-    { id:'#M-029', hab:'105', desc:'Bombillo fundido en baño',        prioridad:'baja',  fecha:'20/06 14:00',   estado:'resuelto'  },
+    { id: '#M-031', hab: '310', desc: 'Aire acondicionado no enfría', prioridad: 'alta', fecha: 'Hoy 08:45', estado: 'enproceso' },
+    { id: '#M-030', hab: '218', desc: 'Ducha con baja presión', prioridad: 'media', fecha: 'Ayer 17:20', estado: 'pendiente' },
+    { id: '#M-029', hab: '105', desc: 'Bombillo fundido en baño', prioridad: 'baja', fecha: '20/06 14:00', estado: 'resuelto' },
   ],
 
   habitaciones: [
-    { num:'101', tipo:'Estándar',   estado:'disponible'    },
-    { num:'102', tipo:'Estándar',   estado:'ocupada'       },
-    { num:'103', tipo:'Estándar',   estado:'limpieza'      },
-    { num:'104', tipo:'Estándar',   estado:'disponible'    },
-    { num:'105', tipo:'Estándar',   estado:'disponible'    },
-    { num:'106', tipo:'Estándar',   estado:'ocupada'       },
-    { num:'201', tipo:'Suite Jr',   estado:'disponible'    },
-    { num:'202', tipo:'Suite Jr',   estado:'ocupada'       },
-    { num:'203', tipo:'Suite Jr',   estado:'mantenimiento' },
-    { num:'204', tipo:'Suite Jr',   estado:'disponible'    },
-    { num:'205', tipo:'Suite Jr',   estado:'disponible'    },
-    { num:'206', tipo:'Suite Jr',   estado:'limpieza'      },
-    { num:'301', tipo:'Suite',      estado:'disponible'    },
-    { num:'302', tipo:'Suite',      estado:'ocupada'       },
-    { num:'303', tipo:'Suite',      estado:'disponible'    },
-    { num:'304', tipo:'Suite',      estado:'mantenimiento' },
-    { num:'305', tipo:'Suite',      estado:'disponible'    },
-    { num:'306', tipo:'Suite',      estado:'ocupada'       },
-    { num:'401', tipo:'Pres.',      estado:'disponible'    },
-    { num:'402', tipo:'Pres.',      estado:'ocupada'       },
-    { num:'501', tipo:'Penthouse',  estado:'disponible'    },
+    { num: '101', tipo: 'Estándar', estado: 'disponible' },
+    { num: '102', tipo: 'Estándar', estado: 'ocupada' },
+    { num: '103', tipo: 'Estándar', estado: 'limpieza' },
+    { num: '104', tipo: 'Estándar', estado: 'disponible' },
+    { num: '105', tipo: 'Estándar', estado: 'disponible' },
+    { num: '106', tipo: 'Estándar', estado: 'ocupada' },
+    { num: '201', tipo: 'Suite Jr', estado: 'disponible' },
+    { num: '202', tipo: 'Suite Jr', estado: 'ocupada' },
+    { num: '203', tipo: 'Suite Jr', estado: 'mantenimiento' },
+    { num: '204', tipo: 'Suite Jr', estado: 'disponible' },
+    { num: '205', tipo: 'Suite Jr', estado: 'disponible' },
+    { num: '206', tipo: 'Suite Jr', estado: 'limpieza' },
+    { num: '301', tipo: 'Suite', estado: 'disponible' },
+    { num: '302', tipo: 'Suite', estado: 'ocupada' },
+    { num: '303', tipo: 'Suite', estado: 'disponible' },
+    { num: '304', tipo: 'Suite', estado: 'mantenimiento' },
+    { num: '305', tipo: 'Suite', estado: 'disponible' },
+    { num: '306', tipo: 'Suite', estado: 'ocupada' },
+    { num: '401', tipo: 'Pres.', estado: 'disponible' },
+    { num: '402', tipo: 'Pres.', estado: 'ocupada' },
+    { num: '501', tipo: 'Penthouse', estado: 'disponible' },
   ],
 };
 
@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function initAuth() {
   /* Usuarios demo */
   const USERS = {
-    'admin':    { pass: '1234', nombre: 'Administrador', rol: 'admin',    initials: 'AD' },
-    'recepcion':{ pass: '1234', nombre: 'Carlos García', rol: 'staff',    initials: 'CG' },
-    'cliente':  { pass: '1234', nombre: 'María López',   rol: 'cliente',  initials: 'ML' },
+    'admin': { pass: '1234', nombre: 'Administrador', rol: 'admin', initials: 'AD' },
+    'recepcion': { pass: '1234', nombre: 'Carlos García', rol: 'staff', initials: 'CG' },
+    'cliente': { pass: '1234', nombre: 'María López', rol: 'cliente', initials: 'ML' },
   };
 
   /* Persistencia mínima */
@@ -80,7 +80,7 @@ function initAuth() {
   /* Login form */
   document.getElementById('login-form').addEventListener('submit', e => {
     e.preventDefault();
-    const usr  = document.getElementById('login-user').value.trim().toLowerCase();
+    const usr = document.getElementById('login-user').value.trim().toLowerCase();
     const pass = document.getElementById('login-pass').value;
     const found = USERS[usr];
     if (found && found.pass === pass) {
@@ -108,10 +108,10 @@ function initAuth() {
 
   /* Password strength meter */
   document.getElementById('reg-contrasena')?.addEventListener('input', e => {
-    const bar   = document.getElementById('pass-strength');
-    const len   = e.target.value.length;
+    const bar = document.getElementById('pass-strength');
+    const len = e.target.value.length;
     const color = len === 0 ? '#dde3ed' : len < 6 ? '#e84855' : len < 10 ? '#f0a500' : '#1aab71';
-    const pct   = Math.min((len / 14) * 100, 100);
+    const pct = Math.min((len / 14) * 100, 100);
     bar.style.background = `linear-gradient(to right, ${color} ${pct}%, #dde3ed ${pct}%)`;
   });
 
@@ -144,9 +144,9 @@ function enterDashboard(user) {
   /* Actualizar UI con datos del usuario */
   setText('user-display-name', user.nombre);
   setText('user-display-role', capitalizeRole(user.rol));
-  setText('user-avatar',    user.initials);
-  setText('topbar-avatar',  user.initials);
-  setText('welcome-msg',    `Bienvenido de nuevo, ${user.nombre.split(' ')[0]} 👋`);
+  setText('user-avatar', user.initials);
+  setText('topbar-avatar', user.initials);
+  setText('welcome-msg', `Bienvenido de nuevo, ${user.nombre.split(' ')[0]} 👋`);
 
   showScreen('dashboard-screen');
   updateKPIs();
@@ -183,15 +183,15 @@ function goSection(id) {
 
   /* Actualizar título topbar */
   const titles = {
-    inicio:         'Dashboard',
-    asistencia:     'Control de Asistencia',
-    habitaciones:   'Estado de Habitaciones',
-    mantenimiento:  'Reportes de Mantenimiento',
-    clientes:       'Gestión de Clientes',
-    reservas:       'Gestión de Reservas',
-    facturas:       'Gestión de Facturas',
-    empleados:      'Gestión de Empleados',
-    tipos:          'Tipos de Habitación',
+    inicio: 'Dashboard',
+    asistencia: 'Control de Asistencia',
+    habitaciones: 'Estado de Habitaciones',
+    mantenimiento: 'Reportes de Mantenimiento',
+    clientes: 'Gestión de Clientes',
+    reservas: 'Gestión de Reservas',
+    facturas: 'Gestión de Facturas',
+    empleados: 'Gestión de Empleados',
+    tipos: 'Tipos de Habitación',
   };
   setText('section-title', titles[id] || 'Dashboard');
   App.currentSection = id;
@@ -240,20 +240,20 @@ function initClock() {
 }
 
 function updateClock() {
-  const now  = new Date();
+  const now = new Date();
   const time = now.toLocaleTimeString('es-CO', { hour12: false });
-  const el   = document.getElementById('live-clock');
+  const el = document.getElementById('live-clock');
   if (el) el.textContent = time;
 }
 
 function updateDate() {
-  const now    = new Date();
-  const opts   = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-  const date   = now.toLocaleDateString('es-CO', opts);
-  const capDate= date.charAt(0).toUpperCase() + date.slice(1);
+  const now = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const date = now.toLocaleDateString('es-CO', opts);
+  const capDate = date.charAt(0).toUpperCase() + date.slice(1);
 
   setText('live-date', capDate);
-  setText('topbar-date', now.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' }));
+  setText('topbar-date', now.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }));
 }
 
 /* ──────────────────────────────────────────────
@@ -261,7 +261,7 @@ function updateDate() {
 ────────────────────────────────────────────── */
 function updateKPIs() {
   const disponibles = App.habitaciones.filter(h => h.estado === 'disponible').length;
-  const pendientes  = App.reportes.filter(r => r.estado === 'pendiente').length;
+  const pendientes = App.reportes.filter(r => r.estado === 'pendiente').length;
 
   animateNumber('kpi-disponibles', disponibles);
   animateNumber('kpi-reservas', 12);
@@ -301,7 +301,7 @@ function renderHabitaciones(filter = 'all') {
     : App.habitaciones.filter(h => h.estado === filter);
 
   grid.innerHTML = filtered.map(h => `
-    <div class="room-cell room-${h.estado}" onclick="openRoomModal(${JSON.stringify(h).replace(/"/g,"'")})">
+    <div class="room-cell room-${h.estado}" onclick="openRoomModal(${JSON.stringify(h).replace(/"/g, "'")})">
       <span class="room-icon">${ICONS[h.estado]}</span>
       <span class="room-num">${h.num}</span>
       <span class="room-type">${h.tipo}</span>
@@ -317,8 +317,8 @@ function filtrarHabitaciones() {
 function openRoomModal(hab) {
   const estadoLabels = {
     disponible: '<span class="badge badge-green">Disponible</span>',
-    ocupada:    '<span class="badge badge-red">Ocupada</span>',
-    limpieza:   '<span class="badge badge-gold">En Limpieza</span>',
+    ocupada: '<span class="badge badge-red">Ocupada</span>',
+    limpieza: '<span class="badge badge-gold">En Limpieza</span>',
     mantenimiento: '<span class="badge badge-gray">Mantenimiento</span>',
   };
 
@@ -337,10 +337,10 @@ function openRoomModal(hab) {
       <div>
         <label class="form-label" style="margin-bottom:8px;display:block">Cambiar estado a:</label>
         <select class="form-select" id="modal-room-select">
-          <option value="disponible" ${hab.estado==='disponible'?'selected':''}>Disponible</option>
-          <option value="ocupada"    ${hab.estado==='ocupada'   ?'selected':''}>Ocupada</option>
-          <option value="limpieza"   ${hab.estado==='limpieza'  ?'selected':''}>En Limpieza</option>
-          <option value="mantenimiento" ${hab.estado==='mantenimiento'?'selected':''}>Mantenimiento</option>
+          <option value="disponible" ${hab.estado === 'disponible' ? 'selected' : ''}>Disponible</option>
+          <option value="ocupada"    ${hab.estado === 'ocupada' ? 'selected' : ''}>Ocupada</option>
+          <option value="limpieza"   ${hab.estado === 'limpieza' ? 'selected' : ''}>En Limpieza</option>
+          <option value="mantenimiento" ${hab.estado === 'mantenimiento' ? 'selected' : ''}>Mantenimiento</option>
         </select>
       </div>
     </div>
@@ -363,7 +363,7 @@ function openRoomModal(hab) {
    ASISTENCIA
 ────────────────────────────────────────────── */
 function registrarEntrada() {
-  const now  = new Date().toLocaleTimeString('es-CO', { hour12: false, hour:'2-digit', minute:'2-digit' });
+  const now = new Date().toLocaleTimeString('es-CO', { hour12: false, hour: '2-digit', minute: '2-digit' });
   setText('clock-status', `✅ Entrada registrada a las ${now}`);
   document.getElementById('btn-entrada').disabled = true;
   document.getElementById('btn-entrada').style.opacity = '.5';
@@ -371,7 +371,7 @@ function registrarEntrada() {
 }
 
 function registrarSalida() {
-  const now  = new Date().toLocaleTimeString('es-CO', { hour12: false, hour:'2-digit', minute:'2-digit' });
+  const now = new Date().toLocaleTimeString('es-CO', { hour12: false, hour: '2-digit', minute: '2-digit' });
   setText('clock-status', `🚪 Salida registrada a las ${now}`);
   document.getElementById('btn-salida').disabled = true;
   document.getElementById('btn-salida').style.opacity = '.5';
@@ -386,7 +386,7 @@ function exportarAsistencia() {
    MANTENIMIENTO
 ────────────────────────────────────────────── */
 function crearReporte() {
-  const hab  = document.getElementById('rep-hab')?.value?.trim();
+  const hab = document.getElementById('rep-hab')?.value?.trim();
   const desc = document.getElementById('rep-desc')?.value?.trim();
   const prio = document.getElementById('rep-prioridad')?.value;
 
@@ -395,7 +395,7 @@ function crearReporte() {
     return;
   }
 
-  const id = `#M-0${(App.reportes.length + 30).toString().padStart(2,'0')}`;
+  const id = `#M-0${(App.reportes.length + 30).toString().padStart(2, '0')}`;
   App.reportes.unshift({ id, hab, desc, prioridad: prio, fecha: 'Ahora', estado: 'pendiente' });
   updateKPIs();
   closeModal('modal-nuevo-reporte');

@@ -447,11 +447,24 @@ public class VentanaPrincipal extends JFrame {
     private ModuleListInternalFrame buildFacturasModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Facturas",
-                new Object[]{"ID","Reserva","Fecha","Total","Estado","M\u00e9todo"},
-                tabla -> new ControladorFacturas().cargarTablaFacturas(tabla));
-        if (isAdmin()) {
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) {/*TODO: dialogo edici\u00f3n*/} else ToastNotifier.showError(this,"Seleccione una factura."); });
-        }
+                new Object[]{"ID","Reserva","Fecha","Total","Estado","M\u00e9todo","Acciones"},
+                tabla -> new ControladorFacturas().cargarTablaFacturasConAcciones(tabla));
+        
+        // Agregar listener para el botón "Ver detalles" en la columna Acciones
+        f.getTable().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = f.getTable().rowAtPoint(e.getPoint());
+                int col = f.getTable().columnAtPoint(e.getPoint());
+                if (row >= 0 && col == 6) { // Columna Acciones (índice 6)
+                    int idFactura = f.getSelectedIdFromRow(row);
+                    if (idFactura != -1) {
+                        new DialogFactura(VentanaPrincipal.this, idFactura).setVisible(true);
+                    }
+                }
+            }
+        });
+        
         return f;
     }
 

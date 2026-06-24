@@ -3,16 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/vista/MDIRegistroUsuario.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/vista/MDILogin.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/ConexionBD.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/Cliente.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/Habitaciones.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/Reserva.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/TipoHabitacion.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/empleado.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/modelo/Login.java</file>
-            <file>file:/C:/Users/andre/Desktop/ProyectoHotel/src/Imagenes/ImagenFondoLogin2.png</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/.gitignore</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/src/vista/MDILogin.java</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/src/vista/MDIRegistroUsuario.java</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/src/vista/DialogFactura.java</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/src/vista/ModuleListInternalFrame.java</file>
+            <file>file:/C:/Users/alejo/OneDrive/Escritorio/FLASK-EJ-main/FLASK-EJ-main/Biblioteca%20Flask/ProyectoHotel/src/vista/VentanaPrincipal.java</file>
         </group>
     </open-files>
 </project-private>

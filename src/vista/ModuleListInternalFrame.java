@@ -284,4 +284,23 @@ public class ModuleListInternalFrame extends JInternalFrame {
     public void triggerReload() {
         reloadData();
     }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public int getSelectedIdFromRow(int viewRow) {
+        if (viewRow < 0) return -1;
+        int modelRow = table.convertRowIndexToModel(viewRow);
+        Object value = model.getValueAt(modelRow, 0);
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        } else {
+            try {
+                return Integer.parseInt(value.toString());
+            } catch (NumberFormatException ex) {
+                return -1;
+            }
+        }
+    }
 }
