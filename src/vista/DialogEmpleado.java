@@ -8,8 +8,12 @@ import util.Encriptador;
 import util.ToastNotifier;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -17,20 +21,23 @@ public class DialogEmpleado extends JDialog {
     private static final Color GOLD = new Color(212, 175, 55);
     private static final Color DARK_BG = new Color(17, 24, 39);
     private static final Color FIELD_BG = new Color(249, 250, 251);
+    private static final Color ERROR_BORDER = new Color(220, 38, 38);
+    private static final Color NORMAL_BORDER = new Color(209, 213, 219);
 
-    private JTextField txtNombre, txtApellido, txtDocumento, txtCargo, txtSalario, txtFecha, txtTelefono, txtCorreo, txtDireccion, txtUsername;
+    private JTextField txtNombre, txtApellido, txtDocumento, txtTelefono, txtCorreo, txtDireccion, txtUsername;
+    private JTextField txtSalario;
     private JPasswordField txtPassword;
+    private JSpinner spFecha;
     private JComboBox<String> cmbRol;
     private int idToEdit = -1;
     private Runnable onSaved;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public DialogEmpleado(Window owner, int idToEdit, Runnable onSaved) {
         super(owner, idToEdit == -1 ? "Crear Empleado" : "Editar Empleado", ModalityType.APPLICATION_MODAL);
         this.idToEdit = idToEdit;
         this.onSaved = onSaved;
 
-        setSize(540, 600);
+        setSize(560, 640);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -45,52 +52,55 @@ public class DialogEmpleado extends JDialog {
         headerTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
         headerTitle.setForeground(GOLD);
         header.add(headerTitle, BorderLayout.CENTER);
-
         add(header, BorderLayout.NORTH);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(new EmptyBorder(20, 24, 12, 24));
-        panel.setBackground(Color.WHITE);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(new EmptyBorder(18, 24, 8, 24));
+        formPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(4, 8, 4, 8);
+        gbc.insets = new Insets(3, 6, 3, 6);
 
-        txtNombre = createField(); txtApellido = createField(); txtDocumento = createField();
-        txtCargo = createField(); txtSalario = createField(); txtFecha = createField();
-        txtTelefono = createField(); txtCorreo = createField(); txtDireccion = createField();
+        txtNombre = createField();
+        txtApellido = createField();
+        txtDocumento = createDigitField();
+        txtSalario = createSalaryField();
+        spFecha = createDateSpinner();
+        txtTelefono = createField();
+        txtCorreo = createField();
+        txtDireccion = createField();
         txtUsername = createField();
 
         txtPassword = new JPasswordField(18);
         txtPassword.setFont(new Font("SansSerif", Font.PLAIN, 13));
         txtPassword.setBackground(FIELD_BG);
         txtPassword.setForeground(DARK_BG);
-        txtPassword.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(209, 213, 219)),
-                new EmptyBorder(6, 10, 6, 10)));
+        txtPassword.setBorder(createNormalBorder());
 
-        cmbRol = new JComboBox<>(new String[]{"administrador", "recepcionista", "servicio_limpieza"});
+        String[] roles = {"administrador", "recepcionista", "servicio_limpieza"};
+        cmbRol = new JComboBox<>(roles);
         cmbRol.setFont(new Font("SansSerif", Font.PLAIN, 13));
         cmbRol.setBackground(FIELD_BG);
         cmbRol.setForeground(DARK_BG);
 
-        addRow(panel, gbc, 0, "Nombre:", txtNombre);
-        addRow(panel, gbc, 1, "Apellido:", txtApellido);
-        addRow(panel, gbc, 2, "Documento:", txtDocumento);
-        addRow(panel, gbc, 3, "Cargo:", txtCargo);
-        addRow(panel, gbc, 4, "Salario:", txtSalario);
-        addRow(panel, gbc, 5, "Fecha (YYYY-MM-DD):", txtFecha);
-        addRow(panel, gbc, 6, "Tel\u00e9fono:", txtTelefono);
-        addRow(panel, gbc, 7, "Correo:", txtCorreo);
-        addRow(panel, gbc, 8, "Direcci\u00f3n:", txtDireccion);
-        addRow(panel, gbc, 9, "Usuario:", txtUsername);
-        addRow(panel, gbc, 10, "Contrase\u00f1a:", txtPassword);
-        addRowCombo(panel, gbc, 11, "Rol Usuario:", cmbRol);
+        int r = 0;
+        addRow(formPanel, gbc, r++, "Nombre:", txtNombre);
+        addRow(formPanel, gbc, r++, "Apellido:", txtApellido);
+        addRow(formPanel, gbc, r++, "Documento:", txtDocumento);
+        addRowCombo(formPanel, gbc, r++, "Cargo / Rol:", cmbRol);
+        addRow(formPanel, gbc, r++, "Salario:", txtSalario);
+        addRow(formPanel, gbc, r++, "Fecha Ingreso:", spFecha);
+        addRow(formPanel, gbc, r++, "Tel\u00e9fono:", txtTelefono);
+        addRow(formPanel, gbc, r++, "Correo:", txtCorreo);
+        addRow(formPanel, gbc, r++, "Direcci\u00f3n:", txtDireccion);
+        addRow(formPanel, gbc, r++, "Usuario:", txtUsername);
+        addRow(formPanel, gbc, r++, "Contrase\u00f1a:", txtPassword);
 
-        add(panel, BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER);
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
         btnPanel.setBackground(Color.WHITE);
-        btnPanel.setBorder(new EmptyBorder(0, 0, 16, 24));
+        btnPanel.setBorder(new EmptyBorder(0, 0, 14, 24));
 
         JButton btnCancelar = createButton("Cancelar", false);
         btnCancelar.addActionListener(e -> dispose());
@@ -109,13 +119,109 @@ public class DialogEmpleado extends JDialog {
 
     private JTextField createField() {
         JTextField f = new JTextField(18);
+        styleField(f);
+        return f;
+    }
+
+    private JTextField createDigitField() {
+        JTextField f = new JTextField(18);
+        styleField(f);
+        ((PlainDocument) f.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int off, String str, AttributeSet attr) throws BadLocationException {
+                if (str != null && str.matches("\\d*")) super.insertString(fb, off, str, attr);
+            }
+            @Override
+            public void replace(FilterBypass fb, int off, int len, String str, AttributeSet attr) throws BadLocationException {
+                if (str != null && str.matches("\\d*")) super.replace(fb, off, len, str, attr);
+            }
+        });
+        return f;
+    }
+
+    private JTextField createSalaryField() {
+        JTextField f = new JTextField(18);
+        styleField(f);
+        ((PlainDocument) f.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int off, String str, AttributeSet attr) throws BadLocationException {
+                if (str != null && str.matches("\\d*")) super.insertString(fb, off, str, attr);
+            }
+            @Override
+            public void replace(FilterBypass fb, int off, int len, String str, AttributeSet attr) throws BadLocationException {
+                if (str != null && str.matches("\\d*")) super.replace(fb, off, len, str, attr);
+            }
+        });
+        f.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                String raw = f.getText().replaceAll("[^\\d]", "");
+                f.setText(raw);
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                formatSalary(f);
+            }
+        });
+        return f;
+    }
+
+    private JSpinner createDateSpinner() {
+        SpinnerDateModel model = new SpinnerDateModel();
+        JSpinner spinner = new JSpinner(model);
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(spinner, "yyyy-MM-dd");
+        spinner.setEditor(editor);
+        JFormattedTextField tf = editor.getTextField();
+        tf.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        tf.setBackground(FIELD_BG);
+        tf.setForeground(DARK_BG);
+        tf.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(209, 213, 219)),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)));
+        spinner.setValue(new Date());
+        return spinner;
+    }
+
+    private void styleField(JTextField f) {
         f.setFont(new Font("SansSerif", Font.PLAIN, 13));
         f.setBackground(FIELD_BG);
         f.setForeground(DARK_BG);
-        f.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(209, 213, 219)),
-                new EmptyBorder(6, 10, 6, 10)));
-        return f;
+        f.setBorder(createNormalBorder());
+    }
+
+    private javax.swing.border.Border createNormalBorder() {
+        return BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(NORMAL_BORDER),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10));
+    }
+
+    private void markError(JComponent field) {
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ERROR_BORDER),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)));
+    }
+
+    private void clearError(JComponent field) {
+        field.setBorder(createNormalBorder());
+    }
+
+    private void formatSalary(JTextField field) {
+        String raw = field.getText().replaceAll("[^\\d]", "");
+        if (!raw.isEmpty()) {
+            try {
+                long val = Long.parseLong(raw);
+                if (val > 0) {
+                    DecimalFormat df = new DecimalFormat("#,###");
+                    field.setText("$ " + df.format(val));
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+    }
+
+    private double parseSalary(String text) {
+        String raw = text.replaceAll("[^\\d]", "");
+        if (raw.isEmpty()) return 0;
+        return Double.parseDouble(raw);
     }
 
     private JButton createButton(String text, boolean primary) {
@@ -170,9 +276,16 @@ public class DialogEmpleado extends JDialog {
             txtNombre.setText(e.getNombre());
             txtApellido.setText(e.getApellido());
             txtDocumento.setText(String.valueOf(e.getDocumento()));
-            txtCargo.setText(e.getCargo());
-            txtSalario.setText(String.valueOf(e.getSalario()));
-            if (e.getFechaContratacion() != null) txtFecha.setText(sdf.format(e.getFechaContratacion()));
+            String cargo = e.getCargo();
+            for (int i = 0; i < cmbRol.getItemCount(); i++) {
+                if (cmbRol.getItemAt(i).equalsIgnoreCase(cargo)) {
+                    cmbRol.setSelectedIndex(i);
+                    break;
+                }
+            }
+            txtSalario.setText(String.valueOf((long) e.getSalario()));
+            SwingUtilities.invokeLater(() -> formatSalary(txtSalario));
+            if (e.getFechaContratacion() != null) spFecha.setValue(e.getFechaContratacion());
             txtTelefono.setText(e.getTelefono());
             txtCorreo.setText(e.getCorreo());
             txtDireccion.setText(e.getDireccion());
@@ -191,37 +304,46 @@ public class DialogEmpleado extends JDialog {
     }
 
     private void guardar() {
+        clearError(txtNombre); clearError(txtSalario); clearError(cmbRol);
+        clearError(txtUsername); clearError(txtPassword);
+
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String documentoStr = txtDocumento.getText().trim();
-        String cargo = txtCargo.getText().trim();
-        String salarioStr = txtSalario.getText().trim();
-        String fechaStr = txtFecha.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String correo = txtCorreo.getText().trim();
         String direccion = txtDireccion.getText().trim();
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
 
-        if (nombre.isEmpty() || apellido.isEmpty() || documentoStr.isEmpty() || cargo.isEmpty() || salarioStr.isEmpty() || username.isEmpty()) {
-            ToastNotifier.showError(this, "Complete los campos obligatorios.");
+        String cargo = (String) cmbRol.getSelectedItem();
+
+        double salario = parseSalary(txtSalario.getText());
+
+        boolean valid = true;
+        if (nombre.isEmpty()) { markError(txtNombre); valid = false; }
+        if (salario <= 0) { markError(txtSalario); valid = false; }
+        if (username.isEmpty()) { markError(txtUsername); valid = false; }
+
+        if (idToEdit == -1 && password.isEmpty()) {
+            markError(txtPassword);
+            valid = false;
+        }
+
+        if (!valid) {
+            ToastNotifier.showError(this, "Corrija los campos marcados en rojo.");
             return;
         }
 
         try {
-            int documento = Integer.parseInt(documentoStr);
-            double salario = Double.parseDouble(salarioStr);
+            int documento = documentoStr.isEmpty() ? 0 : Integer.parseInt(documentoStr);
 
             if (idToEdit == -1) {
-                if (password.isEmpty()) {
-                    ToastNotifier.showError(this, "Ingrese una contrase\u00f1a.");
-                    return;
-                }
-
                 Iterator<Login> existentes = new Login().buscar(username);
                 while (existentes.hasNext()) {
                     Login u = existentes.next();
                     if (username.equals(u.getNombreUsuario())) {
+                        markError(txtUsername);
                         ToastNotifier.showError(this, "El nombre de usuario ya existe.");
                         return;
                     }
@@ -244,7 +366,7 @@ public class DialogEmpleado extends JDialog {
                 }
 
                 ControladorEmpleado ctrl = new ControladorEmpleado();
-                Date fecha = fechaStr.isEmpty() ? new Date() : sdf.parse(fechaStr);
+                Date fecha = (Date) spFecha.getValue();
                 ctrl.insertarEmpleado(nombre, apellido, documento, cargo, salario, fecha, telefono, correo, direccion, idUsuario);
             } else {
                 ControladorEmpleado ctrl = new ControladorEmpleado();
@@ -258,7 +380,7 @@ public class DialogEmpleado extends JDialog {
                     }
                 }
 
-                Date fecha = fechaStr.isEmpty() ? new Date() : sdf.parse(fechaStr);
+                Date fecha = (Date) spFecha.getValue();
                 ctrl.modificarEmpleado(idToEdit, nombre, apellido, documento, cargo, salario, fecha, telefono, correo, direccion, userId);
             }
 
@@ -270,7 +392,7 @@ public class DialogEmpleado extends JDialog {
                 ToastNotifier.showSuccess(owner, msg);
             }
         } catch (NumberFormatException ex) {
-            ToastNotifier.showError(this, "Documento y Salario deben ser num\u00e9ricos.");
+            ToastNotifier.showError(this, "Documento debe ser num\u00e9rico.");
         } catch (Exception ex) {
             ToastNotifier.showError(this, "Error: " + ex.getMessage());
         }

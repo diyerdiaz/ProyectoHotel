@@ -5,7 +5,6 @@ import Controlador.ControladorEmpleado;
 import Controlador.ControladorFacturas;
 import Controlador.ControladorHabitaciones;
 import Controlador.ControladorReserva;
-import Controlador.ControladorTipoHabitacion;
 import Controlador.ControladorUsuario;
 import util.ToastNotifier;
 import java.awt.*;
@@ -236,7 +235,7 @@ public class VentanaPrincipal extends JFrame {
             content.add(sideButton("\uD83D\uDC65  Usuarios", e -> openUsuarios(), false));
             content.add(sideButton("\uD83D\uDC64  Clientes", e -> openClientes(), false));
             content.add(sideButton("\uD83D\uDC68\u200D\uD83D\uDCBB  Empleados", e -> openEmpleados(), false));
-            content.add(sideButton("\uD83C\uDFF7  Tipos Hab.", e -> openTipos(), false));
+
         }
 
         if (isStaff()) {
@@ -253,6 +252,7 @@ public class VentanaPrincipal extends JFrame {
 
             content.add(Box.createVerticalStrut(8));
             content.add(sideSection("FINANZAS"));
+            content.add(sideButton("\uD83D\uDCCA  Estad\u00edsticas", e -> showHome(), false));
             content.add(sideButton("\uD83E\uDDFE  Facturaci\u00f3n", e -> openFacturas(), false));
         }
 
@@ -379,61 +379,15 @@ public class VentanaPrincipal extends JFrame {
     private void showHome() {
         closeActiveFrames();
 
-        JPanel home = new JPanel(new BorderLayout(0, 20));
-        home.setBackground(CONTENT_BG);
-        home.setBorder(new EmptyBorder(24, 24, 24, 24));
-
-        JPanel hero = new JPanel(new BorderLayout(12, 8));
-        hero.setBackground(Color.WHITE);
-        hero.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(CARD_BORDER, 1),
-                new EmptyBorder(28, 28, 28, 28)));
-
-        JLabel title = new JLabel("Bienvenido, " + usuario.getNombreUsuario());
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
-        title.setForeground(TEXT_MAIN);
-        hero.add(title, BorderLayout.NORTH);
-
-        String heroMsg = isStaff()
-                ? "Panel de gesti\u00f3n del Hotel Gales. Administra clientes, reservas, habitaciones y facturaci\u00f3n desde un solo lugar."
-                : "Bienvenido a Hotel Gales. Aqu\u00ed puedes consultar tus reservas y facturas.";
-        JLabel text = new JLabel("<html><body style='width:500px;'>" + heroMsg + "</body></html>");
-        text.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        text.setForeground(TEXT_MUTED);
-        hero.add(text, BorderLayout.CENTER);
-
-        JLabel roleBadge = new JLabel(getRoleLabel().toUpperCase());
-        roleBadge.setFont(new Font("SansSerif", Font.BOLD, 11));
-        roleBadge.setForeground(GOLD);
-        roleBadge.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(GOLD, 1),
-                new EmptyBorder(4, 12, 4, 12)));
-        hero.add(roleBadge, BorderLayout.EAST);
-
-        home.add(hero, BorderLayout.NORTH);
-
-        JPanel cards;
-        if (isStaff()) {
-            cards = new JPanel(new GridLayout(2, 3, 16, 16));
-            cards.setOpaque(false);
-            cards.add(new CardPanel("Clientes",    count("cliente", "") + " registrados"));
-            cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
-            cards.add(new CardPanel("Reservas",    count("reserva", "") + " activas"));
-            cards.add(new CardPanel("Facturas",    count("facturas", "WHERE estadofactura='PENDIENTE'") + " pendientes"));
-            cards.add(new CardPanel("Empleados",   count("empleado", "") + " activos"));
-            cards.add(new CardPanel("Tipolog\u00edas", count("tipohabitacion", "") + " configuradas"));
-        } else {
-            cards = new JPanel(new GridLayout(1, 3, 16, 16));
-            cards.setOpaque(false);
-            cards.add(new CardPanel("Habitaciones", count("habitaciones", "WHERE estadohabitacion='DISPONIBLE'") + " disponibles"));
-            cards.add(new CardPanel("Mis Reservas", count("reserva", "") + " activas"));
-            cards.add(new CardPanel("Mis Facturas", count("facturas", "") + " registradas"));
-        }
-        home.add(cards, BorderLayout.CENTER);
+        PanelEstadisticas panel = new PanelEstadisticas(usuario);
+        JScrollPane scroll = new JScrollPane(panel);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(CONTENT_BG);
 
         JInternalFrame homeFrame = new JInternalFrame("Inicio", false, false, false, false);
         homeFrame.setLayout(new BorderLayout());
-        homeFrame.add(home, BorderLayout.CENTER);
+        homeFrame.add(scroll, BorderLayout.CENTER);
         homeFrame.setVisible(true);
 
         desktopPane.add(homeFrame);
@@ -453,7 +407,6 @@ public class VentanaPrincipal extends JFrame {
     private void openReservas()       { openModule("reservas", buildReservasModule()); }
     private void openFacturas()       { openModule("facturas", buildFacturasModule()); }
     private void openEmpleados()      { openModule("empleados", buildEmpleadosModule()); }
-    private void openTipos()          { openModule("tipos",      buildTiposModule()); }
     private void openUsuarios()       { openModule("usuarios",  buildUsuariosModule()); }
 
     private ModuleListInternalFrame buildClientesModule() {
@@ -511,19 +464,6 @@ public class VentanaPrincipal extends JFrame {
             f.setCreateAction(e -> new DialogEmpleado(this, -1, f::triggerReload).setVisible(true));
             f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogEmpleado(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un empleado."); });
             f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar empleado?")) { new ControladorEmpleado().eliminarEmpleado(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Empleado eliminado."); } });
-        }
-        return f;
-    }
-
-    private ModuleListInternalFrame buildTiposModule() {
-        ModuleListInternalFrame f = new ModuleListInternalFrame(
-                "Tipos de Habitaci\u00f3n",
-                new Object[]{"ID","Nombre","Descripci\u00f3n"},
-                tabla -> new ControladorTipoHabitacion().cargarTablaTiposHabitacion(tabla));
-        if (isAdmin()) {
-            f.setCreateAction(e -> new DialogTipoHabitacion(this, -1, f::triggerReload).setVisible(true));
-            f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogTipoHabitacion(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un tipo."); });
-            f.setDeleteAction(e -> { int id = f.getSelectedId(); if (id!=-1 && ToastNotifier.showConfirm(this,"\u00bfEliminar tipo?")) { new ControladorTipoHabitacion().eliminarTipoHabitacion(id); f.triggerReload(); ToastNotifier.showSuccess(this, "Tipo eliminado."); } });
         }
         return f;
     }
