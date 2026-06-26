@@ -81,7 +81,7 @@ public class ControladorFacturas {
                     f.getTotalFactura(),
                     f.getEstadoFactura(),
                     f.getMetodoPago(),
-                    "Ver detalles"
+                    "Ver Factura"
                 });
             }
         }
@@ -89,24 +89,24 @@ public class ControladorFacturas {
     
     public void cargarTablaFacturasConAcciones(javax.swing.JTable tabla) {
         cargarTablaFacturas(tabla);
-        // Configurar renderizador para la columna Acciones (índice 6)
         tabla.getColumnModel().getColumn(6).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
             @Override
             public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JButton btn = new JButton("Ver detalles");
-                btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
+                JButton btn = new JButton("Ver Factura");
+                btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 10));
                 btn.setBackground(new java.awt.Color(212, 175, 55));
                 btn.setForeground(new java.awt.Color(17, 24, 39));
                 btn.setFocusPainted(false);
-                btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+                btn.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 148, 45), 1),
+                        javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10)));
                 btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-                if (isSelected) {
-                    btn.setBackground(new java.awt.Color(241, 196, 15));
-                }
+                btn.setOpaque(true);
                 return btn;
             }
         });
-        tabla.getColumnModel().getColumn(6).setPreferredWidth(100);
+        tabla.getColumnModel().getColumn(6).setPreferredWidth(110);
+        tabla.getColumnModel().getColumn(6).setMinWidth(100);
     }
     
     // Métodos específicos para gestión de estados
