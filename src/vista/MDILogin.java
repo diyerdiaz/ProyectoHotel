@@ -216,6 +216,7 @@ public class MDILogin extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(800, 600));
         setSize(new java.awt.Dimension(1000, 700));
         setLocationRelativeTo(null);
+        setTitle("Hotel Gales - Login");
         
         // Ensure desktopPane fills the entire window
         desktopPane.setSize(getContentPane().getSize());
