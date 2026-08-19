@@ -19,29 +19,51 @@ import modelo.Login;
 
 public class VentanaPrincipal extends JFrame {
 
-    private static final Color GOLD = new Color(212, 175, 55);
-    private static final Color GOLD_LIGHT = new Color(241, 196, 15);
+    // ─── Paleta base ────────────────────────────────────────────────────────────
+    private static final Color GOLD         = new Color(212, 175, 55);
+    private static final Color GOLD_LIGHT   = new Color(241, 196, 15);
     private static final Color DARK_SIDEBAR = new Color(17, 24, 39);
-    private static final Color SIDEBAR_HOVER = new Color(31, 45, 78);
-    private static final Color CONTENT_BG = new Color(245, 242, 235);
-    private static final Color CARD_BORDER = new Color(226, 232, 240);
-    private static final Color TEXT_MAIN = new Color(17, 24, 39);
-    private static final Color TEXT_MUTED = new Color(107, 114, 128);
+    private static final Color SIDEBAR_HOVER= new Color(31, 45, 78);
+    private static final Color CONTENT_BG   = new Color(245, 242, 235);
+    private static final Color CARD_BORDER  = new Color(226, 232, 240);
+    private static final Color TEXT_MAIN    = new Color(17, 24, 39);
+    private static final Color TEXT_MUTED   = new Color(107, 114, 128);
 
-    private final Login usuario;
+    // ─── Paleta Super-Admin (púrpura) ────────────────────────────────────────────
+    private static final Color PURPLE      = new Color(147, 51, 234);
+    private static final Color PURPLE_LIGHT= new Color(243, 232, 255);
+    private static final Color PURPLE_DARK = new Color(126, 34, 206);
+
+    // ─── Estado ─────────────────────────────────────────────────────────────────
+    private final Login  usuario;
     private final JDesktopPane desktopPane;
     private final JPanel sidebar;
     private final Map<String, JInternalFrame> frames = new LinkedHashMap<>();
     private boolean sidebarCollapsed = false;
-    private static final int SIDEBAR_EXPANDED = 240;
+    /** true cuando esta ventana es una simulación lanzada por el Super Admin */
+    private final boolean isPreviewMode;
+
+    private static final int SIDEBAR_EXPANDED  = 240;
     private static final int SIDEBAR_COLLAPSED = 0;
 
+    // ======================== CONSTRUCTORES ========================
+
+    /** Constructor normal — modo real */
     public VentanaPrincipal(Login usuario) {
-        this.usuario = usuario;
+        this(usuario, false);
+    }
+
+    /** Constructor primario — soporta modo vista previa */
+    public VentanaPrincipal(Login usuario, boolean previewMode) {
+        this.usuario       = usuario;
+        this.isPreviewMode = previewMode;
         ConexionBD.getInstance();
 
-        setTitle("Hotel Gales \u2022 Panel de Gesti\u00f3n");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        String suffix = previewMode
+                ? "  \u2756  VISTA PREVIA  [\u00a0" + getRoleLabel() + "\u00a0]"
+                : "";
+        setTitle("Hotel Gales \u2022 Panel de Gesti\u00f3n" + suffix);
+        setDefaultCloseOperation(previewMode ? JFrame.DISPOSE_ON_CLOSE : JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1100, 720));
         setSize(1400, 850);
         setLocationRelativeTo(null);
@@ -86,17 +108,36 @@ public class VentanaPrincipal extends JFrame {
 
     private String getRoleLabel() {
         switch (usuario.getRolUsuario().toLowerCase()) {
-            case "administrador":   return "Administrador";
-            case "recepcionista":   return "Recepcionista";
-            case "cliente":         return "Cliente";
+            case "administrador":     return "Administrador";
+            case "recepcionista":     return "Recepcionista";
+            case "cliente":           return "Cliente";
             case "servicio_limpieza": return "Limpieza";
-            default:                return usuario.getRolUsuario();
+            default:                  return usuario.getRolUsuario();
         }
     }
 
     // ======================== TOPBAR ========================
 
     private JPanel buildTopbar() {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+
+        // ── Banner de MODO VISTA PREVIA ──────────────────────────────────────────
+        if (isPreviewMode) {
+            JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 6));
+            banner.setBackground(new Color(234, 88, 12));   // naranja
+            JLabel lbl = new JLabel(
+                    "\u26A0\uFE0F   MODO VISTA PREVIA  \u2014  ROL: "
+                    + getRoleLabel().toUpperCase()
+                    + "   \u2502   Esta ventana es solo de visualizaci\u00f3n."
+                    + " Ci\u00e9rrala para volver al panel del administrador.");
+            lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+            lbl.setForeground(Color.WHITE);
+            banner.add(lbl);
+            wrapper.add(banner, BorderLayout.NORTH);
+        }
+
+        // ── Barra principal ──────────────────────────────────────────────────────
         JPanel bar = new JPanel(new BorderLayout());
         bar.setPreferredSize(new Dimension(0, 54));
         bar.setBackground(Color.WHITE);
@@ -104,6 +145,7 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createMatteBorder(0, 0, 1, 0, CARD_BORDER),
                 new EmptyBorder(0, 16, 0, 16)));
 
+        // ── Izquierda ────────────────────────────────────────────────────────────
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
         left.setOpaque(false);
 
@@ -119,14 +161,8 @@ public class VentanaPrincipal extends JFrame {
         menuBtn.setToolTipText("Men\u00fa lateral");
         menuBtn.addActionListener(e -> toggleSidebar());
         menuBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                menuBtn.setForeground(GOLD);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                menuBtn.setForeground(TEXT_MAIN);
-            }
+            @Override public void mouseEntered(java.awt.event.MouseEvent e) { menuBtn.setForeground(GOLD); }
+            @Override public void mouseExited (java.awt.event.MouseEvent e) { menuBtn.setForeground(TEXT_MAIN); }
         });
         left.add(menuBtn);
 
@@ -137,9 +173,55 @@ public class VentanaPrincipal extends JFrame {
 
         bar.add(left, BorderLayout.WEST);
 
+        // ── Derecha ──────────────────────────────────────────────────────────────
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         right.setOpaque(false);
 
+        // ── 🎨 Botón color de fondo (siempre visible) ────────────────────────────
+        JButton colorBtn = makeIconBtn("\uD83C\uDFA8", new Color(59, 130, 246));
+        colorBtn.setToolTipText("Cambiar color del fondo de trabajo");
+        colorBtn.addActionListener(e -> {
+            Color elegido = JColorChooser.showDialog(
+                    this, "Elige el color del \u00e1rea de trabajo", desktopPane.getBackground());
+            if (elegido != null) desktopPane.setBackground(elegido);
+        });
+        right.add(colorBtn);
+
+        // ── 👁 Botón Vista de Rol — EXCLUSIVO del admin, oculto en modo preview ──
+        if (isAdmin() && !isPreviewMode) {
+            JButton previewBtn = new JButton("\uD83D\uDC41\uFE0F  Vista de Rol");
+            previewBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+            previewBtn.setForeground(PURPLE);
+            previewBtn.setBackground(Color.WHITE);
+            previewBtn.setFocusPainted(false);
+            previewBtn.setOpaque(true);
+            previewBtn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(PURPLE, 1),
+                    BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+            previewBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            previewBtn.setToolTipText(
+                    "Ver la interfaz tal como la ve cada rol \u2014 exclusivo del administrador");
+            previewBtn.addActionListener(e -> openRolePreview());
+            previewBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent e) {
+                    previewBtn.setBackground(PURPLE_LIGHT);
+                    previewBtn.setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(PURPLE_DARK, 2),
+                            BorderFactory.createEmptyBorder(5, 13, 5, 13)));
+                }
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e) {
+                    previewBtn.setBackground(Color.WHITE);
+                    previewBtn.setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(PURPLE, 1),
+                            BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+                }
+            });
+            right.add(previewBtn);
+        }
+
+        // ── Badge de usuario ─────────────────────────────────────────────────────
         JPanel badge = new JPanel(new GridLayout(2, 1, 0, 0));
         badge.setOpaque(false);
         badge.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
@@ -150,14 +232,15 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel userRole = new JLabel(getRoleLabel());
         userRole.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        userRole.setForeground(GOLD);
-        userRole.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        // En preview el rol aparece en naranja para recordar que es simulación
+        userRole.setForeground(isPreviewMode ? new Color(234, 88, 12) : GOLD);
 
         badge.add(userName);
         badge.add(userRole);
         right.add(badge);
 
-        JButton logoutBtn = new JButton("Salir");
+        // ── Botón Salir / Cerrar Preview ─────────────────────────────────────────
+        JButton logoutBtn = new JButton(isPreviewMode ? "Cerrar Preview" : "Salir");
         logoutBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
         logoutBtn.setForeground(GOLD);
         logoutBtn.setBackground(Color.WHITE);
@@ -166,7 +249,7 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createLineBorder(GOLD, 1),
                 BorderFactory.createEmptyBorder(6, 14, 6, 14)));
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        logoutBtn.setToolTipText("Cerrar sesi\u00f3n");
+        logoutBtn.setToolTipText(isPreviewMode ? "Cerrar vista previa" : "Cerrar sesi\u00f3n");
         logoutBtn.addActionListener(e -> closeSession());
         logoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -187,7 +270,45 @@ public class VentanaPrincipal extends JFrame {
         right.add(logoutBtn);
 
         bar.add(right, BorderLayout.EAST);
-        return bar;
+        wrapper.add(bar, BorderLayout.CENTER);
+        return wrapper;
+    }
+
+    /**
+     * Crea un botón icono compacto con efecto hover de color acento.
+     */
+    private JButton makeIconBtn(String emoji, Color accent) {
+        JButton btn = new JButton(emoji);
+        btn.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        btn.setForeground(accent);
+        btn.setBackground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        Color bg20 = new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 20);
+        Color bd80 = new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 100);
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setOpaque(true);
+                btn.setBackground(bg20);
+                btn.setBorderPainted(true);
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(bd80, 1),
+                        BorderFactory.createEmptyBorder(7, 7, 7, 7)));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setOpaque(false);
+                btn.setBackground(Color.WHITE);
+                btn.setBorderPainted(false);
+                btn.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+            }
+        });
+        return btn;
     }
 
     private void toggleSidebar() {
@@ -196,6 +317,84 @@ public class VentanaPrincipal extends JFrame {
         sidebar.setPreferredSize(new Dimension(w, 0));
         sidebar.revalidate();
         sidebar.repaint();
+    }
+
+    // ======================== SUPER ADMIN — VISTA DE ROL ========================
+
+    /**
+     * Abre el diálogo de selección de rol y lanza la ventana de preview.
+     * Solo accesible para el administrador.
+     */
+    private void openRolePreview() {
+        String[] labels     = {
+            "\uD83C\uDFAB  Recepcionista",
+            "\uD83D\uDC64  Cliente",
+            "\uD83E\uDDF9  Limpieza (servicio_limpieza)"
+        };
+        String[] roleValues = {"recepcionista", "cliente", "servicio_limpieza"};
+
+        // ── Construir panel del diálogo ──────────────────────────────────────────
+        JPanel panel = new JPanel(new BorderLayout(0, 14));
+        panel.setBorder(new EmptyBorder(12, 12, 8, 12));
+
+        JLabel header = new JLabel("Selecciona el rol a previsualizar:");
+        header.setFont(new Font("SansSerif", Font.BOLD, 14));
+        panel.add(header, BorderLayout.NORTH);
+
+        JPanel rolePanel = new JPanel(new GridLayout(labels.length, 1, 4, 8));
+        rolePanel.setOpaque(false);
+        ButtonGroup group  = new ButtonGroup();
+        JRadioButton[] radios = new JRadioButton[labels.length];
+
+        for (int i = 0; i < labels.length; i++) {
+            radios[i] = new JRadioButton(labels[i]);
+            radios[i].setFont(new Font("SansSerif", Font.PLAIN, 13));
+            radios[i].setFocusPainted(false);
+            group.add(radios[i]);
+            rolePanel.add(radios[i]);
+        }
+        radios[0].setSelected(true);
+        panel.add(rolePanel, BorderLayout.CENTER);
+
+        JLabel note = new JLabel(
+                "<html><font color='#888888'><i>"
+                + "La ventana de preview se abre de forma independiente.<br>"
+                + "Ci\u00e9rrala para volver al panel del administrador."
+                + "</i></font></html>");
+        note.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        note.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
+        panel.add(note, BorderLayout.SOUTH);
+
+        int result = JOptionPane.showConfirmDialog(
+                this, panel,
+                "\uD83D\uDC41\uFE0F  Vista Previa de Rol  \u2014  Super Admin",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            for (int i = 0; i < radios.length; i++) {
+                if (radios[i].isSelected()) {
+                    final String rol = roleValues[i];
+                    SwingUtilities.invokeLater(() -> {
+                        VentanaPrincipal preview = new VentanaPrincipal(buildPreviewLogin(rol), true);
+                        preview.setVisible(true);
+                    });
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Crea un objeto Login temporal sin ID de BD, usado solo para la vista previa.
+     */
+    private Login buildPreviewLogin(String rol) {
+        Login preview = new Login();
+        preview.setIdUsuario(-1);
+        preview.setNombreUsuario("Vista Previa");
+        preview.setContrasenaUsuario("");
+        preview.setRolUsuario(rol);
+        return preview;
     }
 
     // ======================== SIDEBAR ========================
@@ -219,6 +418,15 @@ public class VentanaPrincipal extends JFrame {
         brand.setBorder(new EmptyBorder(0, 16, 0, 16));
         content.add(brand);
 
+        // Indicador extra en el sidebar cuando es preview
+        if (isPreviewMode) {
+            JLabel previewTag = new JLabel("[VISTA PREVIA]");
+            previewTag.setAlignmentX(Component.CENTER_ALIGNMENT);
+            previewTag.setForeground(new Color(234, 88, 12));
+            previewTag.setFont(new Font("SansSerif", Font.BOLD, 10));
+            content.add(previewTag);
+        }
+
         JLabel roleLabel = new JLabel(getRoleLabel().toUpperCase());
         roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         roleLabel.setForeground(new Color(215, 220, 230));
@@ -232,10 +440,9 @@ public class VentanaPrincipal extends JFrame {
         if (isAdmin()) {
             content.add(Box.createVerticalStrut(8));
             content.add(sideSection("ADMINISTRACI\u00d3N"));
-            content.add(sideButton("\uD83D\uDC65  Usuarios", e -> openUsuarios(), false));
-            content.add(sideButton("\uD83D\uDC64  Clientes", e -> openClientes(), false));
+            content.add(sideButton("\uD83D\uDC65  Usuarios",   e -> openUsuarios(), false));
+            content.add(sideButton("\uD83D\uDC64  Clientes",   e -> openClientes(), false));
             content.add(sideButton("\uD83D\uDC68\u200D\uD83D\uDCBB  Empleados", e -> openEmpleados(), false));
-
         }
 
         if (isStaff()) {
@@ -253,18 +460,19 @@ public class VentanaPrincipal extends JFrame {
             content.add(Box.createVerticalStrut(8));
             content.add(sideSection("FINANZAS"));
             content.add(sideButton("\uD83D\uDCCA  Estad\u00edsticas", e -> showHome(), false));
-            content.add(sideButton("\uD83E\uDDFE  Facturaci\u00f3n", e -> openFacturas(), false));
+            content.add(sideButton("\uD83E\uDDFE  Facturaci\u00f3n",  e -> openFacturas(), false));
         }
 
         if (isCliente()) {
             content.add(Box.createVerticalStrut(8));
             content.add(sideSection("MI ESTANCIA"));
             content.add(sideButton("\uD83D\uDCC5  Mis Reservas", e -> openReservas(), false));
-            content.add(sideButton("\uD83E\uDDFE  Mis Facturas", e -> openFacturas(), false));
+            content.add(sideButton("\uD83E\uDDFE  Mis Facturas",  e -> openFacturas(), false));
         }
 
         content.add(Box.createVerticalGlue());
 
+        // ── Footer del sidebar ───────────────────────────────────────────────────
         JPanel footer = new JPanel();
         footer.setLayout(new BoxLayout(footer, BoxLayout.Y_AXIS));
         footer.setBackground(DARK_SIDEBAR);
@@ -281,7 +489,7 @@ public class VentanaPrincipal extends JFrame {
 
         footer.add(Box.createVerticalStrut(4));
 
-        JButton footerLogout = new JButton("Cerrar sesi\u00f3n");
+        JButton footerLogout = new JButton(isPreviewMode ? "Cerrar Preview" : "Cerrar sesi\u00f3n");
         footerLogout.setFont(new Font("SansSerif", Font.BOLD, 11));
         footerLogout.setForeground(GOLD);
         footerLogout.setBackground(new Color(17, 24, 39));
@@ -402,17 +610,17 @@ public class VentanaPrincipal extends JFrame {
 
     // ======================== MODULE OPENERS ========================
 
-    private void openClientes()        { openModule("clientes",   buildClientesModule()); }
-    private void openHabitaciones()   { openModule("habitaciones", buildHabitacionesModule()); }
-    private void openReservas()       { openModule("reservas", buildReservasModule()); }
-    private void openFacturas()       { openModule("facturas", buildFacturasModule()); }
-    private void openEmpleados()      { openModule("empleados", buildEmpleadosModule()); }
-    private void openUsuarios()       { openModule("usuarios",  buildUsuariosModule()); }
+    private void openClientes()      { openModule("clientes",     buildClientesModule()); }
+    private void openHabitaciones()  { openModule("habitaciones", buildHabitacionesModule()); }
+    private void openReservas()      { openModule("reservas",     buildReservasModule()); }
+    private void openFacturas()      { openModule("facturas",     buildFacturasModule()); }
+    private void openEmpleados()     { openModule("empleados",    buildEmpleadosModule()); }
+    private void openUsuarios()      { openModule("usuarios",     buildUsuariosModule()); }
 
     private ModuleListInternalFrame buildClientesModule() {
         ModuleListInternalFrame f = new ModuleListInternalFrame(
                 "Clientes",
-                new Object[]{"ID","Nombre","Apellido","Documento","Correo","Telefono","Direccion","Usuario"},
+                new Object[]{"ID","Nombre","Apellido","Documento","Correo","Telefono","Direcci\u00f3n","Usuario"},
                 tabla -> new ControladorCliente().cargarTablaClientes(tabla));
         f.setCreateAction(e -> new DialogCliente(this, -1, f::triggerReload).setVisible(true));
         f.setEditAction(e   -> { int id = f.getSelectedId(); if (id!=-1) new DialogCliente(this, id, f::triggerReload).setVisible(true); else ToastNotifier.showError(this,"Seleccione un cliente."); });
@@ -449,14 +657,13 @@ public class VentanaPrincipal extends JFrame {
                 "Facturas",
                 new Object[]{"ID","Reserva","Fecha","Total","Estado","M\u00e9todo","Acciones"},
                 tabla -> new ControladorFacturas().cargarTablaFacturasConAcciones(tabla));
-        
-        // Agregar listener para el botón "Ver detalles" en la columna Acciones
+
         f.getTable().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 int row = f.getTable().rowAtPoint(e.getPoint());
                 int col = f.getTable().columnAtPoint(e.getPoint());
-                if (row >= 0 && col == 6) { // Columna Acciones (índice 6)
+                if (row >= 0 && col == 6) {
                     int idFactura = f.getSelectedIdFromRow(row);
                     if (idFactura != -1) {
                         new DialogFactura(VentanaPrincipal.this, idFactura).setVisible(true);
@@ -464,7 +671,7 @@ public class VentanaPrincipal extends JFrame {
                 }
             }
         });
-        
+
         return f;
     }
 
@@ -523,6 +730,11 @@ public class VentanaPrincipal extends JFrame {
     // ======================== SESSION ========================
 
     private void closeSession() {
+        if (isPreviewMode) {
+            // En modo preview solo cierra esta ventana, NO destruye la sesión real
+            dispose();
+            return;
+        }
         ConexionBD.desconectar();
         dispose();
         SwingUtilities.invokeLater(() -> {
