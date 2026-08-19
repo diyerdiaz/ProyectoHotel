@@ -1,4 +1,10 @@
+.gitignore for ProyectoHotel
+# Ignore NetBeans private project files
+nbproject/private/
 
+# Local OS files (optional)
+Thumbs.db
+Desktop.ini
 /build/
 /dist/
 *.log
